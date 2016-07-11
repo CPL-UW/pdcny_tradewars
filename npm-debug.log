@@ -1,0 +1,38 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/Users/visheshk/.node/bin/npm',
+1 verbose cli   'update',
+1 verbose cli   '-g' ]
+2 info using npm@3.5.1
+3 info using node@v4.2.3
+4 verbose stack Error: Missing required argument #1
+4 verbose stack     at module.exports (/Users/visheshk/.node/lib/node_modules/npm/lib/install/mutate-into-logical-tree.js:12:3)
+4 verbose stack     at /Users/visheshk/.node/lib/node_modules/npm/lib/outdated.js:78:5
+4 verbose stack     at /Users/visheshk/.node/lib/node_modules/npm/lib/outdated.js:62:20
+4 verbose stack     at /Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:186:9
+4 verbose stack     at f (/Users/visheshk/.node/lib/node_modules/npm/node_modules/once/once.js:17:25)
+4 verbose stack     at /Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:152:20
+4 verbose stack     at f (/Users/visheshk/.node/lib/node_modules/npm/node_modules/once/once.js:17:25)
+4 verbose stack     at then (/Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:121:22)
+4 verbose stack     at /Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:81:20
+4 verbose stack     at fs.js:1578:23
+5 verbose cwd /Users/visheshk/Documents/PDC/Learning_Theater/Activities/tradewars-bet
+6 error Darwin 15.5.0
+7 error argv "/usr/local/bin/node" "/Users/visheshk/.node/bin/npm" "update" "-g"
+8 error node v4.2.3
+9 error npm  v3.5.1
+10 error code EMISSINGARG
+11 error typeerror Error: Missing required argument #1
+11 error typeerror     at module.exports (/Users/visheshk/.node/lib/node_modules/npm/lib/install/mutate-into-logical-tree.js:12:3)
+11 error typeerror     at /Users/visheshk/.node/lib/node_modules/npm/lib/outdated.js:78:5
+11 error typeerror     at /Users/visheshk/.node/lib/node_modules/npm/lib/outdated.js:62:20
+11 error typeerror     at /Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:186:9
+11 error typeerror     at f (/Users/visheshk/.node/lib/node_modules/npm/node_modules/once/once.js:17:25)
+11 error typeerror     at /Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:152:20
+11 error typeerror     at f (/Users/visheshk/.node/lib/node_modules/npm/node_modules/once/once.js:17:25)
+11 error typeerror     at then (/Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:121:22)
+11 error typeerror     at /Users/visheshk/.node/lib/node_modules/npm/node_modules/read-package-tree/rpt.js:81:20
+11 error typeerror     at fs.js:1578:23
+12 error typeerror This is an error with npm itself. Please report this error at:
+12 error typeerror     <http://github.com/npm/npm/issues>
+13 verbose exit [ 1, true ]

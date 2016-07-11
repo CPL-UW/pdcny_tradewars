@@ -1,7 +1,7 @@
 // RunningGames = new Mongo.Collection("games");
 // AllStocks = new Mongo.Collection("stocks");
 
-// import { RunningGames } from './server.js';
+// import RunningGames from './lib/collections';
 
 Router.route('/', function() {
 	this.render('Home');
@@ -23,7 +23,7 @@ Router.route('/games/:gameCode', function () {
 		//does this game exist
 		if (game != undefined) {
 			group = game.group;
-			console.log(group);
+			// console.log(group);   **this is being called a lot of times, need to figure this out
 			if (group == "admin"){
 				//is this user an admin
 				role = "adminDash";

@@ -1,3 +1,6 @@
+// import { AllStocks } from '../../lib/collections';
+// import { RunningGames } from '../../lib/collections';
+
 Template.baseDash.helpers({
 	adminGames() {
 		// console.log(RunningGames.find({'admin': Meteor.userId()}).fetch());

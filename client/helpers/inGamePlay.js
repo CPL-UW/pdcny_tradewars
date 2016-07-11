@@ -1,3 +1,6 @@
+// import AllStocks from '../../lib/collections';
+// import RunningGames from '../../lib/collections';
+
 Template.stockInfo.helpers ({
 	resources: function () {
 		// return AllStocks.findOne({gID: groupID}).market;

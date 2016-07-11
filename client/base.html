@@ -182,6 +182,12 @@
 		{{/each}}
 	</table>
 	Market value: {{totalValue}}
+	<br />
+	{{> priceGraph}}
+</template>
+
+<template name="priceGraph">
+	<div id="circles"></div>
 </template>
 
 <template name="hello">

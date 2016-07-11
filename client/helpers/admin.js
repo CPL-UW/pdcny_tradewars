@@ -1,3 +1,6 @@
+// import { RunningGames } from '../../lib/collections';
+// import { AllStocks } from '../../lib/collections';
+
 Template.userKicks.helpers({
 	allUsers: function () {
 		return RunningGames.find({$and: [{gameCode: Session.get("GameCode")}, {player: {$ne: Meteor.userId()}}]});

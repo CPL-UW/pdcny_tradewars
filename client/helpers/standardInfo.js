@@ -1,3 +1,5 @@
+// import { Alerts } from '../../lib/collections';
+
 Template.userInfo.helpers ({
 	groupID: function () {
 		return Session.get("GroupNo");

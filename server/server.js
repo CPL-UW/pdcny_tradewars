@@ -4,6 +4,10 @@
 // Events = new Mongo.Collection("eventlogs")
 
 // import './d3-random.min.js'
+import '../lib/collections.js';
+// import RunningGames from '../lib/collections'
+// import Alerts from '../lib/collections';
+// import AllStocks from '../lib/collections';
 
 resources = ["gold", "wood", "food", "stone"]
 groupIDs = ["red_group", "green_group", "pink_group", "blue_group"];
@@ -142,7 +146,7 @@ if (Meteor.isServer) {
 						"player": adminID,
 						"playerName": Meteor.users.findOne({"_id": adminID}).username,
 						"group": "admin",
-						"lastLogin": date.getTime()
+						"lastLogin": (new Date()).getTime()
 					});
 					Meteor.call("setupNewGameStocks", codeString);
 				}
@@ -186,7 +190,7 @@ if (Meteor.isServer) {
 							"player": joinerID,
 							"playerName": Meteor.users.findOne({"_id": joinerID}).username,
 							"group": grp,
-							"lastLogin": date.getTime()
+							"lastLogin": (new Date()).getTime()
 						});
 					}
 					else {
@@ -198,11 +202,11 @@ if (Meteor.isServer) {
 			},
 
 			updateGameJoin: function (gameCode, player) {
-				RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": date.getTime()}});
+				RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
 			},
 
 			updateStocks: function (gameCode) {
-				newPrice = gaussian(150, 50);
+				newPricefn = gaussian(150, 50);
 				console.log(gameCode);
 				for (g in groupIDs){
 					for (r in resources){
@@ -210,15 +214,27 @@ if (Meteor.isServer) {
 						// console.log(g, r, gameCode, stock);
 						if (stock != undefined){
 							currentPrice = stock.price * 0.8;
-							// console.log(currentPrice + 0.2 * newPrice());
-							AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]}, {$set: {"price": Math.round((currentPrice + 0.2 * newPrice()), -1)}});
+							console.log(currentPrice + 0.2 * newPricefn());
+							newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
+							AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]}, {$set: {"price": newPrice}});
+							
+							evLog = {
+								"timestamp": (new Date()).getTime(),
+								"key": "StockPriceChange",
+								"description": "RegularUpdate",
+								"gameCode": gameCode,
+								"group": groupIDs[g],
+								"item": resources[r],
+								"price": newPrice
+							}
+							Meteor.call("logEvent", evLog);
 						}
 					}
 				}
 			},
 
 			checkLogins: function () {
-				currentTime = date.getTime();
+				currentTime = (new Date()).getTime();
 				// console.log("check");
 				recentGames = RunningGames.find({lastLogin: {$gt: (currentTime - 1800000)}}).fetch();
 				if (recentGames.length > 0){

@@ -24,3 +24,7 @@ iron:router
 accounts-password
 useraccounts:bootstrap
 twbs:bootstrap
+d3js:d3
+d3
+underscore
+react-meteor-data
