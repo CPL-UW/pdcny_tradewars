@@ -12,6 +12,13 @@ import '../lib/collections.js';
 resources = ["gold", "wood", "food", "stone"]
 groupIDs = ["red_group", "green_group", "pink_group", "blue_group"];
 
+//expensive resources
+expResInds = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8"]
+expRes = {"e1": "adamantium", "e2":"bombastium", "e3": "kryptonite", "e4": "tiberium", "e5": "unobtainium", "e6": "dilithium", "e7": "neutronium", "e8": "flubber"}
+//cheap resources
+cheapResInds = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"]
+cheapRes = {"c1": "wood", "c2": "metal", "c3": "coal", "c4": "plastic", "c5": "clay", "c6": "water", "c7": "cats", "c8": "gravity"}
+
 gaussian = function(mean, stdev) {
     var y2;
     var use_last = false;

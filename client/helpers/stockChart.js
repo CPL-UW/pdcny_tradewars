@@ -249,19 +249,21 @@ Template.priceGraph.rendered = function () {
   function sellLead(amt) {sellMetal('lead',amt);}
   function sellBismuth(amt){sellMetal('bismuth',amt);}
 
-  Tracker.autorun(function () {
-    goldPrices = Events.find({$and: [{"item": "gold"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
-    currentLength = goldPrices.length;
-    if (startLength == 0 && currentLength != 0){
-      console.log(currentLength);
-      initAll();
-    }
-    else if (startLength != currentLength){
-      price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
-      console.log("refresh");
-      updateAll();
-    }
-  });
+  if(Session.get("GroupNo") != "admin"){
+    Tracker.autorun(function () {
+      goldPrices = Events.find({$and: [{"item": "gold"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+      currentLength = goldPrices.length;
+      if (startLength == 0 && currentLength != 0){
+        console.log(currentLength);
+        initAll();
+      }
+      else if (startLength != currentLength){
+        price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
+        console.log("refresh");
+        updateAll();
+      }
+    });
+  }
   
   
 
