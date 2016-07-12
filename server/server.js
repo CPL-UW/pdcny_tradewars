@@ -223,6 +223,7 @@ if (Meteor.isServer) {
 							currentPrice = stock.price * 0.8;
 							console.log(currentPrice + 0.2 * newPricefn());
 							newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
+                            // TODO time lag, history field/column, compute price better...
 							AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]}, {$set: {"price": newPrice}});
 							
 							evLog = {
