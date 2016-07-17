@@ -141,7 +141,7 @@ if (Meteor.isServer) {
 				Alerts.update({_id: reqId}, {$set: {"contents.read": 1}});
 			},
 
-			makeNewGame: function (adminID, codeString = "1730", size = "4") {
+			makeNewGame: function (adminID, codeString = "1730", size = 4) {
 				//*** generate random 4 character string
 				while (RunningGames.findOne({"gameCode": codeString}) != undefined){
 					codeString = Math.random().toString(36).substring(2,8);
@@ -288,7 +288,7 @@ if (Meteor.isServer) {
 			},
 
 			incrementGameYear: function (gameDocId, requestType){
-				RunningGames.update({_id: gameDocId}, {$set: {"elapsedTimeYear": 0}}, {$inc: {"currentYear": 1}}, function (err, result) {
+				RunningGames.update({_id: gameDocId}, {$set: {"elapsedTimeYear": 0}, $inc: {"currentYear": 1}}, function (err, result) {
 					if (err){
 						console.log("year updation failed nooo");
 					}
@@ -309,7 +309,7 @@ if (Meteor.isServer) {
 			checkYearStatus: function (requestType) {
 				RunningGames.find({$and: [{"group": "admin"}, {"status": "running"}]}).forEach(function (game) {
 					if (game.elapsedTimeYear >= game.yearLength){
-						Meteor.call(incrementGameYear, game._id, requestType);
+						Meteor.call("incrementGameYear", game._id, requestType);
 					}
 				});
 			},
@@ -318,28 +318,6 @@ if (Meteor.isServer) {
 				currentTime = (new Date()).getTime();
 				RunningGames.update({$and: [{"group": "admin"}, {"status": "running"}]}, {$inc: {"elapsedTimeYear": timeElapsed, "elapsedTimeTotal": timeElapsed}});
 				Meteor.call("checkYearStatus", "RegularCheck");
-				// RunningGames.find({$and: [{"group": "admin"}, {"status": "running"}]}).forEach(function (game) {
-					// year = Math.floor((currentTime - game.gameStart) / game.yearLength);
-					// if (year != game.gameYear) {
-					// 	RunningGames.update({_id: game._id}, {$set: {"gameYear": year}}, function (err, result) {
-					// 		if (err){
-					// 			console.log("year update failed. noooo");
-					// 		}
-					// 		else{
-					// 			evLog = {
-					// 				"timestamp": (new Date()).getTime(),
-					// 				"key": "GameYearChange",
-					// 				"description": "RegularUpdate",
-					// 				"lastYear": game.year,
-					// 				"newYear": year,
-					// 				"gameCode": game.gameCode
-					// 			}
-					// 			Meteor.call("logEvent", evLog);
-					// 		}
-					// 	});
-					// }
-					// RunningGames.update({_id: games._id}, {$set: {"elapsedTimeYear": game.elapsedTimeYear + 30000}});
-				// });
 			},
 
 			kickPlayer: function (gCode, playerId = "all", negative = false) {
