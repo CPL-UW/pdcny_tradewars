@@ -31,7 +31,7 @@ Template.priceGraph.rendered = function () {
                         .y(function(d) { return y(d.gold); });
 
   // Adds the svg canvas
-  var svg = d3.select("#circles")
+  var svg = d3.select("#stockPriceGraph")
               .append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
@@ -154,6 +154,8 @@ Template.priceGraph.rendered = function () {
     svg.append("g")
        .attr("class", "y axis")
        .call(yAxis);
+    
+    updateAll();
 
   }
 
@@ -225,6 +227,7 @@ Template.priceGraph.rendered = function () {
   function initAll() {
     initData();
     initLine();
+    // updateAll();
   }
 
   function updateAll() {

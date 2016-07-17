@@ -4,17 +4,19 @@
 // import RunningGames from './lib/collections';
 
 Router.route('/', function() {
+	console.log("home");
 	this.render('Home');
 	Session.set("GameCode", 0);
 	Session.set("GroupNo", "home");
+
 });
 
 Router.route('/games/:gameCode', function () {
-		setSession = function (gCode, group, role) {
-			Session.set("GameCode", gCode);
-			Session.set("GroupNo", group);
-			Session.set("Role", role);
-		}
+		// setSession = function (gCode, group, role) {
+		// 	Session.set("GameCode", gCode);
+		// 	Session.set("GroupNo", group);
+		// 	Session.set("Role", role);
+		// }
 		// var gameCode = parseInt(this.params.gameCode);
 		var gameCode = this.params.gameCode;
 		role = "none";
@@ -23,7 +25,7 @@ Router.route('/games/:gameCode', function () {
 		//does this game exist
 		if (game != undefined) {
 			group = game.group;
-			// console.log(group);   **this is being called a lot of times, need to figure this out
+			// console.log(group);  // **this is being called a lot of times, need to figure this out
 			if (group == "admin"){
 				//is this user an admin
 				role = "adminDash";
@@ -32,22 +34,42 @@ Router.route('/games/:gameCode', function () {
 				//is this user a normal player
 				role = "userDash";
 			}
-			setSession(gameCode, group, role);
+			// setSession(gameCode, group, role);
+			// if (Session.get("GameCode") != gameCode || Session.get("GroupNo") != group){
+			// 	console.log("session setting");
+			Session.set("GameCode", gameCode);
+			Session.set("GroupNo", group);
+			Session.set("Role", role);
+			// }
+			// Session.set("GameCode", "1730");
+			// Session.set("GroupNo", "red_group");
+			// Session.set("Role", "userDash");
+
 		}
 		else {
 			// console.log("nothing found");
 			gameCode = 0;
 		}
-		if (Session.get("GameCode") == 0) {
+		if (gameCode == 0) {
 			// alert("Not in this game");
 			Router.go("/");
 		}
 		
 		else {
-			// console.log(Session.get("Role"));
-			this.render(Session.get("Role"));
+			console.log(role);
+			this.render(role, {data: {'gCode': gameCode, 'groupNo': group, 'role': role}});
 			// console.log(d3.random.normal(1,10));
-			Meteor.call('updateGameJoin', Session.get("GameCode"), Meteor.userId());
+			// routerObj = this;
+			// Meteor.call('updateGameJoin', gameCode, Meteor.userId(), function (err, result) {
+			// 	if (err){
+			// 		alert("We aren't able to log to the server that you're trying to join the game. Please tell somebody?");
+			// 		// Router.go("/");
+			// 	}
+			// 	else{
+			// 		// routerObj.render(role);
+			// 	}
+			// });
+			// this.next();
 
 		}
 	}
