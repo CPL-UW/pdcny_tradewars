@@ -105,7 +105,7 @@ Template.priceGraph.rendered = function () {
     // p_lead = computeCurrentPrice('lead');
     // p_gold = computeCurrentPrice('gold');
     p_gold = goldPrices[goldPrices.length - 1];
-    console.log(p_gold);
+    // console.log(p_gold);
     return {'date': aTime, 'gold':p_gold.toString() };
   }
 
@@ -262,7 +262,7 @@ Template.priceGraph.rendered = function () {
       }
       else if (startLength != currentLength){
         price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
-        console.log("refresh");
+        // console.log("refresh");
         updateAll();
       }
     });
