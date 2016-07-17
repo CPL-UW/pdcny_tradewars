@@ -153,9 +153,27 @@ if (Meteor.isServer) {
 						"player": adminID,
 						"playerName": Meteor.users.findOne({"_id": adminID}).username,
 						"group": "admin",
-						"lastLogin": (new Date()).getTime()
+						"lastLogin": (new Date()).getTime(),
+						"gameStart": (new Date()).getTime(),
+						"currentYear": 0,
+						"yearLength": 600000,
+					},
+					function (err, result) {
+						if (err){
+						}
+						else {
+							Meteor.call("setupNewGameStocks", codeString);
+							evLog = {
+								"timestamp": (new Date()).getTime(),
+								"key": "NewGameStart",
+								"description": "",
+								"gameCode": gameCode,
+								"size": 4,		//****TODO***//: add dynamicness in number of groups playing
+								"admin": adminID
+							}
+							Meteor.call("logEvent", evLog);
+						}
 					});
-					Meteor.call("setupNewGameStocks", codeString);
 				}
 				// else {
 				// 	//*** if this game already exists, generate a new codestring and try again
@@ -246,17 +264,45 @@ if (Meteor.isServer) {
 				// console.log("check");
 				recentGames = RunningGames.find({lastLogin: {$gt: (currentTime - 1800000)}}).fetch();
 				if (recentGames.length > 0){
+					//get the gameCodes of all the games recently logged in to
 					recentGameCodes = recentGames.map(function(game) {
 						return game.gameCode;
 					});
+					//filter it out to the unique game codes
 					recentGameCodes = recentGameCodes.filter( function(item, i, ar){ 
 						return ar.indexOf(item) === i; 
 					});
+					//update staocks for each of those unique game codes
 					recentGameCodes.forEach(function(gCode) {
 						Meteor.call('updateStocks', gCode);
 					});
 				}
 				return true;
+			},
+
+			updateYears: function () {
+				currentTime = (new Date()).getTime();
+				RunningGames.find({"group": "admin"}).forEach(function (game) {
+					year = Math.floor((currentTime - game.gameStart) / game.yearLength);
+					if (year != game.gameYear) {
+						RunningGames.update({_id: game._id}, {$set: {"gameYear": year}}, function (err, result) {
+							if (err){
+								console.log("year update failed. noooo");
+							}
+							else{
+								evLog = {
+									"timestamp": (new Date()).getTime(),
+									"key": "GameYearChange",
+									"description": "RegularUpdate",
+									"lastYear": game.year,
+									"newYear": year,
+									"gameCode": game.gameCode
+								}
+								Meteor.call("logEvent", evLog);
+							}
+						});
+					}
+				});
 			},
 
 			kickPlayer: function (gCode, playerId = "all", negative = false) {
@@ -287,5 +333,9 @@ if (Meteor.isServer) {
 	Meteor.setInterval(function () {
 		Meteor.call('checkLogins');
 	}, 120000);
+
+	Meteor.setInterval(function () {
+		Meteor.call('updateYears');
+	}, 30000);
 
 }

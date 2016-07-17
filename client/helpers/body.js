@@ -8,7 +8,7 @@
 Template.body.helpers ({
 	username: function () {
 		return Meteor.user().username;
-	},
+	}
 
 	// sessionSetter: function () {
 	// }
@@ -44,11 +44,3 @@ Template.userDash.rendered = function () {
 		}
 	});
 }
-
-// Template.adminDash.rendered = function () {
-// 	console.log("temp" + this.data);
-// 	// this.render(role, {data: {'gCode': gameCode, 'groupNo': group, 'role': role}});
-// 	Session.set("GameCode", this.gCode);
-// 	Session.set("GroupNo", this.group);
-// 	Session.set("Role", this.role);
-// }

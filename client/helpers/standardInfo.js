@@ -10,6 +10,25 @@ Template.userInfo.helpers ({
 	}
 });
 
+Template.gameInfo.helpers ({
+	// gameTime: function () {
+	// 	thisGameAdmin = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
+	// 	if (thisGameAdmin.hasOwnProperty("gameStart")){
+	// 		// Session.set("GameSeconds", Math.ceil(((new Date()).getTime() - RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).gameStart) / 1000));
+	// 		Meteor.setInterval(function () {
+	// 			Session.set("GameSeconds", Math.ceil(((new Date()).getTime() - RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).gameStart) / 1000));
+	// 		}, 500);
+	// 		return Session.get("GameSeconds");
+	// 	}
+	// },
+
+	gameYear: function () {
+
+		return RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+	}
+
+});
+
 Template.alertsTemp.helpers({
 	allAlerts: function () {
 		return Alerts.find({$and: [{"gameCode": Session.get("GameCode")}, {"user": Meteor.userId()}, {type: "alert"}, {"contents.read": 0}]});

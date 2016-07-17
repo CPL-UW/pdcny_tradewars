@@ -37,6 +37,7 @@
 		{{>alertsTemp}}  
 		{{>requestsTemp}}
 
+		{{> gameInfo}}
 		{{> userInfo}}
 		<p>
 			{{> stockInfo}}	
@@ -48,6 +49,7 @@
 </template>
 
 <template name = "adminDash">
+	{{> gameInfo}}
 	<h4> Kick users!!1! </h4>
 	{{> userKicks}}
 	<br />
@@ -65,6 +67,10 @@
 			{{> stockInfo}}
 		</p>
 	{{/if}}
+</template>
+
+<template name="gameInfo">
+	{{gameYear}} years<br />
 </template>
 
 <template name = "userKicks">
@@ -183,7 +189,7 @@
 	</table>
 	Market value: {{totalValue}}
 	<br />
-	<!-- {{> priceGraph}} -->
+	{{> priceGraph}}
 </template>
 
 <template name="priceGraph">

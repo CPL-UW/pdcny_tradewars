@@ -251,8 +251,8 @@ Template.priceGraph.rendered = function () {
   function sellGold(amt) {sellMetal('gold',amt);}
   function sellLead(amt) {sellMetal('lead',amt);}
   function sellBismuth(amt){sellMetal('bismuth',amt);}
-
-  if(Session.get("GroupNo") != "admin"){
+  
+  if(Session.get("Role") == "userDash"){
     Tracker.autorun(function () {
       goldPrices = Events.find({$and: [{"item": "gold"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
       currentLength = goldPrices.length;

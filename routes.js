@@ -8,16 +8,12 @@ Router.route('/', function() {
 	this.render('Home');
 	Session.set("GameCode", 0);
 	Session.set("GroupNo", "home");
+	Session.set("Role", "none");
+	Session.set("GameSeconds", 0);
 
 });
 
 Router.route('/games/:gameCode', function () {
-		// setSession = function (gCode, group, role) {
-		// 	Session.set("GameCode", gCode);
-		// 	Session.set("GroupNo", group);
-		// 	Session.set("Role", role);
-		// }
-		// var gameCode = parseInt(this.params.gameCode);
 		var gameCode = this.params.gameCode;
 		role = "none";
 		group = "none";
@@ -34,17 +30,9 @@ Router.route('/games/:gameCode', function () {
 				//is this user a normal player
 				role = "userDash";
 			}
-			// setSession(gameCode, group, role);
-			// if (Session.get("GameCode") != gameCode || Session.get("GroupNo") != group){
-			// 	console.log("session setting");
 			Session.set("GameCode", gameCode);
 			Session.set("GroupNo", group);
 			Session.set("Role", role);
-			// }
-			// Session.set("GameCode", "1730");
-			// Session.set("GroupNo", "red_group");
-			// Session.set("Role", "userDash");
-
 		}
 		else {
 			// console.log("nothing found");
@@ -56,21 +44,8 @@ Router.route('/games/:gameCode', function () {
 		}
 		
 		else {
-			console.log(role);
+			// console.log(role);
 			this.render(role, {data: {'gCode': gameCode, 'groupNo': group, 'role': role}});
-			// console.log(d3.random.normal(1,10));
-			// routerObj = this;
-			// Meteor.call('updateGameJoin', gameCode, Meteor.userId(), function (err, result) {
-			// 	if (err){
-			// 		alert("We aren't able to log to the server that you're trying to join the game. Please tell somebody?");
-			// 		// Router.go("/");
-			// 	}
-			// 	else{
-			// 		// routerObj.render(role);
-			// 	}
-			// });
-			// this.next();
-
 		}
 	}
 );
