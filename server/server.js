@@ -17,10 +17,10 @@ choosingArray = [0, 1, 2, 3, 4, 5, 6, 7]
 // groupNames = ["red_group", "green_group", "pink_group", "blue_group", "mystic_group", "orange_group", "turqoise_group", "fuschia_group"];
 //expensive resources
 expResInds = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8"]
-expRes = {"e1": "adamantium", "e2":"bombastium", "e3": "kryptonite", "e4": "tiberium", "e5": "unobtainium", "e6": "dilithium", "e7": "neutronium", "e8": "flubber"}
+// expRes = {"e1": "adamantium", "e2":"bombastium", "e3": "kryptonite", "e4": "tiberium", "e5": "unobtainium", "e6": "dilithium", "e7": "neutronium", "e8": "flubber"}
 //cheap resources
 cheapResInds = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"]
-cheapRes = {"c1": "wood", "c2": "metal", "c3": "coal", "c4": "plastic", "c5": "clay", "c6": "water", "c7": "cats", "c8": "gravity"}
+// cheapRes = {"c1": "wood", "c2": "metal", "c3": "coal", "c4": "plastic", "c5": "clay", "c6": "water", "c7": "cats", "c8": "gravity"}
 
 gaussian = function(mean, stdev) {
     var y2;
@@ -209,10 +209,10 @@ Meteor.startup(function () {
 				//repeat above for expensive
 				//and during each of those, also give them beginning amounts, and insert price and std dev into each stocks document
 
-			thisCheapResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return cheapResInds[i]; });
-			thisExpResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return expResInds[i]; });
-			groupIndices = (shuffle(choosingArray).slice(size))
-			RunningGames.update({$and: [{"code": code}, {"group": "admin"}]}, {$set: {"cheapRes": cheapRes, "expensiveRes": expRes, "groupNumbers": groupIndices}});
+			thisCheapResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return cheapResInds[i]; });	// looks like [c3, c1, c5, ...]
+			thisExpResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return expResInds[i]; });		// looks like [e3, e1, e5, ...]
+			groupIndices = (shuffle(choosingArray).slice(size));
+			RunningGames.update({$and: [{"gameCode": code}, {"group": "admin"}]}, {$set: {"cheapRes": cheapRes, "expensiveRes": expRes, "groupNumbers": groupIndices}});
 			
 			for (g in groupIndices){
 				thisGrpCheapRes = shuffle(thisCheapResInds);
@@ -237,55 +237,9 @@ Meteor.startup(function () {
 						});
 					}
 				};
-
 				populateStocks(expRes, thisGrpExpRes, 150, 5, 150, 30);
 				populateStocks(cheapRes, thisGrpCheapRes, 50, 10, 50, 15)
-
-				// for (res in thisGrpExpRes){
-				// 	Meteor.call("makeFactory", code, groupIndices[g], thisGrpExpRes[res], res + 1);
-				// 	AllStocks.insert({
-				// 		"gameCode": code,
-				// 		"gID": groupIndices[g],
-				// 		"groupName": groupNames[groupIndices[g]],
-				// 		"itemNo": thisGrpExpRes[res],
-				// 		"item": expRes[thisGrpExpRes[res]],
-				// 		"price": 150,
-				// 		"amount": 5,
-				// 		"mean": 150,
-				// 		"stdev": 30
-				// 	});
-				// }
-
-				// for (res in thisGrpCheapRes){
-				// 	Meteor.call("makeFactory", code, groupIndices[g], thisGrpCheapRes[res], res + 1);
-				// 	AllStocks.insert({
-				// 		"gameCode": code,
-				// 		"gID": groupIndices[g],
-				// 		"groupName": groupNames[groupIndices[g]],
-				// 		"itemNo": thisGrpCheapRes[res],
-				// 		"item": expRes[thisGrpCheapRes[res]],
-				// 		"price": 50,
-				// 		"amount": 10,
-				// 		"mean": 50,
-				// 		"stdev": 15
-				// 	});
-				// }
 			}
-
-			// for (g in groupIDs){
-			// 	// print("adding for ", groupIDs[g]);
-			// 	for (r in resources){
-			// 		// print("adding ", resources[r]);
-			// 		AllStocks.insert({
-			// 			"gameCode": code,
-			// 			"gID": groupIDs[g],
-			// 			"item": resources[r],
-			// 			"price": 150,
-			// 			"amount": 50
-			// 		});
-			// 	}
-			// }
-
 		},
 
 		joinGame: function (gCode, joinerID) {
@@ -298,14 +252,23 @@ Meteor.startup(function () {
 			else{
 				game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]});
 				grp = "home";
+
 				if (game == undefined){
-					grp = groupIDs[Math.floor(Math.random() * game.size)];
+
+					groupSizes = game.groupIndices.map(function(gi) {	//group index
+						return {"groupIndex": gi, "groupSize": RunningGames.find({$and: [{"gameCode": gameCode}, {"group": gi}]}).fetch().length};
+					});
+					sortedGroups = groupSizes.sort(function (a, b) {
+						return (a.groupSize - b.groupSize);
+					});
+					grp = sortedGroups[0].groupIndex;
 
 					RunningGames.insert({
 						"gameCode": gameCode,
 						"player": joinerID,
 						"playerName": Meteor.users.findOne({"_id": joinerID}).username,
 						"group": grp,
+
 						"lastLogin": (new Date()).getTime()
 					});
 				}
@@ -375,13 +338,6 @@ Meteor.startup(function () {
 			currentTime = (new Date()).getTime();
 			RunningGames.update({$and: [{"group": "admin"}, {"status": "running"}]}, {$inc: {"elapsedTimeYear": timeElapsed, "elapsedTimeTotal": timeElapsed}});
 			Meteor.call("checkYearStatus", "RegularCheck");
-
-			// db.eventLogs.update(
-			// 	{ "timestamp": {$lt: 1468823422091} }, 
-			// 	{ $set: {
-			// 		"gameCode": "730", 
-			// 	}
-			// });
 		},
 
 		kickPlayer: function (gCode, playerId = "all", negative = false) {
