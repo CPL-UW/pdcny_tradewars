@@ -12,6 +12,9 @@ import '../lib/collections.js';
 resources = ["gold", "wood", "food", "stone"]
 groupIDs = ["red_group", "green_group", "pink_group", "blue_group"];
 
+choosingArray = [0, 1, 2, 3, 4, 5, 6, 7]
+// groupInds = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8"]
+// groupNames = ["red_group", "green_group", "pink_group", "blue_group", "mystic_group", "orange_group", "turqoise_group", "fuschia_group"];
 //expensive resources
 expResInds = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8"]
 expRes = {"e1": "adamantium", "e2":"bombastium", "e3": "kryptonite", "e4": "tiberium", "e5": "unobtainium", "e6": "dilithium", "e7": "neutronium", "e8": "flubber"}
@@ -46,311 +49,374 @@ gaussian = function(mean, stdev) {
            return retval;
        return -retval;
    }
-}
+};
 
-if (Meteor.isServer) {
-	date = new Date();
-	Meteor.startup(function () {
+shuffle = function(v){
+    for(var j, x, i = v.length; i; j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x);
+    return v;
+};
 
-		//given a list of resources, choose one at random
-		//given a dict of resources : 0, make that random resource 1000
+
+date = new Date();
+Meteor.startup(function () {
+	Meteor.methods({
 		
-		//given a dict of resources and groupID , make a document with that groupID and dict
-		Meteor.methods({
-			
-			raiseAlert: function (person, alert, gCode) {
-				if (alert == "clearall") {
-					Alerts.update({$and: [{"gameCode": gCode}, {"user": person}, {"type": "alert"}]}, {$set: {"contents.read": 1}}, {multi: true});
-				}
-				else {
-					Alerts.insert({"gameCode": gCode, "user": person, "type": "alert", "contents": {"text": alert, "read": 0}});
-				}
-				// console.log(d3.random.normal(1,10));
-			},
+		raiseAlert: function (person, alert, gCode) {
+			if (alert == "clearall") {
+				Alerts.update({$and: [{"gameCode": gCode}, {"user": person}, {"type": "alert"}]}, {$set: {"contents.read": 1}}, {multi: true});
+			}
+			else {
+				Alerts.insert({"gameCode": gCode, "user": person, "type": "alert", "contents": {"text": alert, "read": 0}});
+			}
+			// console.log(d3.random.normal(1,10));
+		},
 
-			reqTrade : function (gCode, recipient, requester, giveRes, giveAmt, takeRes, takeAmt) {
-				// console.log(recipient, giveRes, giveAmt, takeRes, takeAmt);
-				/*
-				requests should look like:
-				"user": requested
-				[
-					// {text: "blah blah"},
-					{requester: },				requester
-					{requested resource: },		reqRes
-					{requested amount: },		reqAmt
-					{receiving resource: },		recvRes
-					{receiving amount: },		recvAmt
-					{requestNumber: },			reqNo
-					{replied: }					replied
-				]
-				*/
-				reqLog = {
-					"gameCode": gCode, 
-					"user": recipient, 
-					"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
-					"type": "request",  
-					"contents": {
-						"requester": {
-							"id": requester, 
-							"username": Meteor.users.findOne({_id:requester}).username, 
-							"group": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": requester}]}).group
-						},
-						"reqRes": takeRes, 
-						"reqAmt": parseInt(takeAmt), 
-						"recvRes": giveRes, 
-						"recvAmt": parseInt(giveAmt), 
-						"read": 0
-					}
-				};
-				Alerts.insert(reqLog);
-				// console.log(reqLog);
-				return reqLog;
-			},
-
-			exchangeResources: function (reqId, gCode){
-				recvGrp = Alerts.findOne({_id: reqId}).requestedGroup;
-				request = Alerts.findOne({_id: reqId}).contents;
-				reqingGrp = request.requester.group;
-
-				//recvGrp is the one that received the request
-				//reqingGrp is the one that sent the request
-				//reqRes is the resource that the requester is requesting
-				//recvRes is the resource that the requester is giving (received by request recipient)
-				finalRequesterRequestedStock = parseInt(
-					AllStocks.findOne(
-						{$and: [
-							{"gameCode": gCode}, 
-							{"gID": reqingGrp}, 
-							{"item": request["recvRes"]}]
-						}).amount) - parseInt(request["recvAmt"]);
-				AllStocks.update({$and: [{"gameCode": gCode}, {"gID": reqingGrp}, {"item": request["recvRes"]}]}, {$set: {"amount": finalRequesterRequestedStock}});	
-				
-				finalRequesterReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": reqingGrp}, {"item": request["reqRes"]}]}).amount) + parseInt(request["reqAmt"]);
-				AllStocks.update({$and: [{"gameCode": gCode}, {"gID": reqingGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalRequesterReceivedStock}});
-				
-				finalReceiverRequestedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["recvRes"]}]}).amount) + parseInt(request["recvAmt"]);
-				AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["recvRes"]}]}, {$set: {"amount": finalReceiverRequestedStock}});
-
-				finalReceiverReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}).amount) - parseInt(request["reqAmt"]);
-				AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
-				
-				Meteor.call('readRequest', reqId);
-			},
-
-			readRequest: function (reqId) {
-				Alerts.update({_id: reqId}, {$set: {"contents.read": 1}});
-			},
-
-			makeNewGame: function (adminID, codeString = "1730", size = 4) {
-				//*** generate random 4 character string
-				while (RunningGames.findOne({"gameCode": codeString}) != undefined){
-					codeString = Math.random().toString(36).substring(2,8);
-				}
-				// codeString = "1730";
-				if (RunningGames.findOne({"gameCode": codeString}) == undefined){
-					RunningGames.insert({
-						"gameCode": codeString,
-						"player": adminID,
-						"playerName": Meteor.users.findOne({"_id": adminID}).username,
-						"group": "admin",
-						"size": size,
-						"lastLogin": (new Date()).getTime(),
-						"gameStart": (new Date()).getTime(),
-						"currentYear": 0,
-						"elapsedTimeTotal": 0,
-						"elapsedTimeYear": 0,
-						"status": "running",
-						"yearLength": 600000,
+		reqTrade : function (gCode, recipient, requester, giveRes, giveAmt, takeRes, takeAmt) {
+			// console.log(recipient, giveRes, giveAmt, takeRes, takeAmt);
+			/*
+			requests should look like:
+			"user": requested
+			[
+				// {text: "blah blah"},
+				{requester: },				requester
+				{requested resource: },		reqRes
+				{requested amount: },		reqAmt
+				{receiving resource: },		recvRes
+				{receiving amount: },		recvAmt
+				{requestNumber: },			reqNo
+				{replied: }					replied
+			]
+			*/
+			reqLog = {
+				"gameCode": gCode, 
+				"user": recipient, 
+				"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
+				"type": "request",  
+				"contents": {
+					"requester": {
+						"id": requester, 
+						"username": Meteor.users.findOne({_id:requester}).username, 
+						"group": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": requester}]}).group
 					},
-					function (err, result) {
-						if (err){
-						}
-						else {
-							Meteor.call("setupNewGameStocks", codeString, size);
-							evLog = {
-								"timestamp": (new Date()).getTime(),
-								"key": "NewGameStart",
-								"description": "",
-								"gameCode": gameCode,
-								"size": 4,		//****TODO***//: add dynamicness in number of groups playing
-								"admin": adminID
-							}
-							Meteor.call("logEvent", evLog);
-						}
-					});
+					"reqRes": takeRes, 
+					"reqAmt": parseInt(takeAmt), 
+					"recvRes": giveRes, 
+					"recvAmt": parseInt(giveAmt), 
+					"read": 0
 				}
-				// else {
-				// 	//*** if this game already exists, generate a new codestring and try again
-				// }
-				return codeString;
-			},
+			};
+			Alerts.insert(reqLog);
+			// console.log(reqLog);
+			return reqLog;
+		},
 
-			setupNewGameStocks: function (code, size) {
-				for (g in _)
+		exchangeResources: function (reqId, gCode){
+			recvGrp = Alerts.findOne({_id: reqId}).requestedGroup;
+			request = Alerts.findOne({_id: reqId}).contents;
+			reqingGrp = request.requester.group;
 
-				for (g in groupIDs){
-					// print("adding for ", groupIDs[g]);
-					for (r in resources){
-						// print("adding ", resources[r]);
-						AllStocks.insert({
-							"gameCode": code,
-							"gID": groupIDs[g],
-							"item": resources[r],
-							"price": 150,
-							"amount": 50
-						});
-					}
-				}
+			//recvGrp is the one that received the request
+			//reqingGrp is the one that sent the request
+			//reqRes is the resource that the requester is requesting
+			//recvRes is the resource that the requester is giving (received by request recipient)
+			finalRequesterRequestedStock = parseInt(
+				AllStocks.findOne(
+					{$and: [
+						{"gameCode": gCode}, 
+						{"gID": reqingGrp}, 
+						{"item": request["recvRes"]}]
+					}).amount) - parseInt(request["recvAmt"]);
+			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": reqingGrp}, {"item": request["recvRes"]}]}, {$set: {"amount": finalRequesterRequestedStock}});	
+			
+			finalRequesterReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": reqingGrp}, {"item": request["reqRes"]}]}).amount) + parseInt(request["reqAmt"]);
+			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": reqingGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalRequesterReceivedStock}});
+			
+			finalReceiverRequestedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["recvRes"]}]}).amount) + parseInt(request["recvAmt"]);
+			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["recvRes"]}]}, {$set: {"amount": finalReceiverRequestedStock}});
 
-			},
+			finalReceiverReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}).amount) - parseInt(request["reqAmt"]);
+			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
+			
+			Meteor.call('readRequest', reqId);
+		},
 
-			joinGame: function (gCode, joinerID) {
-				// gameCode = parseInt(gameCode);
-				gameCode = gCode;
-				if (RunningGames.findOne({"gameCode": gameCode}) == undefined) {
-					console.log("undefined "+gameCode);
-					return "Invalid game code";
-				}
-				else{
-					game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"player": joinerID}]});
-					grp = "home";
-					if (game == undefined){
-						grp = groupIDs[Math.floor(Math.random() * 4)];
+		readRequest: function (reqId) {
+			Alerts.update({_id: reqId}, {$set: {"contents.read": 1}});
+		},
 
-						RunningGames.insert({
-							"gameCode": gameCode,
-							"player": joinerID,
-							"playerName": Meteor.users.findOne({"_id": joinerID}).username,
-							"group": grp,
-							"lastLogin": (new Date()).getTime()
-						});
-					}
-					else {
-						grpNo = game.group;
-						Meteor.call('updateGameJoin', gameCode, joinerID);
-						return "Game joined";
-					}
-				}
-			},
-
-			updateGameJoin: function (gameCode, player) {
-				RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
-			},
-
-			updateStocks: function (gameCode) {
-				newPricefn = gaussian(150, 50);
-				console.log(gameCode);
-				for (g in groupIDs){
-					for (r in resources){
-						stock = AllStocks.findOne({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]});
-						// console.log(g, r, gameCode, stock);
-						if (stock != undefined){
-							currentPrice = stock.price * 0.8;
-							console.log(currentPrice + 0.2 * newPricefn());
-							newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
-                            // TODO time lag, history field/column, compute price better...
-							AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]}, {$set: {"price": newPrice}});
-							
-							evLog = {
-								"timestamp": (new Date()).getTime(),
-								"key": "StockPriceChange",
-								"description": "RegularUpdate",
-								"gameCode": gameCode,
-								"group": groupIDs[g],
-								"item": resources[r],
-								"price": newPrice
-							}
-							Meteor.call("logEvent", evLog);
-						}
-					}
-				}
-			},
-
-			checkLogins: function () {
-				currentTime = (new Date()).getTime();
-				// console.log("check");
-				recentGames = RunningGames.find({lastLogin: {$gt: (currentTime - 1800000)}}).fetch();
-				if (recentGames.length > 0){
-					//get the gameCodes of all the games recently logged in to
-					recentGameCodes = recentGames.map(function(game) {
-						return game.gameCode;
-					});
-					//filter it out to the unique game codes
-					recentGameCodes = recentGameCodes.filter( function(item, i, ar){ 
-						return ar.indexOf(item) === i; 
-					});
-					//update staocks for each of those unique game codes
-					recentGameCodes.forEach(function(gCode) {
-						Meteor.call('updateStocks', gCode);
-					});
-				}
-				return true;
-			},
-
-			incrementGameYear: function (gameDocId, requestType){
-				RunningGames.update({_id: gameDocId}, {$set: {"elapsedTimeYear": 0}, $inc: {"currentYear": 1}}, function (err, result) {
+		makeNewGame: function (adminID, codeString = "1730", size = 4) {
+			//*** generate random 4 character string
+			while (RunningGames.findOne({"gameCode": codeString}) != undefined){
+				codeString = Math.random().toString(36).substring(2,8);
+			}
+			// codeString = "1730";
+			if (RunningGames.findOne({"gameCode": codeString}) == undefined){
+				RunningGames.insert({
+					"gameCode": codeString,
+					"player": adminID,
+					"playerName": Meteor.users.findOne({"_id": adminID}).username,
+					"group": "admin",
+					"size": size,
+					"lastLogin": (new Date()).getTime(),
+					"gameStart": (new Date()).getTime(),
+					"currentYear": 0,
+					"elapsedTimeTotal": 0,
+					"elapsedTimeYear": 0,
+					"status": "running",
+					"yearLength": 600000,
+				},
+				function (err, result) {
 					if (err){
-						console.log("year updation failed nooo");
 					}
 					else {
-						gameDoc = RunningGames.findOne({_id: gameDocId});
+						Meteor.call("setupNewGameStocks", codeString, size);
 						evLog = {
 							"timestamp": (new Date()).getTime(),
-							"key": "GameYearIncrease",
-							"description": requestType,
-							"newYearValue": gameDoc.currentYear,
-							"gameCode": gameDoc.gameCode
+							"key": "NewGameStart",
+							"description": "",
+							"gameCode": codeString,
+							"size": 4,		//****TODO***//: add dynamicness in number of groups playing
+							"admin": adminID
 						}
 						Meteor.call("logEvent", evLog);
 					}
 				});
-			},
+			}
+			// else {
+			// 	//*** if this game already exists, generate a new codestring and try again
+			// }
+			return codeString;
+		},
 
-			checkYearStatus: function (requestType) {
-				RunningGames.find({$and: [{"group": "admin"}, {"status": "running"}]}).forEach(function (game) {
-					if (game.elapsedTimeYear >= game.yearLength){
-						Meteor.call("incrementGameYear", game._id, requestType);
+		makeFactory: function (gameCode, groupNo, productionRate) {
+			Factories.insert({
+				"gameCode": gameCode,
+				"gID": groupNo,
+				"production": productionRate
+			});
+		},
+
+		setupNewGameStocks: function (code, size) {
+
+			//choose cheap resources for the game
+			//choose expensive resources for the game
+			//feed them into arrays and set it into the corresponding running game document
+
+			//choose four group names
+
+			// for each group
+				//shuffle the cheap resources array, and give them factories of descending productivities
+				//repeat above for expensive
+				//and during each of those, also give them beginning amounts, and insert price and std dev into each stocks document
+
+			thisCheapResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return cheapResInds[i]; });
+			thisExpResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return expResInds[i]; });
+			groupIndices = (shuffle(choosingArray).slice(size))
+			RunningGames.update({$and: [{"code": code}, {"group": "admin"}]}, {$set: {"cheapRes": cheapRes, "expensiveRes": expRes, "groupNumbers": groupIndices}});
+			
+			for (g in groupIndices){
+				thisGrpCheapRes = shuffle(thisCheapResInds);
+				thisGrpExpRes = shuffle(thisExpResInds);
+
+				populateStocks = function (resNames, resList, price, amount, mean, stdev) {
+					// console.log(resNames + " " + resList);
+					for (res in resList){
+						// console.log(resList[res]);
+						// console.log(res);
+						Meteor.call("makeFactory", code, groupIndices[g], resList[res], res + 1);
+						AllStocks.insert({
+							"gameCode": code,
+							"gID": groupIndices[g],
+							"groupName": groupNames[groupIndices[g]],
+							"itemNo": resList[res],
+							"item": resNames[resList[res]],
+							"price": price,
+							"amount": amount,
+							"mean": mean,
+							"stdev": stdev
+						});
 					}
+				};
+
+				populateStocks(expRes, thisGrpExpRes, 150, 5, 150, 30);
+				populateStocks(cheapRes, thisGrpCheapRes, 50, 10, 50, 15)
+
+				// for (res in thisGrpExpRes){
+				// 	Meteor.call("makeFactory", code, groupIndices[g], thisGrpExpRes[res], res + 1);
+				// 	AllStocks.insert({
+				// 		"gameCode": code,
+				// 		"gID": groupIndices[g],
+				// 		"groupName": groupNames[groupIndices[g]],
+				// 		"itemNo": thisGrpExpRes[res],
+				// 		"item": expRes[thisGrpExpRes[res]],
+				// 		"price": 150,
+				// 		"amount": 5,
+				// 		"mean": 150,
+				// 		"stdev": 30
+				// 	});
+				// }
+
+				// for (res in thisGrpCheapRes){
+				// 	Meteor.call("makeFactory", code, groupIndices[g], thisGrpCheapRes[res], res + 1);
+				// 	AllStocks.insert({
+				// 		"gameCode": code,
+				// 		"gID": groupIndices[g],
+				// 		"groupName": groupNames[groupIndices[g]],
+				// 		"itemNo": thisGrpCheapRes[res],
+				// 		"item": expRes[thisGrpCheapRes[res]],
+				// 		"price": 50,
+				// 		"amount": 10,
+				// 		"mean": 50,
+				// 		"stdev": 15
+				// 	});
+				// }
+			}
+
+			// for (g in groupIDs){
+			// 	// print("adding for ", groupIDs[g]);
+			// 	for (r in resources){
+			// 		// print("adding ", resources[r]);
+			// 		AllStocks.insert({
+			// 			"gameCode": code,
+			// 			"gID": groupIDs[g],
+			// 			"item": resources[r],
+			// 			"price": 150,
+			// 			"amount": 50
+			// 		});
+			// 	}
+			// }
+
+		},
+
+		joinGame: function (gCode, joinerID) {
+			// gameCode = parseInt(gameCode);
+			gameCode = gCode;
+			if (RunningGames.findOne({$and: [{"status": {$ne: "killed"}}, {"gameCode": gameCode}]}) == undefined) {
+				console.log("undefined "+gameCode);
+				return "Invalid game code";
+			}
+			else{
+				game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]});
+				grp = "home";
+				if (game == undefined){
+					grp = groupIDs[Math.floor(Math.random() * game.size)];
+
+					RunningGames.insert({
+						"gameCode": gameCode,
+						"player": joinerID,
+						"playerName": Meteor.users.findOne({"_id": joinerID}).username,
+						"group": grp,
+						"lastLogin": (new Date()).getTime()
+					});
+				}
+				else {
+					grpNo = game.group;
+					Meteor.call('updateGameJoin', gameCode, joinerID);
+					return "Game joined";
+				}
+			}
+		},
+
+		updateGameJoin: function (gameCode, player) {
+			RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
+		},
+
+		updateStocks: function (gameCode) {
+			newPricefn = gaussian(150, 50);
+			console.log(gameCode);
+			for (g in groupIDs){
+				for (r in resources){
+					stock = AllStocks.findOne({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]});
+					// console.log(g, r, gameCode, stock);
+					if (stock != undefined){
+						currentPrice = stock.price * 0.8;
+						// console.log(currentPrice + 0.2 * newPricefn());
+						newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
+                        // TODO time lag, history field/column, compute price better...
+						AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]}, {$set: {"price": newPrice}});
+						
+						evLog = {
+							"timestamp": (new Date()).getTime(),
+							"key": "StockPriceChange",
+							"description": "RegularUpdate",
+							"gameCode": gameCode,
+							"group": groupIDs[g],
+							"item": resources[r],
+							"price": newPrice
+						}
+						Meteor.call("logEvent", evLog);
+					}
+				}
+			}
+		},
+
+		checkLogins: function () {
+			currentTime = (new Date()).getTime();
+			// console.log("check");
+			recentGames = RunningGames.find({$and: [{status: "running"}, {lastLogin: {$gt: (currentTime - 1800000)}}]}).fetch();
+			if (recentGames.length > 0){
+				//get the gameCodes of all the games recently logged in to
+				recentGameCodes = recentGames.map(function(game) {
+					return game.gameCode;
 				});
-			},
+				//filter it out to the unique game codes
+				recentGameCodes = recentGameCodes.filter( function(item, i, ar){ 
+					return ar.indexOf(item) === i; 
+				});
+				//update staocks for each of those unique game codes
+				recentGameCodes.forEach(function(gCode) {
+					Meteor.call('updateStocks', gCode);
+				});
+			}
+			return true;
+		},
 
-			updateTimeElapsed: function (timeElapsed) {
-				currentTime = (new Date()).getTime();
-				RunningGames.update({$and: [{"group": "admin"}, {"status": "running"}]}, {$inc: {"elapsedTimeYear": timeElapsed, "elapsedTimeTotal": timeElapsed}});
-				Meteor.call("checkYearStatus", "RegularCheck");
-			},
+		updateTimeElapsed: function (timeElapsed) {
+			currentTime = (new Date()).getTime();
+			RunningGames.update({$and: [{"group": "admin"}, {"status": "running"}]}, {$inc: {"elapsedTimeYear": timeElapsed, "elapsedTimeTotal": timeElapsed}});
+			Meteor.call("checkYearStatus", "RegularCheck");
 
-			kickPlayer: function (gCode, playerId = "all", negative = false) {
-				if (playerId != "all"){
-					if (negative == false){
-						if (RunningGames.findOne({$and: [{gameCode: gCode}, {player: playerId}]}) != undefined){
-							RunningGames.remove({$and: [{gameCode: gCode}, {player: playerId}]}, {justOne: false})
-							return true;
-						}
-						else {
-							return false;
-						}
+			// db.eventLogs.update(
+			// 	{ "timestamp": {$lt: 1468823422091} }, 
+			// 	{ $set: {
+			// 		"gameCode": "730", 
+			// 	}
+			// });
+		},
+
+		kickPlayer: function (gCode, playerId = "all", negative = false) {
+			if (playerId != "all"){
+				if (negative == false){
+					if (RunningGames.findOne({$and: [{gameCode: gCode}, {player: playerId}]}) != undefined){
+						RunningGames.remove({$and: [{gameCode: gCode}, {player: playerId}]}, {justOne: false})
+						return true;
 					}
 					else {
-						RunningGames.remove({$and: [{gameCode: gCode}, {player: {$ne: playerId}}]}, {justOne: false});
-						return true;
+						return false;
 					}
 				}
 				else {
-					RunningGames.remove({$and: [{gameCode: gCode}]}, {justOne: false});
-					AllStocks.remove({$and: [{gameCode: gCode}]}, {justOne: false});
-					return false;
+					RunningGames.remove({$and: [{gameCode: gCode}, {player: {$ne: playerId}}]}, {justOne: false});
+					return true;
 				}
 			}
+			else {
+				// AllStocks.remove({$and: [{gameCode: gCode}]}, {justOne: false});
+				// Alerts.remove({$and: [{gameCode: gCode}]}, {justOne: false});
+				// Factories.remove({$and: [{gameCode: gCode}]}, {justOne: false});
+				RunningGames.remove({$and: [{gameCode: gCode}, {group: {$ne: "admin"}}]}, {justOne: false});
+				RunningGames.update({$and: [{gameCode: gCode}, {group:"admin"}]}, {$set: {status: "killed"}});
+				return false;
+			}
+		}
 
-		});
 	});
-	Meteor.setInterval(function () {
-		Meteor.call('checkLogins');
-	}, 120000);
+});
 
-	Meteor.setInterval(function () {
-		Meteor.call('updateTimeElapsed', 15000);
-	}, 15000);
+Meteor.setInterval(function () {
+	Meteor.call('checkLogins');
+}, 120000);
 
-}
+Meteor.setInterval(function () {
+	Meteor.call('updateTimeElapsed', 15000);
+}, 15000);

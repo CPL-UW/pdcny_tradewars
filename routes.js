@@ -17,7 +17,7 @@ Router.route('/games/:gameCode', function () {
 		var gameCode = this.params.gameCode;
 		role = "none";
 		group = "none";
-		game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"player": Meteor.userId()}] });
+		game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"player": Meteor.userId()}, {"status": {$ne: "killed"}}] });
 		//does this game exist
 		if (game != undefined) {
 			group = game.group;

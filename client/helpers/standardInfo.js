@@ -23,8 +23,9 @@ Template.gameInfo.helpers ({
 	// },
 
 	gameYear: function () {
-
-		return RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+		gameDoc = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
+		if (gameDoc != null)
+			return gameDoc.currentYear;
 	}
 
 });

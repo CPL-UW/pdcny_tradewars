@@ -25,7 +25,7 @@ Template.userKicks.events({
 	},
 
 	"click .kickAll": function (event) {
-		Meteor.call("kickPlayer", Session.get("GameCode"), Meteor.userId(), function (err, result){
+		Meteor.call("kickPlayer", Session.get("GameCode"), Meteor.userId(), true, function (err, result){
 			if (err){
 				console.log("player kicking failed :( ");
 			}
