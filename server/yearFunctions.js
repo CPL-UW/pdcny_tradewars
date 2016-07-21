@@ -11,17 +11,14 @@ Meteor.startup(function () {
 			pres = [];
 			cres = [];
 			if (newEvents == "reset" || newEvents == "all"){
-				//reset the earlier things caused
-				// if (gameDoc.hasOwnProperty("pollutedResources")) {
-				// 	RunningGames.update({_id: gameId}, {$set: {"pollutedResources": null , "coolResources": null} });
-				// }
-				gameDoc.pollutedResources.forEach(function(r) {
-					Meteor.call("changeResourcePrice", r.gameCode, r.group, r.item, "multiply", r.factor);
-				});
-				gameDoc.coolResources.forEach(function(r) {
-					Meteor.call("changeResourcePrice", r.gameCode, r.group, r.item, "divide", r.factor);
-				});
-				// RunningGames.update({_id: gameId}, {$set: {"pollutedResources": , "coolResources": cres}});
+				if (gameDoc.hasOwnProperty("pollutedResources")){
+					gameDoc.pollutedResources.forEach(function(r) {
+						Meteor.call("changeResourcePrice", r.gameCode, r.group, r.item, "multiply", r.factor);
+					});
+					gameDoc.coolResources.forEach(function(r) {
+						Meteor.call("changeResourcePrice", r.gameCode, r.group, r.item, "divide", r.factor);
+					});
+				}
 			}
 
 			if (newEvents == "new" || newEvents == "all"){

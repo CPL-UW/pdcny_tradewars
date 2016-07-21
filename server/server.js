@@ -144,118 +144,30 @@ Meteor.startup(function () {
 			Alerts.update({_id: reqId}, {$set: {"contents.read": 1}});
 		},
 
-		makeNewGame: function (adminID, codeString = "1730", size = 4) {
-			//*** generate random 4 character string
-			while (RunningGames.findOne({"gameCode": codeString}) != undefined){
-				codeString = Math.random().toString(36).substring(2,8);
-			}
-			// codeString = "1730";
-			if (RunningGames.findOne({"gameCode": codeString}) == undefined){
-				RunningGames.insert({
-					"gameCode": codeString,
-					"player": adminID,
-					"playerName": Meteor.users.findOne({"_id": adminID}).username,
-					"group": "admin",
-					"size": size,
-					"lastLogin": (new Date()).getTime(),
-					"gameStart": (new Date()).getTime(),
-					"currentYear": 0,
-					"elapsedTimeTotal": 0,
-					"elapsedTimeYear": 0,
-					"status": "running",
-					"yearLength": 600000,
-				},
-				function (err, result) {
-					if (err){
-					}
-					else {
-						Meteor.call("setupNewGameStocks", codeString, size);
-						evLog = {
-							"timestamp": (new Date()).getTime(),
-							"key": "NewGameStart",
-							"description": "",
-							"gameCode": codeString,
-							"size": 4,		//****TODO***//: add dynamicness in number of groups playing
-							"admin": adminID
-						}
-						Meteor.call("logEvent", evLog);
-					}
-				});
-			}
-			// else {
-			// 	//*** if this game already exists, generate a new codestring and try again
-			// }
-			return codeString;
-		},
-
-		makeFactory: function (gameCode, groupNo, productionRate) {
-			Factories.insert({
+		insertPlayer: function (gameCode, joinerID, grp, role) {
+			RunningGames.insert({
 				"gameCode": gameCode,
-				"gID": groupNo,
-				"production": productionRate
+				"player": joinerID,
+				"playerName": Meteor.users.findOne({"_id": joinerID}).username,
+				"group": grp,
+				"role": role,
+				"lastLogin": (new Date()).getTime()
 			});
-		},
-
-		setupNewGameStocks: function (code, size) {
-
-			//choose cheap resources for the game
-			//choose expensive resources for the game
-			//feed them into arrays and set it into the corresponding running game document
-
-			//choose four group names
-
-			// for each group
-				//shuffle the cheap resources array, and give them factories of descending productivities
-				//repeat above for expensive
-				//and during each of those, also give them beginning amounts, and insert price and std dev into each stocks document
-
-			thisCheapResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return cheapResInds[i]; });	// looks like [c3, c1, c5, ...]
-			thisExpResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return expResInds[i]; });		// looks like [e3, e1, e5, ...]
-			groupIndices = (shuffle(choosingArray).slice(size));
-			RunningGames.update({$and: [{"gameCode": code}, {"group": "admin"}]}, {$set: {"cheapRes": cheapRes, "expensiveRes": expRes, "groupNumbers": groupIndices}});
-			
-			for (g in groupIndices){
-				thisGrpCheapRes = shuffle(thisCheapResInds);
-				thisGrpExpRes = shuffle(thisExpResInds);
-
-				populateStocks = function (resNames, resList, price, amount, mean, stdev) {
-					// console.log(resNames + " " + resList);
-					for (res in resList){
-						// console.log(resList[res]);
-						// console.log(res);
-						Meteor.call("makeFactory", code, groupIndices[g], resList[res], res + 1);
-						AllStocks.insert({
-							"gameCode": code,
-							"gID": groupIndices[g],
-							"groupName": groupNames[groupIndices[g]],
-							"itemNo": resList[res],
-							"item": resNames[resList[res]],
-							"price": price,
-							"amount": amount,
-							"mean": mean,
-							"stdev": stdev
-						});
-					}
-				};
-				populateStocks(expRes, thisGrpExpRes, 150, 5, 150, 30);
-				populateStocks(cheapRes, thisGrpCheapRes, 50, 10, 50, 15)
-			}
 		},
 
 		joinGame: function (gCode, joinerID) {
 			// gameCode = parseInt(gameCode);
 			gameCode = gCode;
-			if (RunningGames.findOne({$and: [{"status": {$ne: "killed"}}, {"gameCode": gameCode}]}) == undefined) {
+			if (RunningGames.findOne({$and: [{"status": {$ne: "killed"}}, {"gameCode": gameCode}, {"group": "admin"}]}) == undefined) {
 				console.log("undefined "+gameCode);
 				return "Invalid game code";
 			}
 			else{
-				game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]});
+				playerGame = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"player": joinerID}]});
 				grp = "home";
-
-				if (game == undefined){
-
-					groupSizes = game.groupIndices.map(function(gi) {	//group index
+				if (playerGame == undefined){
+					game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]});
+					groupSizes = game.groupNumbers.map(function(gi) {	//gi = group index
 						return {"groupIndex": gi, "groupSize": RunningGames.find({$and: [{"gameCode": gameCode}, {"group": gi}]}).fetch().length};
 					});
 					sortedGroups = groupSizes.sort(function (a, b) {
@@ -263,17 +175,11 @@ Meteor.startup(function () {
 					});
 					grp = sortedGroups[0].groupIndex;
 
-					RunningGames.insert({
-						"gameCode": gameCode,
-						"player": joinerID,
-						"playerName": Meteor.users.findOne({"_id": joinerID}).username,
-						"group": grp,
-
-						"lastLogin": (new Date()).getTime()
-					});
+					Meteor.call("insertPlayer", gCode, joinerID, grp, "regular");
+					
 				}
 				else {
-					grpNo = game.group;
+					// grpNo = playerGame.group;
 					Meteor.call('updateGameJoin', gameCode, joinerID);
 					return "Game joined";
 				}
@@ -364,10 +270,30 @@ Meteor.startup(function () {
 				RunningGames.update({$and: [{gameCode: gCode}, {group:"admin"}]}, {$set: {status: "killed"}});
 				return false;
 			}
-		}
+		},
 
+		//setup base station users
+		setupBaseUsers: function () {
+			if (Meteor.users.findOne({"username": "group-1-base"}) == undefined) {
+				for (uname in baseUsers){
+					Accounts.createUser({
+						username: baseUsers[uname],
+						email : "base" + uname + "@bases.com",
+						password : basePass,
+						profile  : {
+						    //publicly visible fields like firstname goes here
+						    "firstname": "Base !!1!",
+						    "lastname": uname
+						}
+					});	
+				}
+			}
+		}
 	});
 });
+
+Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 1000);
+
 
 Meteor.setInterval(function () {
 	Meteor.call('checkLogins');
