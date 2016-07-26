@@ -1,12 +1,12 @@
 /* CSS declarations go here */
 
-html {
+/*html {
 	margin: 70px;
 }
 
 td {
 	padding: 5px;
-}
+}*/
 
 path {
   stroke: steelblue;
@@ -20,4 +20,16 @@ path {
   stroke: grey;
   stroke-width: 1;
   shape-rendering: crispEdges;
+}
+
+.brand-logo{
+	padding-left: 15px !important;
+}
+
+a:hover, a:focus{
+    text-decoration: none;
+}
+
+.tabs .tab a{
+	line-height: 48px;
 }

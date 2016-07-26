@@ -3,17 +3,12 @@
 </head>
 
 <body>
-
+	{{>navBar}}
 	{{#if currentUser}}
 		<!-- <p align="right"> -->
-		<p class="pull-right">
-			{{username}}<br />
-			<button class = "logOut">Sign Out</button> 
-			
-		</p>
+
 	{{/if}}
 
-	<h1>Lead Caravan</h1>
 	{{#unless currentUser}}
 	<div class="row" >
 		<div class="col-md-3">{{> atForm}}</div>	
@@ -33,11 +28,12 @@
 
 
 <template name="page1">
-	This is page 1
+
+	{{> stockInfo}}	
 </template>
 
 <template name="page2">
-	This is page 2
+	{{>alertsTemp}}  
 </template>
 
 <template name="page3">
@@ -45,11 +41,13 @@
 </template>
 
 <template name="tabs">
-	 <ul class="tabs nav-tabs hide-on-med-and-down">
-		<li class="tab col s4"><a id="page-one" href="#">Page One</a></li>
-		<li class="tab col s4"><a id="page-two" href="#">Page Two</a></li>
-		<li class="tab col s4"><a id="page-three" href="#">Page Three</a></li>
-	</ul>
+	 <div class="valign center">
+		 <ul class="tabs nav-tabs hide-on-med-and-down" >
+			<li class="tab col s4"><a id="page-one" href="#" class="waves-effect waves-dark grey lighten-5 grey-text btn text-darken-4">Page One</a></li>
+			<li class="tab col s4"><a id="page-two" href="#" class="waves-effect waves-dark grey lighten-5 grey-text btn text-darken-4">Page Two</a></li>
+			<li class="tab col s4"><a id="page-three" href="#" class="waves-effect waves-dark grey lighten-5 grey-text btn text-darken-4">Page Three</a></li>
+		</ul>
+	</div>
 </template>
 
 <template name="display">
@@ -65,22 +63,19 @@
     {{#if activeTab 'nt3'}}
         {{>page3}}
     {{/if}}
-    <br />
 </template>
 
 
 <template name = "userDash">
 	{{#if currentUser}}
-		{{>alertsTemp}}  
+
 		{{>requestsTemp}}
 
 		{{> display}}
 
 		{{> gameInfo}}
 		{{> userInfo}}
-		<p>
-			{{> stockInfo}}	
-		</p>
+
 		<p>
 			{{> trade}}
 		</p>
@@ -143,18 +138,23 @@
 </template>
 
 <template name = "alertsTemp">
-	<a href = "/" class="btn btn-default pull-right">See other games</a>
-
-	{{#each allAlerts}}
-		<!-- {{contents}} -->
-		{{contents.text}}
-		<br />
-	{{/each}}
-	<p>
-	<form class="clear-alerts">
-		<input type="submit" value = "Clear Alerts"/>
-	</form>
-	</p>
+<!-- 	<a href = "/" class="btn btn-default pull-right">See other games</a>
+ -->
+ 	<div style="height:270px">
+		<ul class="collection" style="height:100%">
+			<li class="collection-item">
+				{{#each allAlerts}}
+					<!-- {{contents}} -->
+					{{contents.text}}
+				{{/each}}
+			</li>
+		</ul>
+		<p>
+		<form class="clear-alerts">
+			<input type="submit" value = "Clear Alerts"/>
+		</form>
+		</p>
+	</div>
 
 </template>
 
@@ -210,25 +210,33 @@
 
 <template name = "stockInfo">
 	<!-- {{prices}} -->
-	<table border = "1" padding = "10px">
-	<tr> 
-		<td>Resource</td>
-		<td>In Stock</td>
-		<td>Price</td>
-		<td>Group</td>
-	</tr>
-		{{#each resources}}
-		<tr>
-			<td>{{item}}</td>
-			<td>{{amount}}</td>
-			<td>{{price}}</td>
-			<td>{{gID}}</td>
-		</tr>
-		{{/each}}
-	</table>
-	Market value: {{totalValue}}
-	<br />
-	{{> priceGraph}}
+	<div layout="row">
+		<div flex>
+
+          	<table border = "1" padding = "10px">
+				<tr> 
+					<th>Resource</th>
+					<th>In Stock</th>
+					<th>Price</th>
+					<th>Group</th>
+				</tr>
+				{{#each resources}}
+				<tr>
+					<td>{{item}}</td>
+					<td>{{amount}}</td>
+					<td>{{price}}</td>
+					<td>{{gID}}</td>
+				</tr>
+				{{/each}}
+			</table>  
+
+			Market value: {{totalValue}}
+
+		</div>
+		<div flex>
+			{{> priceGraph}}
+		</div>
+	</div>
 </template>
 
 <template name="priceGraph">
@@ -267,4 +275,18 @@
   {{/each}}
   </p>
 
+</template>
+
+<template name="navBar">
+	<nav>
+		<div class="nav-wrapper blue-grey darken-2">
+
+	      	<a href="#" class="brand-logo">Lead Caravan</a>
+			<ul id="nav-mobile" class="right hide-on-med-and-down">
+				<li>{{username}}</li>
+				<li><a href= "logOut" class="blue-grey-text text-lighten-4">Sign Out</a></li> 
+				<li><a herf= "/" class="blue-grey-text text-lighten-4">Other games</a></li>
+			</ul>
+		</div>
+	</nav>
 </template>
