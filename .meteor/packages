@@ -28,3 +28,5 @@ d3js:d3
 d3
 underscore
 react-meteor-data
+materialize:materialize
+reactive-var

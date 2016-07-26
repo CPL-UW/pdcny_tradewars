@@ -23,7 +23,7 @@ Meteor.startup(function () {
 
 			if (newEvents == "new" || newEvents == "all"){
 				for (g in gameDoc.groupNumbers){
-					resourcesToAffect = shuffle(gameDoc.cheapRes).slice(2);
+					resourcesToAffect = (shuffle(gameDoc.cheapRes)).slice(2);
 					pres.push({"group": gameDoc.groupNumbers[g], "item": resourcesToAffect[0], "factor": 10});
 					cres.push({"group": gameDoc.groupNumbers[g], "item": resourcesToAffect[1], "factor": 10});
 

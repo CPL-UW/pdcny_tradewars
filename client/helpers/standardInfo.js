@@ -1,5 +1,27 @@
 // import { Alerts } from '../../lib/collections';
 
+activeTab = new ReactiveVar('nt1'); //Your default tab
+
+Template.display.helpers({
+    activeTab: function(tab){
+        return (activeTab.get() == tab);
+	}
+});
+
+Template.tabs.events({
+  'click #page-one': function(){
+    activeTab.set('nt1');
+  },
+  'click #page-two': function(){
+    activeTab.set('nt2');
+  },
+  'click #page-three': function(){
+    activeTab.set('nt3');
+  }
+});
+
+
+
 Template.userInfo.helpers ({
 	groupID: function () {
 		return Session.get("GroupNo");

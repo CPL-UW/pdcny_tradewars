@@ -32,10 +32,49 @@
 </template>
 
 
+<template name="page1">
+	This is page 1
+</template>
+
+<template name="page2">
+	This is page 2
+</template>
+
+<template name="page3">
+	This is page 3
+</template>
+
+<template name="tabs">
+	 <ul class="tabs nav-tabs hide-on-med-and-down">
+		<li class="tab col s4"><a id="page-one" href="#">Page One</a></li>
+		<li class="tab col s4"><a id="page-two" href="#">Page Two</a></li>
+		<li class="tab col s4"><a id="page-three" href="#">Page Three</a></li>
+	</ul>
+</template>
+
+<template name="display">
+    {{> tabs}}
+    {{#if activeTab 'nt1'}}
+        {{>page1}}
+    {{/if}}
+
+    {{#if activeTab 'nt2'}}
+        {{>page2}}
+    {{/if}}
+
+    {{#if activeTab 'nt3'}}
+        {{>page3}}
+    {{/if}}
+    <br />
+</template>
+
+
 <template name = "userDash">
 	{{#if currentUser}}
 		{{>alertsTemp}}  
 		{{>requestsTemp}}
+
+		{{> display}}
 
 		{{> gameInfo}}
 		{{> userInfo}}

@@ -8,7 +8,7 @@ Template.baseDash.helpers({
 	},
 	
 	playingGames() {
-		return RunningGames.find({$and: [{'player': Meteor.userId()}, {'group': {$ne: 'admin'}}, {'status': 'running'}]});
+		return RunningGames.find({$and: [{'player': Meteor.userId()}, {'group': {$ne: 'admin'}}]});
 	},
 });
 

@@ -36,9 +36,11 @@ Template.userKicks.events({
 	},
 
 	"click .killGame": function (event) {
+		Router.go('/');
 		Meteor.call("kickPlayer", Session.get("GameCode"), "all", function (err, result){
 			if (err){
 				console.log("player kicking failed :( ");
+				alert("Game ending failed!! Tell somebody, things are awry.")
 			}
 			else {
 				// Meteor.call("raiseAlert", "All players kicked!");
