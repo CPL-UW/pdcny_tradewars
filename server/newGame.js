@@ -61,7 +61,7 @@ Meteor.startup(function () {
 			thisCheapResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return cheapResInds[i]; });	// looks like [c3, c1, c5, ...]
 			thisExpResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return expResInds[i]; });		// looks like [e3, e1, e5, ...]
 			groupIndices = (shuffle(choosingArray).slice(size));
-			RunningGames.update({$and: [{"gameCode": code}, {"group": "admin"}]}, {$set: {"cheapRes": cheapRes, "expensiveRes": expRes, "groupNumbers": groupIndices}});
+			RunningGames.update({$and: [{"gameCode": code}, {"group": "admin"}]}, {$set: {"cheapRes": thisCheapResInds, "expensiveRes": thisExpResInds, "groupNumbers": groupIndices}});
 			
 			for (g in groupIndices){
 				thisGrpCheapRes = shuffle(thisCheapResInds);
@@ -96,7 +96,7 @@ Meteor.startup(function () {
 			Factories.insert({
 				"gameCode": gameCode,
 				"gID": groupNo,
-				"item": resource,
+				"itemNo": resource,
 				"production": productionRate,
 				"makeTime": (new Date()).getTime(),
 				"lastRun": (new Date()).getTime()

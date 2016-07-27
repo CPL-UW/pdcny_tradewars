@@ -151,7 +151,8 @@ Meteor.startup(function () {
 				"playerName": Meteor.users.findOne({"_id": joinerID}).username,
 				"group": grp,
 				"role": role,
-				"lastLogin": (new Date()).getTime()
+				"lastLogin": (new Date()).getTime(),
+				"status": "running"
 			});
 		},
 
@@ -192,31 +193,33 @@ Meteor.startup(function () {
 
 		updateStocks: function (gameCode) {
 			newPricefn = gaussian(150, 50);
-			console.log(gameCode);
-			for (g in groupIDs){
-				for (r in resources){
-					stock = AllStocks.findOne({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]});
-					// console.log(g, r, gameCode, stock);
-					if (stock != undefined){
-						currentPrice = stock.price * 0.8;
-						// console.log(currentPrice + 0.2 * newPricefn());
-						newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
-                        // TODO time lag, history field/column, compute price better...
-						AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"item": resources[r]}]}, {$set: {"price": newPrice}});
+			console.log(gameCode);		//** Needs to be rewritten **//
+			///*** MATTHEW TODO: Integrate resource price calculation here ***///
+
+			// for (g in groupIDs){
+			// 	for (r in resources){
+			// 		stock = AllStocks.findOne({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"itemNp": resources[r]}]});
+			// 		// console.log(g, r, gameCode, stock);
+			// 		if (stock != undefined){
+			// 			currentPrice = stock.price * 0.8;
+			// 			// console.log(currentPrice + 0.2 * newPricefn());
+			// 			newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
+   //                      // TODO time lag, history field/column, compute price better...
+			// 			AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"itemNo": resources[r]}]}, {$set: {"price": newPrice}});
 						
-						evLog = {
-							"timestamp": (new Date()).getTime(),
-							"key": "StockPriceChange",
-							"description": "RegularUpdate",
-							"gameCode": gameCode,
-							"group": groupIDs[g],
-							"item": resources[r],
-							"price": newPrice
-						}
-						Meteor.call("logEvent", evLog);
-					}
-				}
-			}
+			// 			evLog = {
+			// 				"timestamp": (new Date()).getTime(),
+			// 				"key": "StockPriceChange",
+			// 				"description": "RegularUpdate",
+			// 				"gameCode": gameCode,
+			// 				"group": groupIDs[g],
+			// 				"item": resources[r],
+			// 				"price": newPrice
+			// 			}
+			// 			Meteor.call("logEvent", evLog);
+			// 		}
+			// 	}
+			// }
 		},
 
 		checkLogins: function () {
@@ -267,7 +270,7 @@ Meteor.startup(function () {
 				// Alerts.remove({$and: [{gameCode: gCode}]}, {justOne: false});
 				// Factories.remove({$and: [{gameCode: gCode}]}, {justOne: false});
 				RunningGames.remove({$and: [{gameCode: gCode}, {group: {$ne: "admin"}}]}, {justOne: false});
-				RunningGames.update({$and: [{gameCode: gCode}, {group:"admin"}]}, {$set: {status: "killed"}});
+				RunningGames.update({gameCode: gCode}, {$set: {status: "killed"}});
 				return false;
 			}
 		},

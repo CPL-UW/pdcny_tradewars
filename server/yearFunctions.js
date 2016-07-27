@@ -1,40 +1,67 @@
 Meteor.startup(function () {
 	Meteor.methods({
 		changeResourcePrice: function (gameCode, group, item, operation, factor){
-			if (operation == "divide")
+			// console.log(factor + " " + gameCode);
+			factor = Number(factor);
+			console.log(gameCode + " " + group + " " + item + " " + operation + " " + factor);
+			if (operation == "divide"){
 				factor = 1/factor;
-			AllStocks.update({$and: [{"item": item}, {"gID": group}, {"gameCode": gameCode}]}, {$mul: {price: factor}});
+			}
+			console.log(factor);
+			AllStocks.update({$and: [{"itemNo": String(item)}, {"gID": group}, {"gameCode": gameCode}]}, {$mul: {price: factor}});
 		},
 
 		newYearEvents: function (gameId, newEvents) {
 			gameDoc = RunningGames.findOne({_id: gameId});
-			pres = [];
-			cres = [];
+			pastPres = []
+			pastCres = []
+			if (gameDoc.hasOwnProperty("pollutedResources")){
+				pastPres = gameDoc.pollutedResources;
+				pastCres = gameDoc.coolResources;
+			}
 			if (newEvents == "reset" || newEvents == "all"){
-				if (gameDoc.hasOwnProperty("pollutedResources")){
-					gameDoc.pollutedResources.forEach(function(r) {
-						Meteor.call("changeResourcePrice", r.gameCode, r.group, r.item, "multiply", r.factor);
+				// console.log("resetting");
+					pastPres.forEach(function(r) {
+						console.log("resetting to increase");
+						// console.log(gameDoc.gameCode + " " + r.group + " " + r.item + " " + r.factor);
+						if(gameDoc.gameCode != undefined)
+							Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "multiply", r.factor);
 					});
-					gameDoc.coolResources.forEach(function(r) {
-						Meteor.call("changeResourcePrice", r.gameCode, r.group, r.item, "divide", r.factor);
+					pastCres.forEach(function(r) {
+						// console.log(gameDoc.gameCode + " " + r.group + " " + r.item + " " + r.factor);
+						console.log("resetting to decrease");
+						if(gameDoc.gameCode != undefined)
+							Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "divide", r.factor);
 					});
-				}
+				
 			}
 
 			if (newEvents == "new" || newEvents == "all"){
-				for (g in gameDoc.groupNumbers){
+				console.log("new things");
+				groupNos = gameDoc.groupNumbers;
+				newpres = [];
+				newcres = []
+				for (g in groupNos){
+					// pres = []
+					// cres = []
 					resourcesToAffect = (shuffle(gameDoc.cheapRes)).slice(2);
-					pres.push({"group": gameDoc.groupNumbers[g], "item": resourcesToAffect[0], "factor": 10});
-					cres.push({"group": gameDoc.groupNumbers[g], "item": resourcesToAffect[1], "factor": 10});
+					// pres.push({"group": gameDoc.groupNumbers[g], "itemNo": resourcesToAffect[0], "factor": 10});
+					// cres.push({"group": gameDoc.groupNumbers[g], "itemNo": resourcesToAffect[1], "factor": 10});
+					pres = [{"group": groupNos[g], "itemNo": resourcesToAffect[0], "factor": 10}];
+					cres = [{"group": groupNos[g], "itemNo": resourcesToAffect[1], "factor": 10}];
+					newpres.push(pres[0]);
+					newcres.push(cres[0]);
 
 					pres.forEach(function(r) {
-						Meteor.call("changeResourcePrice", r.group, r.item, "divide", r.factor);
+						console.log("polluting");
+						Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "divide", r.factor);
 					});
 					cres.forEach(function(r) {
-						Meteor.call("changeResourcePrice", r.group, r.item, "multiply", r.factor);
+						console.log("making cool");
+						Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "multiply", r.factor);
 					});
 				}
-				RunningGames.update({_id: gameId}, {$set: {"pollutedResources": pres, "coolResources": cres}});
+				RunningGames.update({_id: gameId}, {$set: {"pollutedResources": newpres, "coolResources": newcres}});
 			}
 		},
 
