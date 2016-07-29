@@ -3,12 +3,13 @@ Meteor.startup(function () {
 		changeResourcePrice: function (gameCode, group, item, operation, factor){
 			// console.log(factor + " " + gameCode);
 			factor = Number(factor);
-			console.log(gameCode + " " + group + " " + item + " " + operation + " " + factor);
+			// console.log(gameCode + " " + group + " " + item + " " + operation + " " + factor);
 			if (operation == "divide"){
 				factor = 1/factor;
 			}
-			console.log(factor);
+			// console.log(factor);
 			AllStocks.update({$and: [{"itemNo": String(item)}, {"gID": group}, {"gameCode": gameCode}]}, {$mul: {price: factor}});
+			///*** Mean should be changed, not price ***///
 		},
 
 		newYearEvents: function (gameId, newEvents) {
@@ -22,14 +23,14 @@ Meteor.startup(function () {
 			if (newEvents == "reset" || newEvents == "all"){
 				// console.log("resetting");
 					pastPres.forEach(function(r) {
-						console.log("resetting to increase");
+						// console.log("resetting to increase");
 						// console.log(gameDoc.gameCode + " " + r.group + " " + r.item + " " + r.factor);
 						if(gameDoc.gameCode != undefined)
 							Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "multiply", r.factor);
 					});
 					pastCres.forEach(function(r) {
 						// console.log(gameDoc.gameCode + " " + r.group + " " + r.item + " " + r.factor);
-						console.log("resetting to decrease");
+						// console.log("resetting to decrease");
 						if(gameDoc.gameCode != undefined)
 							Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "divide", r.factor);
 					});
@@ -37,7 +38,7 @@ Meteor.startup(function () {
 			}
 
 			if (newEvents == "new" || newEvents == "all"){
-				console.log("new things");
+				// console.log("new things");
 				groupNos = gameDoc.groupNumbers;
 				newpres = [];
 				newcres = []
@@ -53,11 +54,11 @@ Meteor.startup(function () {
 					newcres.push(cres[0]);
 
 					pres.forEach(function(r) {
-						console.log("polluting");
+						// console.log("polluting");
 						Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "divide", r.factor);
 					});
 					cres.forEach(function(r) {
-						console.log("making cool");
+						// console.log("making cool");
 						Meteor.call("changeResourcePrice", gameDoc.gameCode, r.group, r.itemNo, "multiply", r.factor);
 					});
 				}
