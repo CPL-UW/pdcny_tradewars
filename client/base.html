@@ -78,6 +78,7 @@
 
 		{{> gameInfo}}
 		{{> userInfo}}
+		{{> yearInfo}}
 		<p>
 			{{> stockInfo}}	
 		</p>
@@ -109,7 +110,7 @@
 </template>
 
 <template name="gameInfo">
-	{{gameYear}} years<br />
+	Year: {{gameYear}} <br />
 </template>
 
 <template name = "userKicks">
@@ -177,6 +178,11 @@
 	</p>
 </template>
 
+<template name="yearInfo">
+	This is polluted in your market and nobody wants it currently - {{annualResource 'polluted'}} <br />
+	This is hep/cool (or whatever the kids call it) nowadays! -- {{annualResource 'cool'}}
+</template>
+
 <template name = "trade">
 	<form class = "trade">
 		Other Users: 
@@ -214,15 +220,19 @@
 	<tr> 
 		<td>Resource</td>
 		<td>In Stock</td>
-		<td>Price</td>
-		<td>Group</td>
+			<td>Price</td>
+		{{#if groupNameFn 'admin'}}
+			<td>Group</td>
+		{{/if}}
 	</tr>
 		{{#each resources}}
 		<tr>
 			<td>{{item}}</td>
 			<td>{{amount}}</td>
-			<td>{{price}}</td>
-			<td>{{gID}}</td>
+				<td>{{price}}</td>
+			{{#if groupNameFn 'admin'}}
+				<td>{{groupName}}</td>
+			{{/if}}
 		</tr>
 		{{/each}}
 	</table>
@@ -244,9 +254,16 @@
 
 
 <template name="baseDash">
-  <button class="host">
+  <!-- <button class="host">
     Host a new Game
-  </button>
+  </button> -->
+
+  <form class = "hostGame">
+	  Number of Teams: <input type="number" placeholder="4" name="groups" />
+	<input type="submit" value = "Host new game" /> 
+	<sub>(Please enter less than 8 if you don't want all the things to break)</sub>
+  </form>
+
   <br /><br />
   <form class = "gameChoice">
     <input type="text" placeholder="1730" name="gameCode" />
@@ -256,7 +273,7 @@
   <h3> Admin </h3>
   <p>
   {{#each adminGames}}
-    <a href="/games/{{gameCode}}">{{gameCode}}</a> <br />
+    <a href="/games/{{gameCode}}">{{gameCode}}</a> – {{size}} groups <br />
   {{/each}}
   </p>
   

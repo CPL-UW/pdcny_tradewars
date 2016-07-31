@@ -1,7 +1,8 @@
 Meteor.startup(function () {
 	Meteor.methods({
-		makeNewGame: function (adminID, codeString = "1730", size = 4) {
+		makeNewGame: function (adminID, size = 4, codeString = "1730") {
 			//*** generate random 4 character string
+			console.log(size);
 			while (RunningGames.findOne({"gameCode": codeString}) != undefined){
 				codeString = Math.random().toString(36).substring(2,8);
 			}
@@ -31,7 +32,7 @@ Meteor.startup(function () {
 							"key": "NewGameStart",
 							"description": "",
 							"gameCode": codeString,
-							"size": 4,		//****TODO***//: add dynamicness in number of groups playing
+							"size": size,		//****TODO***//: add dynamicness in number of groups playing
 							"admin": adminID
 						}
 						Meteor.call("logEvent", evLog);
@@ -58,11 +59,11 @@ Meteor.startup(function () {
 				//repeat above for expensive
 				//and during each of those, also give them beginning amounts, and insert price and std dev into each stocks document
 
-			thisCheapResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return cheapResInds[i]; });	// looks like [c3, c1, c5, ...]
-			thisExpResInds = (shuffle(choosingArray).slice(size)).map(function (i) { return expResInds[i]; });		// looks like [e3, e1, e5, ...]
-			groupIndices = (shuffle(choosingArray).slice(size));
+			thisCheapResInds = (shuffle(choosingArray).slice(8 - size)).map(function (i) { return cheapResInds[i]; });	// looks like [c3, c1, c5, ...]
+			thisExpResInds = (shuffle(choosingArray).slice(8 - size)).map(function (i) { return expResInds[i]; });		// looks like [e3, e1, e5, ...]
+			groupIndices = (shuffle(choosingArray).slice(8 - size));
 			RunningGames.update({$and: [{"gameCode": code}, {"group": "admin"}]}, {$set: {"cheapRes": thisCheapResInds, "expensiveRes": thisExpResInds, "groupNumbers": groupIndices}});
-			
+			// console.log(size + " " + groupIndices);
 			for (g in groupIndices){
 				thisGrpCheapRes = shuffle(thisCheapResInds);
 				thisGrpExpRes = shuffle(thisExpResInds);
@@ -82,7 +83,8 @@ Meteor.startup(function () {
 							"price": price,
 							"amount": amount,
 							"mean": mean,
-							"stdev": stdev
+							"stdev": (Math.random() * stdev) / 2,
+							"yearmod": {"kind": "none"}
 						});
 					}
 				};

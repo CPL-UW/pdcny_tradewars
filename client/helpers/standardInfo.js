@@ -1,6 +1,7 @@
 // import { Alerts } from '../../lib/collections';
 
 activeTab = new ReactiveVar('nt1'); //Your default tab
+groupNameVar = new ReactiveVar('admin');
 
 Template.display.helpers({
     activeTab: function(tab){
@@ -24,7 +25,8 @@ Template.tabs.events({
 
 Template.userInfo.helpers ({
 	groupID: function () {
-		return Session.get("GroupNo");
+		groupNameVar.set(groupNames[Session.get("GroupNo")]);
+		return groupNameVar.get();
 	},
 
 	userID: function () {

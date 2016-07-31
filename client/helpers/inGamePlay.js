@@ -22,8 +22,18 @@ Template.stockInfo.helpers ({
 		c = 0;
 		AllStocks.find({$and: [{gameCode: Session.get("GameCode")}, {gID: Session.get("GroupNo")}]}).map(function (u) {c += (u.price * u.amount)});
 		return c;
+	},
+
+	groupNameFn: function (val) {
+		return (groupNameVar.get() == val);
 	}
 
+});
+
+Template.yearInfo.helpers({
+	annualResource: function (type) {
+		return AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"yearmod.kind": type}]}).item;
+	}
 });
 
 

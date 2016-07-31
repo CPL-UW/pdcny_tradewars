@@ -27,6 +27,23 @@ Template.baseDash.events({
 		});
 	},
 
+	'submit .hostGame': function(event) {
+		event.preventDefault();
+		size = event.target.groups.value;
+		if (size == ""){
+			size = 4;
+		}
+		Meteor.call('makeNewGame', Meteor.userId(), size, function(err, result) {
+			if (err){
+				alert("Failed to make new game omaigosh");
+			}
+			else {
+				Router.go("/games/" + result);
+			}
+		});
+		// }
+	},
+
 	'submit .gameChoice': function(event) {
 		event.preventDefault();
 		gCode = event.target.gameCode.value;

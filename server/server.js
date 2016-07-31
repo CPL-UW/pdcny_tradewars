@@ -191,9 +191,19 @@ Meteor.startup(function () {
 			RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
 		},
 
+		updateIndividualStock: function (stockDoc) {
+			newPrice = stockDoc.mean / (stockDoc.amount + Math.random() * 7);
+			newPrice = parseInt(newPrice * 100) / 100;
+			AllStocks.update({"_id": stockDoc._id}, {$set: {"price": newPrice}});
+		},
+
 		updateStocks: function (gameCode) {
 			newPricefn = gaussian(150, 50);
-			console.log(gameCode);		//** Needs to be rewritten **//
+			console.log(gameCode + " stock update");		//** Needs to be rewritten **//
+			AllStocks.find({"gameCode": gameCode}).forEach(function (stockDoc) {
+				
+				Meteor.call("updateIndividualStock", stockDoc);
+			});
 			///*** MATTHEW TODO: Integrate resource price calculation here ***///
 
 			// for (g in groupIDs){
@@ -245,7 +255,7 @@ Meteor.startup(function () {
 
 		updateTimeElapsed: function (timeElapsed) {
 			currentTime = (new Date()).getTime();
-			RunningGames.update({$and: [{"group": "admin"}, {"status": "running"}]}, {$inc: {"elapsedTimeYear": timeElapsed, "elapsedTimeTotal": timeElapsed}});
+			RunningGames.update({$and: [{"group": "admin"}, {"status": "running"}]}, {$inc: {"elapsedTimeYear": timeElapsed, "elapsedTimeTotal": timeElapsed}}, {multi: true});
 			Meteor.call("checkYearStatus", "RegularCheck");
 		},
 
@@ -269,9 +279,9 @@ Meteor.startup(function () {
 				// AllStocks.remove({$and: [{gameCode: gCode}]}, {justOne: false});
 				// Alerts.remove({$and: [{gameCode: gCode}]}, {justOne: false});
 				// Factories.remove({$and: [{gameCode: gCode}]}, {justOne: false});
-				RunningGames.remove({$and: [{gameCode: gCode}, {group: {$ne: "admin"}}]}, {justOne: false});
-				RunningGames.update({gameCode: gCode}, {$set: {status: "killed"}});
-				return false;
+				// RunningGames.remove({$and: [{gameCode: gCode}, {group: {$ne: "admin"}}]}, {justOne: false});
+				RunningGames.update({gameCode: gCode}, {$set: {status: "killed"}}, {multi: true});
+				return "killed";
 			}
 		},
 
@@ -288,7 +298,7 @@ Meteor.startup(function () {
 						    "firstname": "Base !!1!",
 						    "lastname": uname
 						}
-					});	
+					});
 				}
 			}
 		}
@@ -300,7 +310,7 @@ Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 1000);
 
 Meteor.setInterval(function () {
 	Meteor.call('checkLogins');
-}, 120000);
+}, 12000);
 
 Meteor.setInterval(function () {
 	Meteor.call('updateTimeElapsed', 15000);
