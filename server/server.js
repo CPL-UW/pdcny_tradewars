@@ -191,10 +191,20 @@ Meteor.startup(function () {
 			RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
 		},
 
-		updateIndividualStock: function (stockDoc) {
+		updateIndividualStock: function (stockDoc, updateType) {
 			newPrice = stockDoc.mean / (stockDoc.amount + Math.random() * 7);
 			newPrice = parseInt(newPrice * 100) / 100;
 			AllStocks.update({"_id": stockDoc._id}, {$set: {"price": newPrice}});
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "StockPriceChange",
+				"description": updateType,
+				"gameCode": stockDoc.gameCode,
+				"group": stockDoc.gID,
+				"itemNo": stockDoc.itemNo,
+				"price": newPrice
+			}
+			Meteor.call("logEvent", evLog);
 		},
 
 		updateStocks: function (gameCode) {
@@ -202,7 +212,7 @@ Meteor.startup(function () {
 			console.log(gameCode + " stock update");		//** Needs to be rewritten **//
 			AllStocks.find({"gameCode": gameCode}).forEach(function (stockDoc) {
 				
-				Meteor.call("updateIndividualStock", stockDoc);
+				Meteor.call("updateIndividualStock", stockDoc, "RegularUpdate");
 			});
 			///*** MATTHEW TODO: Integrate resource price calculation here ***///
 

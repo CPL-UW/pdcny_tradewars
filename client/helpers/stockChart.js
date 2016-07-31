@@ -61,7 +61,8 @@ Template.priceGraph.rendered = function () {
   // }
   startLength = 0;
   newLength = 0;
-  goldPrices = Events.find({$and: [{"item": "gold"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+  goldPrices = Events.find({$and: [{"itemNo": "c4"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+  console.log(goldPrices);
   currentLength = goldPrices.length;
   if (currentLength > 0)
     moving_window = currentLength - 1
@@ -207,7 +208,7 @@ Template.priceGraph.rendered = function () {
 
   function updateLine() {
       x.domain(d3.extent(price_data, function(d) { return d.date; }));
-      y.domain([0, Math.max(100.0, d3.max(price_data, function(d) { return d.gold; }))]);
+      y.domain([0, Math.max(25.0, d3.max(price_data, function(d) { return d.gold; }))]);
 
       // Select the section we want to apply our changes to
       var svgLocal = d3.select("body").transition();
@@ -254,7 +255,8 @@ Template.priceGraph.rendered = function () {
   
   if(Session.get("Role") == "userDash"){
     Tracker.autorun(function () {
-      goldPrices = Events.find({$and: [{"item": "gold"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+      // console.log("attempts to work");
+      goldPrices = Events.find({$and: [{"itemNo": "c4"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
       currentLength = goldPrices.length;
       if (startLength == 0 && currentLength != 0){
         console.log(currentLength);

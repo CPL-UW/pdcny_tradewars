@@ -1,6 +1,12 @@
 // import { RunningGames } from '../../lib/collections';
 // import { AllStocks } from '../../lib/collections';
 
+Template.adminDash.helpers({
+	"click .skipYear": function (event) {
+		Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]})._id, "AdminSkip");
+	}
+});
+
 Template.userKicks.helpers({
 	allUsers: function () {
 		return RunningGames.find({$and: [{gameCode: Session.get("GameCode")}, {player: {$ne: Meteor.userId()}}]});
