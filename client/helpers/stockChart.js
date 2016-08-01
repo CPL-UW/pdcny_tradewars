@@ -62,7 +62,7 @@ Template.priceGraph.rendered = function () {
   startLength = 0;
   newLength = 0;
   goldPrices = Events.find({$and: [{"itemNo": "c4"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
-  console.log(goldPrices);
+  // console.log(goldPrices);
   currentLength = goldPrices.length;
   if (currentLength > 0)
     moving_window = currentLength - 1
@@ -252,17 +252,35 @@ Template.priceGraph.rendered = function () {
   function sellGold(amt) {sellMetal('gold',amt);}
   function sellLead(amt) {sellMetal('lead',amt);}
   function sellBismuth(amt){sellMetal('bismuth',amt);}
+
+  chartItemChanged = false;
+
+  Tracker.autorun(function () {
+    var sessionVal = Session.get("StockChartItem");
+    console.log("chart item changed");
+    chartItemChanged = true;
+  });
   
-  if(Session.get("Role") == "userDash"){
+  if(Session.get("Role") == "userDash" && Session.get("StockChartItem") != undefined){
     Tracker.autorun(function () {
-      // console.log("attempts to work");
-      goldPrices = Events.find({$and: [{"itemNo": "c4"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+      console.log("attempts to work " + Session.get("StockChartItem"));
+
+      goldPrices = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+
       currentLength = goldPrices.length;
       if (startLength == 0 && currentLength != 0){
-        console.log(currentLength);
+        console.log("inited");
         initAll();
       }
-      else if (startLength != currentLength){
+
+      if (chartItemChanged == true) {
+        price_data = [];
+        initData();
+        chartItemChanged = false;
+        updateAll();
+      }
+
+      else if (startLength != currentLength && startLength != 0){
         price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
         // console.log("refresh");
         updateAll();

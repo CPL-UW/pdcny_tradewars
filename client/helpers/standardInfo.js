@@ -10,7 +10,8 @@ Template.display.helpers({
 });
 
 Template.tabs.events({
-  'click #page-one': function(){
+  'click #page-one': function(e){
+  	// console.log(e.currentTarget.attributes.value.value);
     activeTab.set('nt1');
   },
   'click #page-two': function(){

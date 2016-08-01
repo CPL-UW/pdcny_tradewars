@@ -24,11 +24,27 @@ Template.stockInfo.helpers ({
 		return c;
 	},
 
-	groupNameFn: function (val) {
-		return (groupNameVar.get() == val);
+	stockFeatureShow: function (feature) {
+		if (Session.get("GroupNo") == "admin"){
+			return true;
+		}
+		else if (feature = 'price' && baseUsers.indexOf(Meteor.user().username) != -1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 });
+
+Template.stockInfo.events({
+	'click .viewPriceGraph': function(e) {
+		e.preventDefault();
+		console.log(e.currentTarget.attributes.value.value);
+		Session.set("StockChartItem", e.currentTarget.attributes.value.value);
+	}
+ });
 
 Template.yearInfo.helpers({
 	annualResource: function (type) {
@@ -39,7 +55,8 @@ Template.yearInfo.helpers({
 
 Template.trade.helpers({
 	otherUsers: function () {
-		return RunningGames.find({$and: [{gameCode: Session.get("GameCode")}, {player: {$ne: Meteor.userId()}}, {group: {$nin: ["admin", Session.get("GroupNo")]}}]});
+		///playername not in baseusers  , {{"playerName": }} 
+		return RunningGames.find({$and: [{gameCode: Session.get("GameCode")}, {player: {$ne: Meteor.userId()}}, {"playerName": {$nin: baseUsers}} , {group: {$nin: ["admin", Session.get("GroupNo")]}}]});
 
 	},
 

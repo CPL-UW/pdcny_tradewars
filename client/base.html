@@ -46,7 +46,7 @@
 
 <template name="tabs">
 	 <ul class="tabs nav-tabs hide-on-med-and-down">
-		<li class="tab col s4"><a id="page-one" href="#">Page One</a></li>
+		<li class="tab col s4"><a id="page-one" href="#" value = "page-1">Page One</a></li>
 		<li class="tab col s4"><a id="page-two" href="#">Page Two</a></li>
 		<li class="tab col s4"><a id="page-three" href="#">Page Three</a></li>
 	</ul>
@@ -222,17 +222,21 @@
 	<tr> 
 		<td>Resource</td>
 		<td>In Stock</td>
+		{{#if stockFeatureShow 'price'}}
 			<td>Price</td>
-		{{#if groupNameFn 'admin'}}
+		{{/if}}
+		{{#if stockFeatureShow 'group'}}
 			<td>Group</td>
 		{{/if}}
 	</tr>
 		{{#each resources}}
 		<tr>
-			<td>{{item}}</td>
+			<td><a class= "viewPriceGraph" value = "{{itemNo}}">{{item}} </a></td>
 			<td>{{amount}}</td>
+			{{#if stockFeatureShow 'price'}}
 				<td>{{price}}</td>
-			{{#if groupNameFn 'admin'}}
+			{{/if}}
+			{{#if stockFeatureShow 'group'}}
 				<td>{{groupName}}</td>
 			{{/if}}
 		</tr>

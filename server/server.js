@@ -320,7 +320,7 @@ Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 1000);
 
 Meteor.setInterval(function () {
 	Meteor.call('checkLogins');
-}, 12000);
+}, 60000);
 
 Meteor.setInterval(function () {
 	Meteor.call('updateTimeElapsed', 15000);
