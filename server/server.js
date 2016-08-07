@@ -324,4 +324,4 @@ Meteor.setInterval(function () {
 
 Meteor.setInterval(function () {
 	Meteor.call('updateTimeElapsed', 15000);
-}, 15000);
+}, 5000);

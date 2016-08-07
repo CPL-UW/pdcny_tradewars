@@ -48,7 +48,7 @@ Template.stockInfo.events({
 
 Template.yearInfo.helpers({
 	annualResource: function (type) {
-		return AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"yearmod.kind": type}]}).item;
+		return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"yearmod.kind": type}]});
 	}
 });
 

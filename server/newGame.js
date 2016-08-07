@@ -115,6 +115,7 @@ Meteor.startup(function () {
 				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase");
 				i++;
 			}
+			Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]})._id, "NewGameSetup");
 		}
 
 		

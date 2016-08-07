@@ -79,7 +79,10 @@ Template.priceGraph.rendered = function () {
       aTime = new Date(time);
       p_gold = goldPrices[i];
       // console.log(p_gold);
-      price_data.push({'date': aTime, 'gold':p_gold.toString() });
+      // console.log(p_gold);
+      if (p_gold != undefined){
+        price_data.push({'date': aTime, 'gold':p_gold.toString() });
+      }
       // amount_data.push({'date': aTime, 'bismuth': 100.0, 'gold':100.0 ,'lead':100.0 });
     }
     startLength = currentLength;
@@ -263,13 +266,14 @@ Template.priceGraph.rendered = function () {
   
   if(Session.get("Role") == "userDash" && Session.get("StockChartItem") != undefined){
     Tracker.autorun(function () {
-      console.log("attempts to work " + Session.get("StockChartItem"));
-
-      goldPrices = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+      goldPrices = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}, {"group": Session.get("GroupNo")}]}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
 
       currentLength = goldPrices.length;
+
+      // console.log("attempts to work " + startLength + " " + currentLength + " " + goldPrices);
+
       if (startLength == 0 && currentLength != 0){
-        console.log("inited");
+        // console.log("inited");
         initAll();
       }
 
@@ -280,7 +284,7 @@ Template.priceGraph.rendered = function () {
         updateAll();
       }
 
-      else if (startLength != currentLength && startLength != 0){
+      else if (startLength != currentLength && startLength != 0 && currentLength != 0){
         price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
         // console.log("refresh");
         updateAll();

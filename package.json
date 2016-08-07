@@ -4,13 +4,9 @@
   "description": "To run, open directory in console and run ```meteor``` in one terminal tab.",
   "main": "routes.js",
   "dependencies": {
-    "react": "^15.2.1",
-    "react-addons-css-transition-group": "^15.2.1",
-    "react-addons-pure-render-mixin": "^15.2.1",
-    "react-addons-transition-group": "^15.2.1",
-    "react-dom": "^15.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

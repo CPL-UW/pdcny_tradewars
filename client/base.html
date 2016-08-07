@@ -3,6 +3,7 @@
 </head>
 
 <body>
+ {{>navigationBar}}
 
 	{{#if currentUser}}
 		<!-- <p align="right"> -->
@@ -53,7 +54,7 @@
 </template>
 
 <template name="display">
-    {{> tabs}}
+    {{> playerView}}
     {{#if activeTab 'nt1'}}
         {{>page1}}
     {{/if}}
@@ -181,8 +182,12 @@
 </template>
 
 <template name="yearInfo">
-	This is polluted in your market and nobody wants it currently - {{annualResource 'polluted'}} <br />
-	This is hep/cool (or whatever the kids call it) nowadays! -- {{annualResource 'cool'}}
+	{{#each annualResource 'polluted'}}
+		This is polluted in your market and nobody wants it currently -  {{item}}<br />
+	{{/each}}
+	{{#each annualResource 'cool'}}
+		This is hep/cool (or whatever the kids call it) nowadays! -- {{item}}<br />
+	{{/each}}
 </template>
 
 <template name = "trade">

@@ -9,7 +9,7 @@ mobile-experience@1.0.4       # Packages for a great mobile UX
 mongo@1.1.10                   # The database Meteor supports right now
 blaze-html-templates@1.0.4    # Compile .html files into Meteor Blaze views
 session@1.1.6                 # Client-side reactive dictionary for your app
-jquery@1.11.9                  # Helpful client-side library
+jquery                  # Helpful client-side library
 tracker@1.1.0                 # Meteor's client-side reactive programming library
 
 es5-shim@4.6.13                # ECMAScript 5 compatibility for older browsers.
@@ -25,7 +25,5 @@ accounts-password@1.2.12
 useraccounts:bootstrap
 twbs:bootstrap
 d3js:d3
-d3
 underscore@1.0.9
-react-meteor-data
 reactive-var@1.0.10

@@ -18,7 +18,6 @@ caching-html-compiler@1.0.6
 callback-hook@1.0.9
 check@1.2.3
 coffeescript@1.0.17
-d3@1.0.0
 d3js:d3@3.5.8
 ddp@1.2.5
 ddp-client@1.2.9
@@ -73,7 +72,6 @@ ordered-dict@1.0.8
 promise@0.8.3
 random@1.0.10
 rate-limit@1.0.5
-react-meteor-data@0.2.9
 reactive-dict@1.1.8
 reactive-var@1.0.10
 reload@1.1.10
@@ -90,7 +88,6 @@ standard-minifier-css@1.1.8
 standard-minifier-js@1.1.8
 templating@1.1.14
 templating-tools@1.0.4
-tmeasday:check-npm-versions@0.2.0
 tracker@1.1.0
 twbs:bootstrap@3.3.6
 ui@1.0.11
