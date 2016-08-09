@@ -46,6 +46,15 @@ Template.stockInfo.events({
 	}
  });
 
+Template.playerView.events({
+	'click .view-tabs': function (e) {
+		// e.preventDefault();
+		console.log(e.currentTarget.attributes.value.value);
+		activeTab.set(e.currentTarget.attributes.value.value);
+		return true;
+	}
+});
+
 Template.yearInfo.helpers({
 	annualResource: function (type) {
 		return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"yearmod.kind": type}]});

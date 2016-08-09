@@ -22,6 +22,49 @@ Template.body.events ({
 	}
 });
 
+Template.navigationBar.helpers({
+	username: function () {
+		return Meteor.user().username;
+	},
+
+	gameView: function () {
+		return Session.get("GameCode") != "0";
+	},
+
+	gamecode: function () {
+		return Session.get("GameCode");
+	},
+
+	group: function () {
+		if (Session.get("GroupNo") == "admin"){
+			return "You're an admin, Harry!";
+		}
+		else {
+			console.log(Session.get("GroupNo"));
+			return groupNames[Session.get("GroupNo")];
+		}
+	},
+
+	gameYear: function () {
+		gameDoc = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
+		if (gameDoc != null)
+			return gameDoc.currentYear;
+		else
+			return "This game doesn't have a year, very strange.";
+	}
+});
+
+Template.navigationBar.events({
+	'click .homeButton': function () {
+		Router.go('/');
+	},
+
+	'click .logOut': function () {
+		// console.log("logging out?");
+		AccountsTemplates.logout();
+		Router.go('/');
+	}
+});
 
 Template.hello.helpers({
 	counter: function () {
@@ -44,3 +87,9 @@ Template.userDash.rendered = function () {
 		}
 	});
 }
+
+Template.userDash.helpers({
+	activeTab: function(tab){
+        return (activeTab.get() == tab);
+	}
+});

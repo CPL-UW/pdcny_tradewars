@@ -1,6 +1,6 @@
 // import { Alerts } from '../../lib/collections';
 
-activeTab = new ReactiveVar('nt1'); //Your default tab
+activeTab = new ReactiveVar('stocks-tab'); //Your default tab
 groupNameVar = new ReactiveVar('admin');
 
 Template.display.helpers({
@@ -51,6 +51,8 @@ Template.gameInfo.helpers ({
 		gameDoc = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
 		if (gameDoc != null)
 			return gameDoc.currentYear;
+		else
+			return "This game doesn't have a year, very strange.";
 	}
 
 });

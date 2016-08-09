@@ -5,16 +5,6 @@
 <body>
  {{>navigationBar}}
 
-	{{#if currentUser}}
-		<!-- <p align="right"> -->
-		<p class="pull-right">
-			{{username}}<br />
-			<button class = "logOut">Sign Out</button> 
-			
-		</p>
-	{{/if}}
-
-	<h1>Lead Caravan</h1>
 	{{#unless currentUser}}
 	<div class="row" >
 		<div class="col-md-3">{{> atForm}}</div>	
@@ -72,25 +62,38 @@
 
 <template name = "userDash">
 	{{#if currentUser}}
-		{{>alertsTemp}}  
-		{{>requestsTemp}}
+		
+		<!-- {{> display}} -->
+        {{> playerView}}
+        {{#if activeTab 'stocks-tab'}}
+            <!-- {{>page1}} -->
+            <div class="row">
+                <div class="col-md-6"> 
+                    {{> yearInfo}}
+                    {{> stockInfo}} 
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>    
+        {{/if}}
 
-		{{> display}}
+        {{#if activeTab 'notif-tab'}}
+            {{>alertsTemp}}  
+            {{>requestsTemp}}
+            <!-- {{>page2}} -->
+        {{/if}}
 
-		{{> gameInfo}}
-		{{> userInfo}}
-		{{> yearInfo}}
-		<p>
-			{{> stockInfo}}	
-		</p>
-		<p>
-			{{> trade}}
-		</p>
+        {{#if activeTab 'messages-tab'}}
+            <!-- {{>page3}} -->
+            {{> trade}}
+        {{/if}}
+
 	{{/if}}
 </template>
 
 <template name = "adminDash">
-	{{> gameInfo}}
+	<!-- {{> gameInfo}} -->
 	<h4> Kick users!!1! </h4>
 	{{> userKicks}}
 	<br />
@@ -105,7 +108,6 @@
 		{{>alertsTemp}}  
 		{{>requestsTemp}}
 
-		<!-- {{> userInfo}} -->
 		<p>
 			{{> stockInfo}}
 		</p>
@@ -147,7 +149,7 @@
 </template>
 
 <template name = "alertsTemp">
-	<a href = "/" class="btn btn-default pull-right">See other games</a>
+	
 
 	{{#each allAlerts}}
 		<!-- {{contents}} -->
@@ -223,17 +225,21 @@
 
 <template name = "stockInfo">
 	<!-- {{prices}} -->
-	<table border = "1" padding = "10px">
+    <div class = "table-responsive">
+	<table class="table table-hover table-bordered table-condensed">
+    <thead>
 	<tr> 
-		<td>Resource</td>
-		<td>In Stock</td>
+		<th>Resource</th>
+		<th>In Stock</th>
 		{{#if stockFeatureShow 'price'}}
-			<td>Price</td>
+			<th>Price</th>
 		{{/if}}
 		{{#if stockFeatureShow 'group'}}
-			<td>Group</td>
+			<th>Group</th>
 		{{/if}}
 	</tr>
+    </thead>
+    <tbody>
 		{{#each resources}}
 		<tr>
 			<td><a class= "viewPriceGraph" value = "{{itemNo}}">{{item}} </a></td>
@@ -246,10 +252,12 @@
 			{{/if}}
 		</tr>
 		{{/each}}
+    </tbody>
 	</table>
+    </div>
 	Market value: {{totalValue}}
 	<br />
-	{{> priceGraph}}
+	<!-- {{> priceGraph}} -->
 </template>
 
 <template name="priceGraph">
@@ -268,31 +276,76 @@
   <!-- <button class="host">
     Host a new Game
   </button> -->
+  <div class="row">	
+  <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">Play Games</div>
+            <ul class="list-group">
+                {{#each playingGames}}
+                <a href="/games/{{gameCode}}">
+                    <li class="list-group-item">
+                        {{gameCode}}
+                    </li>
+                </a>
+                {{/each}}
+<!--           </ul>
+        </div>
 
-  <form class = "hostGame">
-	  Number of Teams: <input type="number" placeholder="4" name="groups" />
-	<input type="submit" value = "Host new game" /> 
-	<sub>(Please enter less than 8 if you don't want all the things to break)</sub>
-  </form>
+    <div class="panel panel-default">
+    <ul class="list-group"> -->
+    <li class="list-group-item">
+      <form class = "gameChoice form form-inline" role = "form">
+        <div class="form-group">
+            <label for="gameCodeTextBox" class="control-label">Game Code:</label>
+            <input type="text" placeholder="1730" name="gameCode" class = "form-control" id = "gameCodeTextBox"/>
+            <input type="submit" value = "Join a game" class = "btn btn-default"/>
+        </div>
+      </form>
+    </li>
+    </ul>
+    </div>
 
-  <br /><br />
-  <form class = "gameChoice">
-    <input type="text" placeholder="1730" name="gameCode" />
-    <input type="submit" value = "Join a game" />
-  </form>
+<!--       {{#each adminGames}}
+        <a href="/games/{{gameCode}}">{{gameCode}}</a> – {{size}} groups <br />
+      {{/each}}
+      
+      <h3> Play </h3>
+      {{#each playingGames}}
+        <a href="/games/{{gameCode}}">{{gameCode}}</a>
+      {{/each}}
+ -->
+  </div>
 
-  <h3> Admin </h3>
-  <p>
-  {{#each adminGames}}
-    <a href="/games/{{gameCode}}">{{gameCode}}</a> – {{size}} groups <br />
-  {{/each}}
-  </p>
+  <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">Administrate (or administer, whatever you prefer)</div>
+            <ul class="list-group">
+                {{#each adminGames}}
+                <a href="/games/{{gameCode}}">
+                    <li class="list-group-item">
+                        {{gameCode}} – {{size}} groups
+                    </li>
+                </a>
+                {{/each}}
+          <!-- </ul>
+        </div>
+    <div class="panel panel-default">
+    <ul class="list-group"> -->
+    <li class="list-group-item">
+	  <form class = "hostGame form form-inline" role = "form">
+        <div class="form-group">
+    		  <label for="groupSizeTextBox" class="control-label">Groups:</label>
+              <input type="number" placeholder="4" name="groups" class = "form-control" id = "groupSizeTextBox"/>
+    		<input type="submit" value = "Host new game" class = "btn btn-default" /> 
+    		<sub>(Please enter less than 8 if you don't want all the things to break)</sub>
+        </div>
+	  </form>
+    </li>
+    </ul>
+    </div>
+	  
+  </div>
   
-  <h3> Play </h3>
-  <p>
-  {{#each playingGames}}
-    <a href="/games/{{gameCode}}">{{gameCode}}</a>
-  {{/each}}
-  </p>
 
+  </div>
 </template>

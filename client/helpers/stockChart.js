@@ -61,7 +61,7 @@ Template.priceGraph.rendered = function () {
   // }
   startLength = 0;
   newLength = 0;
-  goldPrices = Events.find({$and: [{"itemNo": "c4"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+  goldPrices = Events.find({$and: [{"itemNo": "c3"}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}]}, {"group": Session.get("GroupNo")}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
   // console.log(goldPrices);
   currentLength = goldPrices.length;
   if (currentLength > 0)
@@ -78,7 +78,7 @@ Template.priceGraph.rendered = function () {
       // p_lead = computeCurrentPrice('lead');
       aTime = new Date(time);
       p_gold = goldPrices[i];
-      // console.log(p_gold);
+
       // console.log(p_gold);
       if (p_gold != undefined){
         price_data.push({'date': aTime, 'gold':p_gold.toString() });
@@ -110,7 +110,9 @@ Template.priceGraph.rendered = function () {
     // p_gold = computeCurrentPrice('gold');
     p_gold = goldPrices[goldPrices.length - 1];
     // console.log(p_gold);
-    return {'date': aTime, 'gold':p_gold.toString() };
+    // p_gold_str = "";
+    if (p_gold != undefined)
+      return {'date': aTime, 'gold':p_gold.toString() };
   }
 
   function updateData() {
@@ -140,26 +142,31 @@ Template.priceGraph.rendered = function () {
 
   function initLine() {
     // Scale the range of the data
-    x.domain(d3.extent(price_data, function(d) { return d.date; }));
-    y.domain([0, d3.max(price_data, function(d) { return d.gold; })]);
 
-    // Add the valueline path.
-    // svg.append("path")
-    //    .attr("class", "line")
-    //    .attr("d", valueline(price_data));
 
-    // Add the X Axis
-    svg.append("g")
-       .attr("class", "x axis")
-       .attr("transform", "translate(0," + height + ")")
-       .call(xAxis);
+    if(price_data[0] != undefined){
 
-    // Add the Y Axis
-    svg.append("g")
-       .attr("class", "y axis")
-       .call(yAxis);
-    
-    updateAll();
+      x.domain(d3.extent(price_data, function(d) { return d.date; }));
+      y.domain([0, d3.max(price_data, function(d) { return d.gold; })]);
+
+      // Add the valueline path.
+      // svg.append("path")
+      //    .attr("class", "line")
+      //    .attr("d", valueline(price_data));
+
+      // Add the X Axis
+      svg.append("g")
+         .attr("class", "x axis")
+         .attr("transform", "translate(0," + height + ")")
+         .call(xAxis);
+
+      // Add the Y Axis
+      svg.append("g")
+         .attr("class", "y axis")
+         .call(yAxis);
+      
+      updateAll();
+    }
 
   }
 
@@ -210,6 +217,8 @@ Template.priceGraph.rendered = function () {
 
 
   function updateLine() {
+    // console.log(price_data);
+    if (price_data[0] != undefined){
       x.domain(d3.extent(price_data, function(d) { return d.date; }));
       y.domain([0, Math.max(25.0, d3.max(price_data, function(d) { return d.gold; }))]);
 
@@ -226,6 +235,7 @@ Template.priceGraph.rendered = function () {
       svgLocal.select(".y.axis") // change the y axis
          .duration(0)
          .call(yAxis);
+       }
   }
 
   function initAll() {
@@ -263,10 +273,17 @@ Template.priceGraph.rendered = function () {
     console.log("chart item changed");
     chartItemChanged = true;
   });
-  
+  console.log(Session.get("Role") + " " + Session.get("StockChartItem"));
+  if (Session.get("StockChartItem") == undefined){
+    Session.set("StockChartItem", "c3");    /// *** MAKE SURE DEFAULT ITEM BEING CHARTED DOES BELONG TO THIS GAME *** ///
+  }
+
   if(Session.get("Role") == "userDash" && Session.get("StockChartItem") != undefined){
+    // console.log("entered this condition");
     Tracker.autorun(function () {
-      goldPrices = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}, {"group": Session.get("GroupNo")}]}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+      var gp = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}, {"group": Session.get("GroupNo")}]}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+
+      goldPrices = gp;
 
       currentLength = goldPrices.length;
 
@@ -284,10 +301,10 @@ Template.priceGraph.rendered = function () {
         updateAll();
       }
 
-      else if (startLength != currentLength && startLength != 0 && currentLength != 0){
+      else if (startLength != currentLength && startLength != 0 && currentLength != 0 && goldPrices[0] != undefined){
         price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
         // console.log("refresh");
-        updateAll();
+        updateAll(); //*** TODO: update should add all pending values, not just latest value ***///
       }
     });
   }
