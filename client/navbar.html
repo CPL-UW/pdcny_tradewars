@@ -39,11 +39,10 @@
         {{#if currentUser}}
         <ul class="nav navbar-nav navbar-right">
           {{#if gameView}}
+            <li><button class="btn btn-default navbar-btn homeButton">See other games</button></li>
             <li><p class="nav navbar-text">Year: {{gameYear}}</p></li>
             <li><p class="nav navbar-text">Group: {{group}}</p></li>
             <li><p class="nav navbar-text">Game: {{gamecode}}</p></li>
-            <li><button class="btn btn-default navbar-btn homeButton">See other games</button>
-            </li>
           {{/if}}
           <li><p class="nav navbar-text">Username: {{username}}</p></li>
           <li><button class="btn btn-default navbar-btn logOut">Sign out</button></li>

@@ -45,6 +45,7 @@
 
 <template name="display">
     {{> playerView}}
+    <div class="tab-content">
     {{#if activeTab 'nt1'}}
         {{>page1}}
     {{/if}}
@@ -56,20 +57,22 @@
     {{#if activeTab 'nt3'}}
         {{>page3}}
     {{/if}}
-    <br />
+    </div>
 </template>
 
 
 <template name = "userDash">
 	{{#if currentUser}}
+    
 		
 		<!-- {{> display}} -->
         {{> playerView}}
+        <div class="tab-content">
         {{#if activeTab 'stocks-tab'}}
             <!-- {{>page1}} -->
             <div class="row">
                 <div class="col-md-6"> 
-                    {{> yearInfo}}
+                    <!-- {{> yearInfo}} -->
                     {{> stockInfo}} 
                 </div>
                 <div class="col-md-6">
@@ -89,6 +92,7 @@
             {{> trade}}
         {{/if}}
 
+        </div>
 	{{/if}}
 </template>
 
@@ -121,25 +125,25 @@
 <template name = "userKicks">
 	<form class = "kickPlayer">
 		Players in this game:
-		<select name = "player">
+		<select name = "player" class="form-control">
 				<option value="None">  </option> 
 			{{#each allUsers}}
 				<option value="{{player}}">{{playerName}}</option> 
 			{{/each}}
 		</select>
 		<br />
-		<input type = "submit" value ="Kick" />
+		<input type = "submit" value ="Kick" class="btn btn-default" />
 	</form>
 	<br />
-	<button class="kickAll">Kick everybody!</button>
+	<button class="kickAll btn btn-default">Kick everybody!</button>
 	<br />
-	<button class="killGame">Delete game</button>
+	<button class="killGame btn btn-default">Delete game</button>
 </template>
 
 <template name = "stockEditor">
 	<form class = "stockChange">
 		Stock:
-		<select name = "stock">
+		<select name = "stock" class="form-control">
 			{{#each groupStocks}}
 				<option value="{{_id}}">{{gID}}: {{item}} – {{amount}} : {{price}}</option> 
 			{{/each}}
@@ -149,7 +153,6 @@
 </template>
 
 <template name = "alertsTemp">
-	
 
 	{{#each allAlerts}}
 		<!-- {{contents}} -->
@@ -158,7 +161,7 @@
 	{{/each}}
 	<p>
 	<form class="clear-alerts">
-		<input type="submit" value = "Clear Alerts"/>
+		<input type="submit" value = "Mark Alerts as Read" class = "btn btn-default"/>
 	</form>
 	</p>
 
@@ -193,40 +196,62 @@
 </template>
 
 <template name = "trade">
-	<form class = "trade">
-		Other Users: 
-		<select name = "Recipient" class = "browser-default">
-			{{#each otherUsers}}
-				<option value="{{player}}">{{playerName}}</option> 
-			{{/each}}
-		</select><br />
+	<form class = "trade form-horizontal">
+        <div class="form-group">
+    		<label class = "control-label col-sm-4">Who do you want to request a trade with?</label>
+            <div class = "col-sm-8">
+    		<select name = "Recipient" class = "form-control">
+    			{{#each otherUsers}}
+    				<option value="{{player}}">{{playerName}}</option> 
+    			{{/each}}
+    		</select>
+            </div>
+        </div>
 
-		What do you want to give?
-		<select name = "GivingResource">
-			{{#each givingResources}}
-				<option value="{{item}}">{{item}}: {{amount}}</option>
-			{{/each}}
-		</select>
-		And how much?
-		<input type="number" name="giveAmount" /><br />
+		<div class="form-group">
+            <label class = "control-label col-sm-4">What do you want to give?</label>
+            <div class = "col-sm-8">
+            <select name = "GivingResource" class = "form-control">
+                {{#each givingResources}}
+                    <option value="{{item}}">{{item}}: {{amount}}</option>
+                {{/each}}
+            </select>
+            </div>
+        </div>
 
-		What do you want to receive?
-		<select name = "TakingResource">
-			{{#each allResources}}
-				<option value="{{item}}">{{item}}</option> 
-			{{/each}}
-		</select>
-		And how much?
-		<input type="number" name="requestAmount" /><br />
+        <div class="form-group">
+            <label class = "control-label col-sm-4">And how much?</label>
+            <div class = "col-sm-8">
+        		<input type="number" name="giveAmount" class = "form-control"/><br />
+            </div>
+        </div>
 
-		<input type = "submit" />
+        <div class="form-group">
+            <label class = "control-label col-sm-4">What do you want to receive?</label>
+            <div class = "col-sm-8">
+            <select name = "TakingResource" class = "form-control">
+                {{#each allResources}}
+                    <option value="{{item}}">{{item}}</option> 
+                {{/each}}
+            </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class = "control-label col-sm-4">And how much?</label>
+            <div class = "col-sm-8">
+                <input type="number" name="requestAmount" class = "form-control"/><br />
+            </div>
+        </div>
+
+		<input type = "submit" class = "btn btn-default"/>
 	</form>
 </template>
 
 <template name = "stockInfo">
 	<!-- {{prices}} -->
     <div class = "table-responsive">
-	<table class="table table-hover table-bordered table-condensed">
+	<table class="table table-hover table-condensed">
     <thead>
 	<tr> 
 		<th>Resource</th>
@@ -242,7 +267,17 @@
     <tbody>
 		{{#each resources}}
 		<tr>
-			<td><a class= "viewPriceGraph" value = "{{itemNo}}">{{item}} </a></td>
+			<td>
+                <a class= "viewPriceGraph" value = "{{itemNo}}">
+                    {{item}} 
+                    {{#if coolCheck yearmod.kind}}
+                        - cool right now!
+                    {{/if}}
+                    {{#if pollutedCheck yearmod.kind}}
+                        - polluted right now :(
+                    {{/if}}
+                </a>
+            </td>
 			<td>{{amount}}</td>
 			{{#if stockFeatureShow 'price'}}
 				<td>{{price}}</td>

@@ -34,7 +34,16 @@ Template.stockInfo.helpers ({
 		else {
 			return false;
 		}
+	},
+
+	coolCheck: function (kind) {
+		return kind == "cool";
+	},
+
+	pollutedCheck: function (kind) {
+		return kind == "polluted";
 	}
+
 
 });
 

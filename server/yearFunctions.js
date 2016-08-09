@@ -30,12 +30,16 @@ Meteor.startup(function () {
 					stockDoc = AllStocks.findOne({$and: [{"gID": groupNos[g]}, {"gameCode": gameDoc.gameCode}, {"itemNo": resourcesToAffect[0]}]});
 					factor = 0.5;
 					newyearmod = {"kind": "polluted", "modAmount": factor, "operation": "multiply"};
-					Meteor.call("changeStockPrice", stockDoc, factor, newyearmod);
+					if (stockDoc != undefined){
+						Meteor.call("changeStockPrice", stockDoc, factor, newyearmod);
+					}
 
 					stockDoc = AllStocks.findOne({$and: [{"gID": groupNos[g]}, {"gameCode": gameDoc.gameCode}, {"itemNo": resourcesToAffect[1]}]});
 					factor = 2;
 					newyearmod = {"kind": "cool", "modAmount": factor, "operation": "multiply"};
-					Meteor.call("changeStockPrice", stockDoc, factor, newyearmod);
+					if (stockDoc != undefined){
+						Meteor.call("changeStockPrice", stockDoc, factor, newyearmod);
+					}
 				}
 			}
 		},
