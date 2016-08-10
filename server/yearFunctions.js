@@ -1,8 +1,32 @@
 Meteor.startup(function () {
 	Meteor.methods({
-		changeStockPrice: function (stockDoc, factor, newyearmod) {
-			newmean = stockDoc.mean * factor;
-			AllStocks.update({_id: stockDoc._id}, {$set: {"mean": newmean, "yearmod": newyearmod}});
+		
+		checkYearStatus: function (requestType) {
+			RunningGames.find({$and: [{"group": "admin"}, {"status": "running"}]}).forEach(function (game) {
+				if (game.elapsedTimeYear >= game.yearLength){
+					Meteor.call("incrementGameYear", game._id, requestType);
+				}
+			});
+		},
+
+		incrementGameYear: function (gameDocId, requestType, newEvents = "all"){
+			RunningGames.update({_id: gameDocId}, {$set: {"elapsedTimeYear": 0}, $inc: {"currentYear": 1}}, function (err, result) {
+				if (err){
+					console.log("year updation failed! noooooo....");
+				}
+				else {
+					gameDoc = RunningGames.findOne({_id: gameDocId});
+					evLog = {
+						"timestamp": (new Date()).getTime(),
+						"key": "GameYearIncrease",
+						"description": requestType,
+						"newYearValue": gameDoc.currentYear,
+						"gameCode": gameDoc.gameCode
+					}
+					Meteor.call("logEvent", evLog);
+					Meteor.call("newYearEvents", gameDocId, newEvents);
+				}
+			});
 		},
 
 		newYearEvents: function (gameId, newEvents) {
@@ -12,9 +36,11 @@ Meteor.startup(function () {
 			if (newEvents == "reset" || newEvents == "all"){
 					gc = gameDoc.gameCode;
 					AllStocks.find({$and: [ {"gameCode": gc}, { 'yearmod.kind': {$in: ["polluted", "cool"]} } ]}).forEach( function (stockDoc) {
-					newyearmod = {"kind": "none"};
-					factor = 1 / stockDoc.yearmod.modAmount;
-					Meteor.call("changeStockPrice", stockDoc, factor, newyearmod);
+						if (stockDoc != undefined){
+							newyearmod = {"kind": "none"};
+							factor = 1 / stockDoc.yearmod.modAmount;
+							Meteor.call("changeStockPrice", stockDoc, factor, newyearmod);
+						}
 				});
 			}
 
@@ -42,34 +68,40 @@ Meteor.startup(function () {
 					}
 				}
 			}
+
+			Meteor.call('factoryWorks', gameId);
 		},
 
-		incrementGameYear: function (gameDocId, requestType, newEvents = "all"){
-			RunningGames.update({_id: gameDocId}, {$set: {"elapsedTimeYear": 0}, $inc: {"currentYear": 1}}, function (err, result) {
-				if (err){
-					console.log("year updation failed! noooooo....");
-				}
-				else {
-					gameDoc = RunningGames.findOne({_id: gameDocId});
-					evLog = {
-						"timestamp": (new Date()).getTime(),
-						"key": "GameYearIncrease",
-						"description": requestType,
-						"newYearValue": gameDoc.currentYear,
-						"gameCode": gameDoc.gameCode
+		factoryWorks: function(gameId) {
+			if (RunningGames.findOne({_id: gameId}) == undefined){
+				console.log("server's new year functions are messed up, invalid id reaching factory worker");
+			}
+			else{
+				gameDoc = RunningGames.findOne({_id: gameId});
+				gameDoc.groupNumbers.forEach(function (gn) {
+					if (gn != undefined){
+						Factories.find({$and: [{"gameCode": gameDoc.gameCode}, {"gID": gn}]}).forEach(function (f) {
+							// console.log(f + " " + f.production);
+							if (f != undefined){
+								AllStocks.update({$and: [
+									{"gameCode": gameDoc.gameCode},
+									{"gID": gn},
+									{"itemNo": f.itemNo},
+								]},
+								{$inc: {"amount": f.production}}
+								);
+							}
+						});
 					}
-					Meteor.call("logEvent", evLog);
-					Meteor.call("newYearEvents", gameDocId, newEvents);
-				}
-			});
+				});
+				
+			}
 		},
 
-		checkYearStatus: function (requestType) {
-			RunningGames.find({$and: [{"group": "admin"}, {"status": "running"}]}).forEach(function (game) {
-				if (game.elapsedTimeYear >= game.yearLength){
-					Meteor.call("incrementGameYear", game._id, requestType);
-				}
-			});
-		}
+		changeStockPrice: function (stockDoc, factor, newyearmod) {
+			newmean = stockDoc.mean * factor;
+			AllStocks.update({_id: stockDoc._id}, {$set: {"mean": newmean, "yearmod": newyearmod}});
+		},
+
 	});
 });

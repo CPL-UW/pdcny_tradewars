@@ -16,7 +16,7 @@ Meteor.startup(function () {
 					"size": size,
 					"lastLogin": (new Date()).getTime(),
 					"gameStart": (new Date()).getTime(),
-					"currentYear": 0,
+					"currentYear": 2253,
 					"elapsedTimeTotal": 0,
 					"elapsedTimeYear": 0,
 					"status": "running",
@@ -73,7 +73,8 @@ Meteor.startup(function () {
 					for (res in resList){
 						// console.log(resList[res]);
 						// console.log(res);
-						Meteor.call("makeFactory", code, groupIndices[g], resList[res], res + 1);
+						Meteor.call("makeFactory", code, groupIndices[g], resList[res], parseInt(res) + 1);
+						// console.log(res);
 						AllStocks.insert({
 							"gameCode": code,
 							"gID": groupIndices[g],
@@ -88,8 +89,8 @@ Meteor.startup(function () {
 						});
 					}
 				};
-				populateStocks(expRes, thisGrpExpRes, 150, 5, 150, 30);
-				populateStocks(cheapRes, thisGrpCheapRes, 50, 10, 50, 15)
+				populateStocks(expRes, thisGrpExpRes, 150, 15, 150, 30);
+				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 50, 15)
 			}
 		},
 
@@ -115,7 +116,7 @@ Meteor.startup(function () {
 				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase");
 				i++;
 			}
-			Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]})._id, "NewGameSetup");
+			Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]})._id, "NewGameSetup");
 		}
 
 		
