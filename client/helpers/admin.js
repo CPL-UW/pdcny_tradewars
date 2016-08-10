@@ -24,7 +24,7 @@ Template.userKicks.events({
 					console.log("player kicking failed :( ");
 				}
 				else {
-					Meteor.call("raiseAlert", "Player kicked!");
+					Meteor.call("raiseAlert", Meteor.userId(), {"text": "Player kicked!", "contextKind": "adminAction", "context": "thisUser"}, Session.get("GameCode"), "success");
 				}
 			});
 		}
@@ -36,7 +36,7 @@ Template.userKicks.events({
 				console.log("player kicking failed :( ");
 			}
 			else {
-				Meteor.call("raiseAlert", "All players kicked!");
+				Meteor.call("raiseAlert", Meteor.userId(), {"text": "All players kicked!", "contextKind": "adminAction", "context": "thisUser"}, Session.get("GameCode"), "success");
 			}
 		});
 	},

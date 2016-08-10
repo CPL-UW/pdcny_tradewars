@@ -35,63 +35,52 @@
 	This is page 3
 </template>
 
-<template name="tabs">
-	 <ul class="tabs nav-tabs hide-on-med-and-down">
-		<li class="tab col s4"><a id="page-one" href="#" value = "page-1">Page One</a></li>
-		<li class="tab col s4"><a id="page-two" href="#">Page Two</a></li>
-		<li class="tab col s4"><a id="page-three" href="#">Page Three</a></li>
-	</ul>
+<template name = "topAlerts">
+<!-- if there are unread alerts, print them one by one here -->
+<!-- on close button, implement function to mark the alerts as read, in the background -->
+    {{#each unreadAlerts}}
+        <div class="alert alert-{{contents.urgency}} alert-dismissible" role="alert"> 
+        <button type="button" class="close readThisAlert" data-dismiss="alert" aria-label="Close" id ="{{_id}}" ><span aria-hidden="true">&times;</span></button>
+            {{contents.text}}
+        </div>
+    {{/each}}
 </template>
-
-<template name="display">
-    {{> playerView}}
-    <div class="tab-content">
-    {{#if activeTab 'nt1'}}
-        {{>page1}}
-    {{/if}}
-
-    {{#if activeTab 'nt2'}}
-        {{>page2}}
-    {{/if}}
-
-    {{#if activeTab 'nt3'}}
-        {{>page3}}
-    {{/if}}
-    </div>
-</template>
-
 
 <template name = "userDash">
 	{{#if currentUser}}
-    
-		
-		<!-- {{> display}} -->
+    {{> topAlerts}}
+
         {{> playerView}}
         <div class="tab-content">
         {{#if activeTab 'stocks-tab'}}
-            <!-- {{>page1}} -->
             <div class="row">
                 <div class="col-md-6"> 
-                    <!-- {{> yearInfo}} -->
                     {{> stockInfo}} 
                 </div>
                 <div class="col-md-6">
-                    
+                {{#if thisIsBase}}
+                    {{> priceGraph}}
+                {{/if}}
                 </div>
             </div>    
         {{/if}}
 
+        {{#unless thisIsBase}}
+
         {{#if activeTab 'notif-tab'}}
+        <div class="row"> 
             {{>alertsTemp}}  
+        </div>
+        <div class="row">
             {{>requestsTemp}}
-            <!-- {{>page2}} -->
+        </div>
         {{/if}}
 
         {{#if activeTab 'messages-tab'}}
-            <!-- {{>page3}} -->
             {{> trade}}
         {{/if}}
 
+        {{/unless}}
         </div>
 	{{/if}}
 </template>
@@ -154,36 +143,41 @@
 
 <template name = "alertsTemp">
 
-	{{#each allAlerts}}
-		<!-- {{contents}} -->
+	<!-- {{#each allAlerts}}
 		{{contents.text}}
 		<br />
-	{{/each}}
-	<p>
-	<form class="clear-alerts">
-		<input type="submit" value = "Mark Alerts as Read" class = "btn btn-default"/>
-	</form>
-	</p>
-
+	{{/each}} -->
+	
+    {{#if anyUnreadAlerts}}
+    	<form class="clear-alerts">
+    		<input type="submit" value = "Mark Alerts as Read" class = "btn btn-default"/>
+    	</form>
+    {{/if}}
+	
 </template>
 
 <template name = "requestsTemp">
-	{{#each allRequests}}
-		{{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
-		<form class="{{_id}}">
-			<input type="submit" value="Accept" id = "accept" />
-			<input type="submit" value="Reject" id = "reject" />
-		</form>
-	{{/each}}
-</template>
+    <div class="panel panel-default">
+      <div class="panel-heading">Requests</div>
+      <ul class="list-group">
+    	{{#each allRequests}}
+            <li class="list-group-item">  
+            <form class="form form-horizontal" id = "{{_id}}">
+            <div class="form-group">
+                <label class="col-md-9">
+            		{{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
+                </label>
+        		<div class="col-md-3">
+        			<input class = "btn btn-success" type="submit" value="Accept" id = "accept" />
+        			<input class = "btn btn-danger" type="submit" value="Reject" id = "reject" />
+                </div>
+            </div>
+    		</form>
+            </li>
+    	{{/each}}
+        </ul>
+    </div>
 
-<template name="userInfo">
-	<p>
-		Group: {{groupID}}
-	</p>
-	<p>
-		Username: {{userID}}
-	</p>
 </template>
 
 <template name="yearInfo">
@@ -291,8 +285,6 @@
 	</table>
     </div>
 	Market value: {{totalValue}}
-	<br />
-	<!-- {{> priceGraph}} -->
 </template>
 
 <template name="priceGraph">

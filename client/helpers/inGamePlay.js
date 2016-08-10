@@ -55,6 +55,12 @@ Template.stockInfo.events({
 	}
  });
 
+Template.playerView.helpers({
+	thisIsBase: function () {
+		return baseUsers.indexOf(Meteor.user().username) != -1;
+	}
+});
+
 Template.playerView.events({
 	'click .view-tabs': function (e) {
 		// e.preventDefault();
@@ -114,15 +120,16 @@ Template.trade.events({
 			// console.log(event.target.Recipient.value);
 			Meteor.call('reqTrade', Session.get("GameCode"), event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value, function (error, result){
 				if (error){
-					Meteor.call('raiseAlert', Meteor.userId(), "Request sending failed due to server's fault. Find the owners of the internets and shout at them.", Session.get("GameCode"));
+					console.log("faaaaiiil");
+					Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed due to server's fault. The machines are rising against us, run.", "contextKind": "serverError", "context": "server"}, Session.get("GameCode"), "danger");
 				}
 				else {
-					Meteor.call('raiseAlert', Meteor.userId(), "Sent Request", Session.get("GameCode"));
+					Meteor.call('raiseAlert', Meteor.userId(), {"text": "Sent Request", "contextKind": "requestCreation", "context": result}, Session.get("GameCode"), "success");
 				}
 			});
 		}
 		else{
-			Meteor.call('raiseAlert', Meteor.userId(), "Request sending failed – probably not enough resource", Session.get("GameCode"));
+			Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – probably not enough resource", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
 		}			
 	}
 });

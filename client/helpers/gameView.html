@@ -1,8 +1,10 @@
 <template name = "playerView">
 	<ul class="nav nav-tabs nav-justified" id = "main-tabs">
 	  <li role="presentation" class="active"><a href="#" value = "stocks-tab" class = "view-tabs" data-toggle="tab">Stocks</a></li>
+	  {{#if thisIsBase}}
 	  <li role="presentation"><a href="#" value = "notif-tab" class = "view-tabs" data-toggle="tab">Notifications</a></li>
 	  <li role="presentation"><a href="#" value = "messages-tab" class = "view-tabs" data-toggle="tab">Trade</a></li>
+	  {{/if}}
 	</ul>
 
 <!-- 	<ul class="tabs nav-tabs hide-on-med-and-down">

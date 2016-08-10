@@ -91,5 +91,9 @@ Template.userDash.rendered = function () {
 Template.userDash.helpers({
 	activeTab: function(tab){
         return (activeTab.get() == tab);
+	},
+
+	thisIsBase: function () {
+		return baseUsers.indexOf(Meteor.user().username) != -1;
 	}
 });

@@ -61,12 +61,21 @@ date = new Date();
 Meteor.startup(function () {
 	Meteor.methods({
 		
-		raiseAlert: function (person, alert, gCode) {
-			if (alert == "clearall") {
+		raiseAlert: function (person, alert, gCode, urgency = "warning") {
+			console.log(alert);
+			console.log(alert.text + " " + alert.contextKind);
+			if (alert.text == "clearAll") {
 				Alerts.update({$and: [{"gameCode": gCode}, {"user": person}, {"type": "alert"}]}, {$set: {"contents.read": 1}}, {multi: true});
 			}
+			else if (alert.text == "clearOne" && alert.contextKind == "id") {
+				console.log(alert.context);
+				console.log(Alerts.findOne({_id: alert.context}));
+				Alerts.update({_id: alert.context}, {$set: {"contents.read": 1}});
+			}
 			else {
-				Alerts.insert({"gameCode": gCode, "user": person, "type": "alert", "contents": {"text": alert, "read": 0}});
+				alert["urgency"] = urgency;
+				alert["read"] = 0;
+				Alerts.insert({"gameCode": gCode, "timestamp": (new Date()).getTime(), "user": person, "type": "alert", "contents": alert});
 			}
 			// console.log(d3.random.normal(1,10));
 		},
@@ -105,9 +114,10 @@ Meteor.startup(function () {
 					"read": 0
 				}
 			};
-			Alerts.insert(reqLog);
-			// console.log(reqLog);
-			return reqLog;
+			insertId = 0;
+			insertId = Alerts.insertOne(reqLog).insertedId;
+			console.log(insertId);
+			return insertId;
 		},
 
 		exchangeResources: function (reqId, gCode){
@@ -137,11 +147,14 @@ Meteor.startup(function () {
 			finalReceiverReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}).amount) - parseInt(request["reqAmt"]);
 			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
 			
-			Meteor.call('readRequest', reqId);
+			Meteor.call('readRequest', reqId, true);
 		},
 
-		readRequest: function (reqId) {
-			Alerts.update({_id: reqId}, {$set: {"contents.read": 1}});
+		readRequest: function (reqId, state) {
+			val = 1;
+			if (state == false)
+				val = -1;
+			Alerts.update({_id: reqId}, {$set: {"contents.read": val}});
 		},
 
 		insertPlayer: function (gameCode, joinerID, grp, role) {
