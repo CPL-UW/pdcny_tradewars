@@ -73,7 +73,7 @@ Template.priceGraph.rendered = function () {
     // console.log(goldPrices + " " + goldPrices[2]);
     for (i = 0; i < (1 + moving_window); i++) {
       maxTime += 10;
-      time = +maxTime * 10000;  
+      time = +maxTime * 10000;
       // p_bismuth = computeCurrentPrice('bismuth');
       // p_lead = computeCurrentPrice('lead');
       aTime = new Date(time);
@@ -164,7 +164,7 @@ Template.priceGraph.rendered = function () {
       svg.append("g")
          .attr("class", "y axis")
          .call(yAxis);
-      
+
       updateAll();
     }
 
@@ -238,7 +238,12 @@ Template.priceGraph.rendered = function () {
        }
   }
 
+  function killEverything() {
+    svg.selectAll(".x.axis").remove();
+    svg.selectAll(".y.axis").remove();
+  }
   function initAll() {
+    killEverything();
     initData();
     initLine();
     // updateAll();
@@ -270,7 +275,7 @@ Template.priceGraph.rendered = function () {
 
   Tracker.autorun(function () {
     var sessionVal = Session.get("StockChartItem");
-    console.log("chart item changed");
+    console.log("chart item changed: " + sessionVal);
     chartItemChanged = true;
   });
   console.log(Session.get("Role") + " " + Session.get("StockChartItem"));
@@ -289,14 +294,10 @@ Template.priceGraph.rendered = function () {
 
       // console.log("attempts to work " + startLength + " " + currentLength + " " + goldPrices);
 
-      if (startLength == 0 && currentLength != 0){
-        // console.log("inited");
-        initAll();
-      }
 
-      if (chartItemChanged == true) {
+      if (chartItemChanged == true || (startLength == 0 && currentLength != 0)) {
         price_data = [];
-        initData();
+        initAll();
         chartItemChanged = false;
         updateAll();
       }
@@ -308,7 +309,7 @@ Template.priceGraph.rendered = function () {
       }
     });
   }
-  
-  
+
+
 
 }
