@@ -129,11 +129,11 @@ Template.requestsTemp.events({
 		}
 
 		if(acceptance == false){
-			alertFn("Request completed, you have the things you were offered!", "danger", request["requester"].id);
+			alertFn("Request rejected/failed! :(", "danger", request["requester"].id);
 			// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request rejected/failed.", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
 		}
 		else {
-			alertFn("Request completed, you have the things you were offered!", "danger", request["requester"].id);
+			alertFn("Request completed, you have the things you were offered!", "success", request["requester"].id);
 			// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request accepted! Woohoo", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");	
 		}
 		Meteor.call('readRequest', reqId, acceptance);

@@ -115,7 +115,8 @@ Meteor.startup(function () {
 				}
 			};
 			insertId = 0;
-			insertId = Alerts.insertOne(reqLog).insertedId;
+			Alerts.insert(reqLog);
+			insertId = Alerts.findOne(reqLog)._id
 			console.log(insertId);
 			return insertId;
 		},
