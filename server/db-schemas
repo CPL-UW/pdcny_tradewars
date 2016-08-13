@@ -1,0 +1,81 @@
+Factories.insert({
+	"gameCode": gameCode,
+	"gID": groupNo,
+	"itemNo": resource,
+	"production": productionRate,
+	"makeTime": (new Date()).getTime(),
+	"lastRun": (new Date()).getTime()
+});
+
+AllStocks.insert({
+	"gameCode": code,
+	"gID": groupIndices[g],
+	"groupName": groupNames[groupIndices[g]],
+	"itemNo": resList[res],
+	"item": resNames[resList[res]],
+	"price": price,
+	"amount": amount,
+	"mean": mean,
+	"stdev": Math.random() * stdev,
+	"yearmod": {"kind": "none"}
+});
+
+RunningGames.insert({
+	"gameCode": codeString,
+	"player": adminID,
+	"playerName": Meteor.users.findOne({"_id": adminID}).username,
+	"group": "admin",
+	"size": size,
+	"lastLogin": (new Date()).getTime(),
+	"gameStart": (new Date()).getTime(),
+	"currentYear": 2253,
+	"elapsedTimeTotal": 0,
+	"elapsedTimeYear": 0,
+	"status": "running",
+	"yearLength": 600000,
+},
+RunningGames.update({$and: [{"gameCode": code}, {"group": "admin"}]}, {$set: {
+	"cheapRes": thisCheapResInds, 
+	"expensiveRes": thisExpResInds, 
+	"groupNumbers": groupIndices}});
+
+
+RunningGames.insert({
+	"gameCode": gameCode,
+	"player": joinerID,
+	"playerName": Meteor.users.findOne({"_id": joinerID}).username,
+	"group": grp,
+	"role": role,
+	"lastLogin": (new Date()).getTime(),
+	"status": "running"
+});
+
+
+Alerts.insert({
+	"gameCode": gCode, 
+	"timestamp": (new Date()).getTime(), 
+	"user": person, 
+	"type": "alert", 
+	"contents": alert
+});
+
+Alerts.insert({
+	"gameCode": gCode,
+	"timestamp": (new Date()).getTime(),
+	"user": recipient, 
+	"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
+	"type": "request",  
+	"contents": {
+		"requester": {
+			"id": requester, 
+			"username": Meteor.users.findOne({_id:requester}).username, 
+			"group": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": requester}]}).group
+		},
+		"reqRes": takeRes, 
+		"reqAmt": parseInt(takeAmt), 
+		"recvRes": giveRes, 
+		"recvAmt": parseInt(giveAmt), 
+		"read": 0
+	}
+});
+

@@ -206,7 +206,7 @@ Meteor.startup(function () {
 		},
 
 		updateIndividualStock: function (stockDoc, updateType) {
-			newPrice = stockDoc.mean / (stockDoc.amount + Math.random() * 7);
+			newPrice = stockDoc.mean / (stockDoc.amount + stockDoc.stdev);
 			newPrice = parseInt(newPrice * 100) / 100;
 			AllStocks.update({"_id": stockDoc._id}, {$set: {"price": newPrice}});
 			evLog = {

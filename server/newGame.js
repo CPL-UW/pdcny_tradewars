@@ -73,7 +73,7 @@ Meteor.startup(function () {
 					for (res in resList){
 						// console.log(resList[res]);
 						// console.log(res);
-						Meteor.call("makeFactory", code, groupIndices[g], resList[res], parseInt(res) + 1);
+						Meteor.call("makeFactory", code, groupIndices[g], resList[res], parseInt(parseInt(res) + 1));
 						// console.log(res);
 						AllStocks.insert({
 							"gameCode": code,
@@ -84,13 +84,13 @@ Meteor.startup(function () {
 							"price": price,
 							"amount": amount,
 							"mean": mean,
-							"stdev": (Math.random() * stdev) / 2,
+							"stdev": Math.random() * stdev,
 							"yearmod": {"kind": "none"}
 						});
 					}
 				};
-				populateStocks(expRes, thisGrpExpRes, 150, 15, 150, 30);
-				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 50, 15)
+				populateStocks(expRes, thisGrpExpRes, 150, 15, 150, 7);
+				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 50, 5)
 			}
 		},
 
