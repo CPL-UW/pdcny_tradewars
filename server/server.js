@@ -1,26 +1,10 @@
-// RunningGames = new Mongo.Collection("games");
-// AllStocks = new Mongo.Collection("stocks");
-// Alerts = new Mongo.Collection("alerts")
-// Events = new Mongo.Collection("eventlogs")
-
-// import './d3-random.min.js'
 import '../lib/collections.js';
-// import RunningGames from '../lib/collections'
-// import Alerts from '../lib/collections';
-// import AllStocks from '../lib/collections';
-
-resources = ["gold", "wood", "food", "stone"]
-groupIDs = ["red_group", "green_group", "pink_group", "blue_group"];
 
 choosingArray = [0, 1, 2, 3, 4, 5, 6, 7]
-// groupInds = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8"]
-// groupNames = ["red_group", "green_group", "pink_group", "blue_group", "mystic_group", "orange_group", "turqoise_group", "fuschia_group"];
 //expensive resources
 expResInds = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8"]
-// expRes = {"e1": "adamantium", "e2":"bombastium", "e3": "kryptonite", "e4": "tiberium", "e5": "unobtainium", "e6": "dilithium", "e7": "neutronium", "e8": "flubber"}
 //cheap resources
 cheapResInds = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"]
-// cheapRes = {"c1": "wood", "c2": "metal", "c3": "coal", "c4": "plastic", "c5": "clay", "c6": "water", "c7": "cats", "c8": "gravity"}
 
 gaussian = function(mean, stdev) {
     var y2;
@@ -98,6 +82,7 @@ Meteor.startup(function () {
 			*/
 			reqLog = {
 				"gameCode": gCode, 
+				"timestamp": (new Date()).getTime(),
 				"user": recipient, 
 				"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
 				"type": "request",  
@@ -229,31 +214,6 @@ Meteor.startup(function () {
 				Meteor.call("updateIndividualStock", stockDoc, "RegularUpdate");
 			});
 			///*** MATTHEW TODO: Integrate resource price calculation here ***///
-
-			// for (g in groupIDs){
-			// 	for (r in resources){
-			// 		stock = AllStocks.findOne({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"itemNp": resources[r]}]});
-			// 		// console.log(g, r, gameCode, stock);
-			// 		if (stock != undefined){
-			// 			currentPrice = stock.price * 0.8;
-			// 			// console.log(currentPrice + 0.2 * newPricefn());
-			// 			newPrice = Math.round((currentPrice + 0.2 * newPricefn()), -1);
-   //                      // TODO time lag, history field/column, compute price better...
-			// 			AllStocks.update({$and: [{"gameCode": gameCode}, {"gID": groupIDs[g]}, {"itemNo": resources[r]}]}, {$set: {"price": newPrice}});
-						
-			// 			evLog = {
-			// 				"timestamp": (new Date()).getTime(),
-			// 				"key": "StockPriceChange",
-			// 				"description": "RegularUpdate",
-			// 				"gameCode": gameCode,
-			// 				"group": groupIDs[g],
-			// 				"item": resources[r],
-			// 				"price": newPrice
-			// 			}
-			// 			Meteor.call("logEvent", evLog);
-			// 		}
-			// 	}
-			// }
 		},
 
 		checkLogins: function () {

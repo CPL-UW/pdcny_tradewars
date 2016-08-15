@@ -1,3 +1,6 @@
+
+
+
 ---- 0. admin kick all
 
 ---- 1. fix other traders
@@ -9,11 +12,11 @@
 	Limited bag size + download speed/rate
 	Pick up from home base into bag, home base approval
 
-5. history graph of prices
+---- 5. history graph of prices
 
-6. Market contingent on local stock/demand
+---- 6. Market contingent on local stock/demand
 
-7. Events
+--  7. Events
 
 8. (Wonders) Building chairs
 

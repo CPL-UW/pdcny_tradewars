@@ -39,17 +39,42 @@
 <template name = "topAlerts">
 <!-- if there are unread alerts, print them one by one here -->
 <!-- on close button, implement function to mark the alerts as read, in the background -->
+    <!-- <div class="panel panel-default">
+      <div class="panel-heading">Alerts</div>
+      <ul class="list-group">
+        {{#each unreadAlerts}}
+            <li class="list-group-item">  
+            <div class="alert alert-{{contents.urgency}} alert-dismissible" role="alert"> 
+            <button type="button" class="close readThisAlert" data-dismiss="alert" aria-label="Close" id ="{{_id}}" ><span aria-hidden="true">&times;</span></button>
+                {{contents.text}}
+                <small>
+                ({{contextInfo _id}})
+                </small>
+            </div>
+            </li>
+        {{/each}}
+        </ul>
+    </div>
+ -->
+
+
     {{#each unreadAlerts}}
         <div class="alert alert-{{contents.urgency}} alert-dismissible" role="alert"> 
         <button type="button" class="close readThisAlert" data-dismiss="alert" aria-label="Close" id ="{{_id}}" ><span aria-hidden="true">&times;</span></button>
             {{contents.text}}
+            <small>
+            ({{contextInfo _id}})
+            </small>
         </div>
     {{/each}}
+    {{>alertsTemp}}
 </template>
 
 <template name = "userDash">
 	{{#if currentUser}}
+    <div id = "alertAtTop">
     {{> topAlerts}}
+    </div>
 
         {{> playerView}}
         <div class="tab-content">
@@ -69,9 +94,9 @@
         {{#unless thisIsBase}}
 
         {{#if activeTab 'notif-tab'}}
-        <div class="row"> 
+        <!-- <div class="row"> 
             {{>alertsTemp}}  
-        </div>
+        </div> -->
         <div class="row">
             {{>requestsTemp}}
         </div>
@@ -191,7 +216,7 @@
 </template>
 
 <template name = "trade">
-	<form class = "trade form-horizontal">
+	<form class = "trade form-horizontal" id = "trade-form">
         <div class="form-group">
     		<label class = "control-label col-sm-4">Who do you want to request a trade with?</label>
             <div class = "col-sm-8">
@@ -208,7 +233,7 @@
             <div class = "col-sm-8">
             <select name = "GivingResource" class = "form-control">
                 {{#each givingResources}}
-                    <option value="{{item}}">{{item}}: {{amount}}</option>
+                    <option value="{{item}}">{{item}} (Inventory: {{amount}})</option>
                 {{/each}}
             </select>
             </div>

@@ -21,6 +21,7 @@ Template.stockInfo.helpers ({
 		// AllStocks.find()
 		c = 0;
 		AllStocks.find({$and: [{gameCode: Session.get("GameCode")}, {gID: Session.get("GroupNo")}]}).map(function (u) {c += (u.price * u.amount)});
+		c = (parseInt(c*100)) / 100;
 		return c;
 	},
 
@@ -102,6 +103,7 @@ Template.trade.events({
 	"submit .trade": function (event) {
 		// console.log("trast");
 		event.preventDefault();
+
 		var checkAvailability = function(res, amt) {
 			a = parseInt(AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"item": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch().length);
 			// console.log(a != 0);
@@ -115,6 +117,11 @@ Template.trade.events({
 			}
 		}
 
+		clearForm = function (e) {
+			e.target.giveAmount.value = "";
+			e.target.requestAmount.value = "";
+		}
+
 		if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value)){
 			// console.log(event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value);
 			// console.log(event.target.Recipient.value);
@@ -122,14 +129,20 @@ Template.trade.events({
 				if (error){
 					console.log("faaaaiiil");
 					Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed due to server's fault. The machines are rising against us, run.", "contextKind": "serverError", "context": "server"}, Session.get("GameCode"), "danger");
+					// clearForm();
 				}
 				else {
 					Meteor.call('raiseAlert', Meteor.userId(), {"text": "Sent Request", "contextKind": "requestCreation", "context": result}, Session.get("GameCode"), "success");
+					Meteor.call('raiseAlert', event.target.Recipient.value, {"text": "Request received!", "contextKind": "requestReceival", "context": result}, Session.get("GameCode"), "warning");
+					$(window).scrollTop( $("#alertsAtTop").offset().top );
+					clearForm(event);
 				}
 			});
 		}
 		else{
 			Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – probably not enough resource", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
+			event.target.giveAmount.value = "";
+			$("input[name=giveAmount]").focus();
 		}			
 	}
 });

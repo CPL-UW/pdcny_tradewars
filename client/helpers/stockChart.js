@@ -71,6 +71,7 @@ Template.priceGraph.rendered = function () {
 
   function initData() {
     // console.log(goldPrices + " " + goldPrices[2]);
+    price_data = [];
     for (i = 0; i < (1 + moving_window); i++) {
       maxTime += 10;
       time = +maxTime * 10000;
@@ -294,19 +295,21 @@ Template.priceGraph.rendered = function () {
 
       // console.log("attempts to work " + startLength + " " + currentLength + " " + goldPrices);
 
+      initAll();
+      updateAll();
 
-      if (chartItemChanged == true || (startLength == 0 && currentLength != 0)) {
-        price_data = [];
-        initAll();
-        chartItemChanged = false;
-        updateAll();
-      }
+      // if (chartItemChanged == true || (startLength == 0 && currentLength != 0)) {
+      //   price_data = [];
+      //   initAll();
+      //   chartItemChanged = false;
+      //   updateAll();
+      // }
 
-      else if (startLength != currentLength && startLength != 0 && currentLength != 0 && goldPrices[0] != undefined){
-        price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
-        // console.log("refresh");
-        updateAll(); //*** TODO: update should add all pending values, not just latest value ***///
-      }
+      // else if (startLength != currentLength && startLength != 0 && currentLength != 0 && goldPrices[0] != undefined){
+      //   price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
+      //   // console.log("refresh");
+      //   updateAll(); //*** TODO: update should add all pending values, not just latest value ***///
+      // }
     });
   }
 

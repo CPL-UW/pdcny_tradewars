@@ -59,6 +59,19 @@ Alerts.insert({
 	"contents": alert
 });
 
+// Request contents explanation:
+// "user": requested
+// 			[
+// 				// {text: "blah blah"},
+// 				{requester: },				requester
+// 				{requested resource: },		reqRes
+// 				{requested amount: },		reqAmt
+// 				{receiving resource: },		recvRes		//the resource that the requested person will be receiving
+														//i.e. received by requested/recipient/ 'user'
+// 				{receiving amount: },		recvAmt
+// 				{requestNumber: },			reqNo
+// 				{replied: }					replied
+// 			]
 Alerts.insert({
 	"gameCode": gCode,
 	"timestamp": (new Date()).getTime(),
@@ -78,4 +91,49 @@ Alerts.insert({
 		"read": 0
 	}
 });
+
+
+
+// ###  Alerts' different contexts: 		//
+
+('raiseAlert', 
+Meteor.userId(), {
+	"text": "clearAll"
+}, Session.get("GameCode"));
+
+('raiseAlert', 
+Meteor.userId(), {
+	"text": "clearOne", 
+	"contextKind": "id", 
+	"context": e.currentTarget.id
+}, Session.get("GameCode"))
+
+('raiseAlert', 
+Meteor.userId(), {
+	"text": "Sent Request", 
+	"contextKind": "requestCreation", 
+	"context": result
+}, Session.get("GameCode"), "success");
+
+('raiseAlert', 
+event.target.Recipient.value, {
+	"text": "Request received!", 
+	"contextKind": "requestReceival", 
+	"context": result
+}, Session.get("GameCode"), "warning");
+
+
+Meteor.call('raiseAlert', usr, {"text": text, "contextKind": contextKind, "context": reqId}, Session.get("GameCode"), urgency);
+
+	alertFn("Your group doesn't have the item you're trying to give! Trade fail *sad trombone*", "danger", "requestFail");
+
+	alertFn("Your group doesn't have enough of the item you're trying to give! Trade fail *sad trombone*", "warning", "requestFail");
+
+	alertFn("The server's dying man. Sorry", "danger", "requestFail");
+
+	alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess");
+
+	alertFn("Request rejected/failed! :(", "danger", "requestFail", request["requester"].id);
+
+	alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess", request["requester"].id);
 
