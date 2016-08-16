@@ -194,8 +194,8 @@ Meteor.startup(function () {
 
 		setGroupRanks: function (gameCode) {
 			r = 1;
-			RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).sort({marketValue:-1}).forEach(function (gameDoc) {
-				console.log(r + " " + gameDoc.group);
+			RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {marketValue:-1}}).forEach(function (gameDoc) {
+				// console.log(r + " " + gameDoc.group);
 				RunningGames.update({_id: gameDoc._id}, {$set: {"rank": r}});
 				r += 1;
 			});
