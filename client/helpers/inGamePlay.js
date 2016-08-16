@@ -121,29 +121,38 @@ Template.trade.events({
 			e.target.giveAmount.value = "";
 			e.target.requestAmount.value = "";
 		}
-
-		if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value)){
-			// console.log(event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value);
-			// console.log(event.target.Recipient.value);
-			Meteor.call('reqTrade', Session.get("GameCode"), event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value, function (error, result){
-				if (error){
-					console.log("faaaaiiil");
-					Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed due to server's fault. The machines are rising against us, run.", "contextKind": "serverError", "context": "server"}, Session.get("GameCode"), "danger");
-					// clearForm();
-				}
-				else {
-					Meteor.call('raiseAlert', Meteor.userId(), {"text": "Sent Request", "contextKind": "requestCreation", "context": result}, Session.get("GameCode"), "success");
-					Meteor.call('raiseAlert', event.target.Recipient.value, {"text": "Request received!", "contextKind": "requestReceival", "context": result}, Session.get("GameCode"), "warning");
-					$(window).scrollTop( $("#alertsAtTop").offset().top );
-					clearForm(event);
-				}
-			});
-		}
-		else{
-			Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – probably not enough resource", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
-			event.target.giveAmount.value = "";
+		if (event.target.giveAmount.value == ""){
 			$("input[name=giveAmount]").focus();
-		}			
+		}
+		else if (event.target.requestAmount.value == "") {
+			$("input[name=requestAmount]").focus();
+		}
+		else {
+			if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value)){
+				// console.log(event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value);
+				// console.log(event.target.Recipient.value);
+				Meteor.call('reqTrade', Session.get("GameCode"), event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value, function (error, result){
+					if (error){
+						console.log("faaaaiiil");
+						Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed due to server's fault. The machines are rising against us, run.", "contextKind": "serverError", "context": "server"}, Session.get("GameCode"), "danger");
+						$(document).scrollTop( $("#alertsAtTop").offset().top );
+						clearForm(event);
+					}
+					else {
+						Meteor.call('raiseAlert', Meteor.userId(), {"text": "Sent Request", "contextKind": "requestCreation", "context": result}, Session.get("GameCode"), "success");
+						Meteor.call('raiseAlert', event.target.Recipient.value, {"text": "Request received!", "contextKind": "requestReceival", "context": result}, Session.get("GameCode"), "warning");
+						$(document).scrollTop( $("#alertsAtTop").offset().top );
+						clearForm(event);
+					}
+				});
+			}
+			else{
+				Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – probably not enough resource", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
+				event.target.giveAmount.value = "";
+				$("input[name=giveAmount]").focus();
+				$(document).scrollTop( $("#alertsAtTop").offset().top );
+			}
+		}
 	}
 });
 

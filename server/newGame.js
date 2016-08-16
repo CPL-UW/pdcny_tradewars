@@ -13,6 +13,7 @@ Meteor.startup(function () {
 					"player": adminID,
 					"playerName": Meteor.users.findOne({"_id": adminID}).username,
 					"group": "admin",
+					"role": "admin",
 					"size": size,
 					"lastLogin": (new Date()).getTime(),
 					"gameStart": (new Date()).getTime(),
@@ -89,9 +90,11 @@ Meteor.startup(function () {
 						});
 					}
 				};
-				populateStocks(expRes, thisGrpExpRes, 150, 15, 150, 7);
-				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 50, 5)
+				populateStocks(expRes, thisGrpExpRes, 150, 15, 750, 7);
+				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 250, 5)
 			}
+
+			Meteor.setTimeout(function() { Meteor.call('updateStocks', code) }, 2000);
 		},
 
 

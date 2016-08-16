@@ -4,7 +4,7 @@
 // import RunningGames from './lib/collections';
 
 Router.route('/', function() {
-	console.log("home");
+	// console.log("home");
 	this.render('Home');
 	Session.set("GameCode", 0);
 	Session.set("GroupNo", "home");
@@ -49,3 +49,9 @@ Router.route('/games/:gameCode', function () {
 		}
 	}
 );
+
+Router.route('/games/:gameCode/cv', function () {
+	var gameCode = this.params.gameCode;
+	Session.set("GameCode", gameCode);
+	this.render('leaderBoard');
+});

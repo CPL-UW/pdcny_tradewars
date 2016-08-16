@@ -25,6 +25,7 @@ RunningGames.insert({
 	"player": adminID,
 	"playerName": Meteor.users.findOne({"_id": adminID}).username,
 	"group": "admin",
+	"role": "admin",
 	"size": size,
 	"lastLogin": (new Date()).getTime(),
 	"gameStart": (new Date()).getTime(),
@@ -44,10 +45,12 @@ RunningGames.insert({
 	"gameCode": gameCode,
 	"player": joinerID,
 	"playerName": Meteor.users.findOne({"_id": joinerID}).username,
-	"group": grp,
-	"role": role,
+	"group": grp,  (admin, 1/2/3/4)
+	"role": role, (admin, homebase, regular)
 	"lastLogin": (new Date()).getTime(),
-	"status": "running"
+	"status": "running",
+	"marketValue": , //these last two only exist for homebase-s
+	"rank": 
 });
 
 

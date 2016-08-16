@@ -80,8 +80,8 @@ Template.priceGraph.rendered = function () {
       aTime = new Date(time);
       p_gold = goldPrices[i];
 
-      // console.log(p_gold);
-      if (p_gold != undefined){
+      if (p_gold != undefined && p_gold != NaN){
+        console.log(p_gold);
         price_data.push({'date': aTime, 'gold':p_gold.toString() });
       }
       // amount_data.push({'date': aTime, 'bismuth': 100.0, 'gold':100.0 ,'lead':100.0 });

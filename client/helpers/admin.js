@@ -65,5 +65,12 @@ Template.stockEditor.helpers({
 });
 
 Template.stockEditor.events({
-		
+	"submit .stockChange": function (event) {
+		event.preventDefault();
+		console.log(event.target.newAmount.value + " " + typeof(event.target.newAmount.value));
+		if (event.target.newAmount.value != "") {
+			amt = parseInt(event.target.newAmount.value);
+			Meteor.call("changeStockAmount", event.target.stock.value, amt);
+		}
+	}
 });

@@ -20,21 +20,15 @@
 	{{#if currentUser}}
 		{{>baseDash}}
 	{{/if}}
+</template>
 
+<template name = "leaderBoard">
+    {{#if currentUser}}
+        {{>centralView}}
+    {{/if}}
 </template>
 
 
-<template name="page1">
-	This is page 1
-</template>
-
-<template name="page2">
-	This is page 2
-</template>
-
-<template name="page3">
-	This is page 3
-</template>
 
 <template name = "topAlerts">
 <!-- if there are unread alerts, print them one by one here -->
@@ -72,7 +66,7 @@
 
 <template name = "userDash">
 	{{#if currentUser}}
-    <div id = "alertAtTop">
+    <div id = "alertsAtTop">
     {{> topAlerts}}
     </div>
 
@@ -111,60 +105,8 @@
 	{{/if}}
 </template>
 
-<template name = "adminDash">
-	<!-- {{> gameInfo}} -->
-	<h4> Kick users!!1! </h4>
-	{{> userKicks}}
-	<br />
-
-	<button class="skipYear"></button>
-
-	<h4> Edit Stocks </h4>
-	{{> stockEditor}}
-	<br />
-	
-	{{#if currentUser}}
-		{{>alertsTemp}}  
-		{{>requestsTemp}}
-
-		<p>
-			{{> stockInfo}}
-		</p>
-	{{/if}}
-</template>
-
 <template name="gameInfo">
 	Year: {{gameYear}} <br />
-</template>
-
-<template name = "userKicks">
-	<form class = "kickPlayer">
-		Players in this game:
-		<select name = "player" class="form-control">
-				<option value="None">  </option> 
-			{{#each allUsers}}
-				<option value="{{player}}">{{playerName}}</option> 
-			{{/each}}
-		</select>
-		<br />
-		<input type = "submit" value ="Kick" class="btn btn-default" />
-	</form>
-	<br />
-	<button class="kickAll btn btn-default">Kick everybody!</button>
-	<br />
-	<button class="killGame btn btn-default">Delete game</button>
-</template>
-
-<template name = "stockEditor">
-	<form class = "stockChange">
-		Stock:
-		<select name = "stock" class="form-control">
-			{{#each groupStocks}}
-				<option value="{{_id}}">{{gID}}: {{item}} – {{amount}} : {{price}}</option> 
-			{{/each}}
-		</select><br />
-		<input type = "submit" />
-	</form>
 </template>
 
 <template name = "alertsTemp">

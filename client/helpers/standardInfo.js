@@ -3,29 +3,7 @@
 activeTab = new ReactiveVar('stocks-tab'); //Your default tab
 groupNameVar = new ReactiveVar('admin');
 
-// Template.userInfo.helpers ({
-// 	groupID: function () {
-// 		groupNameVar.set(groupNames[Session.get("GroupNo")]);
-// 		return groupNameVar.get();
-// 	},
-
-// 	userID: function () {
-// 		return Meteor.user().username;
-// 	}
-// });
-
 Template.gameInfo.helpers ({
-	// gameTime: function () {
-	// 	thisGameAdmin = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
-	// 	if (thisGameAdmin.hasOwnProperty("gameStart")){
-	// 		// Session.set("GameSeconds", Math.ceil(((new Date()).getTime() - RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).gameStart) / 1000));
-	// 		Meteor.setInterval(function () {
-	// 			Session.set("GameSeconds", Math.ceil(((new Date()).getTime() - RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).gameStart) / 1000));
-	// 		}, 500);
-	// 		return Session.get("GameSeconds");
-	// 	}
-	// },
-
 	gameYear: function () {
 		gameDoc = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
 		if (gameDoc != null)

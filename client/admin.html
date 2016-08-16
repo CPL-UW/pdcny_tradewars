@@ -1,0 +1,54 @@
+<template name = "adminDash">
+	<!-- {{> gameInfo}} -->
+	<h4> Kick users!!1! </h4>
+	{{> userKicks}}
+	<br />
+
+	<button class="skipYear"></button>
+
+	<h4> Edit Stocks </h4>
+	{{> stockEditor}}
+	<br />
+	
+	{{#if currentUser}}
+		{{>alertsTemp}}  
+		{{>requestsTemp}}
+
+		<p>
+			{{> stockInfo}}
+		</p>
+	{{/if}}
+</template>
+
+<template name = "userKicks">
+	<form class = "kickPlayer">
+		Players in this game:
+		<select name = "player" class="form-control">
+				<option value="None">  </option> 
+			{{#each allUsers}}
+				<option value="{{player}}">{{playerName}}</option> 
+			{{/each}}
+		</select>
+		<br />
+		<input type = "submit" value ="Kick" class="btn btn-default" />
+	</form>
+	<br />
+	<button class="kickAll btn btn-default">Kick everybody!</button>
+	<br />
+	<button class="killGame btn btn-default">Delete game</button>
+</template>
+
+
+<template name = "stockEditor">
+	<form class = "stockChange">
+		Stock:
+		<select name = "stock" class="form-control">
+			{{#each groupStocks}}
+				<option value="{{_id}}">{{gID}}: {{item}} – {{amount}} : {{price}}</option> 
+			{{/each}}
+		</select><br />
+		New Amount: <input type="number" name="newAmount" class = "form-control"/><br />
+
+		<input type = "submit" class = "btn btn-default" />
+	</form>
+</template>

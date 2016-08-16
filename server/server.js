@@ -1,4 +1,4 @@
-import '../lib/collections.js';
+// import '../lib/collections.js';
 
 choosingArray = [0, 1, 2, 3, 4, 5, 6, 7]
 //expensive resources
@@ -46,8 +46,8 @@ Meteor.startup(function () {
 	Meteor.methods({
 		
 		raiseAlert: function (person, alert, gCode, urgency = "warning") {
-			console.log(alert);
-			console.log(alert.text + " " + alert.contextKind);
+			// console.log(alert);
+			// console.log(alert.text + " " + alert.contextKind);
 			if (alert.text == "clearAll") {
 				Alerts.update({$and: [{"gameCode": gCode}, {"user": person}, {"type": "alert"}]}, {$set: {"contents.read": 1}}, {multi: true});
 			}
@@ -134,6 +134,8 @@ Meteor.startup(function () {
 			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
 			
 			Meteor.call('readRequest', reqId, true);
+
+			Meteor.call('updateStocks', gCode);
 		},
 
 		readRequest: function (reqId, state) {
@@ -190,6 +192,28 @@ Meteor.startup(function () {
 			RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
 		},
 
+		setGroupRanks: function (gameCode) {
+			r = 1;
+			RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).sort({marketValue:-1}).forEach(function (gameDoc) {
+				console.log(r + " " + gameDoc.group);
+				RunningGames.update({_id: gameDoc._id}, {$set: {"rank": r}});
+				r += 1;
+			});
+		},
+
+		updateGroupMarketValue: function (gameCode, group) {
+			c = 0;
+			AllStocks.find({$and: [{"gameCode": gameCode}, {"gID": group}]}).map( function (u) { c += (u.price * u.amount) } );
+			c = (parseInt(c * 100)) / 100;
+			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": group}, {"role": "homebase"}]}, {$set: {"marketValue": c}}, {multi: true});
+			Meteor.call("setGroupRanks", gameCode);
+		},
+
+		changeStockAmount: function (id, newamt) {
+			console.log(id + " " + newamt);
+			AllStocks.update({_id: id}, {$set: {amount: newamt}});
+		},
+
 		updateIndividualStock: function (stockDoc, updateType) {
 			newPrice = stockDoc.mean / (stockDoc.amount + stockDoc.stdev);
 			newPrice = parseInt(newPrice * 100) / 100;
@@ -204,10 +228,14 @@ Meteor.startup(function () {
 				"price": newPrice
 			}
 			Meteor.call("logEvent", evLog);
+
+			Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID);
+			//call function that computes and updates this group's market value
+				//which in turn calls a function that compares all groups' market values, and assigns a rank
 		},
 
 		updateStocks: function (gameCode) {
-			newPricefn = gaussian(150, 50);
+			// newPricefn = gaussian(150, 50);
 			console.log(gameCode + " stock update");		//** Needs to be rewritten **//
 			AllStocks.find({"gameCode": gameCode}).forEach(function (stockDoc) {
 				
@@ -290,7 +318,6 @@ Meteor.startup(function () {
 });
 
 Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 1000);
-
 
 Meteor.setInterval(function () {
 	Meteor.call('checkLogins');

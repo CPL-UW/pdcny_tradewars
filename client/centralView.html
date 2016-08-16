@@ -1,0 +1,26 @@
+<template name = "centralView">
+	{{#if userIsAdmin}}
+		<table class="table"> 
+			<caption>Optional table caption.</caption> 
+			<thead> 
+				<tr> 
+					<th>#</th> 
+					<th>Group</th> 
+					<th>Total Market Value</th> 
+					<th>Points</th> 
+				</tr> 
+			</thead> 
+			<tbody> 
+			{{#each rankedGroups}}
+				<tr> 
+					<th scope="row">{{rank}}</th> 
+					<td>{{group}}</td> 
+					<td>{{marketValue}}</td> 
+					<td>{{rank}}</td> 
+					<td>infinitee</td> 
+				</tr> 
+			{{/each}}
+			</tbody> 
+		</table>
+	{{/if}}
+</template>
