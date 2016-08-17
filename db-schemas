@@ -49,17 +49,9 @@ RunningGames.insert({
 	"role": role, (admin, homebase, regular)
 	"lastLogin": (new Date()).getTime(),
 	"status": "running",
-	"marketValue": , //these last two only exist for homebase-s
+	"marketValue": , //these last three only exist for homebase-s
 	"rank": 
-});
-
-
-Alerts.insert({
-	"gameCode": gCode, 
-	"timestamp": (new Date()).getTime(), 
-	"user": person, 
-	"type": "alert", 
-	"contents": alert
+	""
 });
 
 // Request contents explanation:
@@ -79,6 +71,7 @@ Alerts.insert({
 	"gameCode": gCode,
 	"timestamp": (new Date()).getTime(),
 	"user": recipient, 
+	"username": Meteor.users.findOne({_id: recipient}).username,
 	"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
 	"type": "request",  
 	"contents": {
@@ -95,6 +88,18 @@ Alerts.insert({
 	}
 });
 
+
+	alert = {"text": "All players kicked!", "contextKind": "adminAction", "context": "thisUser"}
+	alert["urgency"] = urgency;
+	alert["read"] = 0;
+
+Alerts.insert({
+	"gameCode": gCode, 
+	"timestamp": (new Date()).getTime(), 
+	"user": person, 
+	"type": "alert", 
+	"contents": alert
+});
 
 
 // ###  Alerts' different contexts: 		//
@@ -125,9 +130,15 @@ event.target.Recipient.value, {
 	"context": result
 }, Session.get("GameCode"), "warning");
 
+('raiseAlert', 
+Meteor.userId(), {
+	"text": "Request sending failed due to server's fault. The machines are rising against us, run.", 
+	"contextKind": "serverError", 
+	"context": "server"
+}, Session.get("GameCode"), "danger");
 
 Meteor.call('raiseAlert', usr, {"text": text, "contextKind": contextKind, "context": reqId}, Session.get("GameCode"), urgency);
-
+  
 	alertFn("Your group doesn't have the item you're trying to give! Trade fail *sad trombone*", "danger", "requestFail");
 
 	alertFn("Your group doesn't have enough of the item you're trying to give! Trade fail *sad trombone*", "warning", "requestFail");

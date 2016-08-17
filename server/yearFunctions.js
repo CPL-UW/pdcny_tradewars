@@ -9,6 +9,11 @@ Meteor.startup(function () {
 			});
 		},
 
+		giveYearPoints: function (gameCode) {
+			maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"marketValue":-1}}).fetch()[0];
+			RunningGames.update({_id: maxScore._id}, {$inc: {"points": 1}});
+		},
+
 		incrementGameYear: function (gameDocId, requestType, newEvents = "all"){
 			RunningGames.update({_id: gameDocId}, {$set: {"elapsedTimeYear": 0}, $inc: {"currentYear": 1}}, function (err, result) {
 				if (err){
@@ -25,6 +30,9 @@ Meteor.startup(function () {
 					}
 					Meteor.call("logEvent", evLog);
 					Meteor.call("newYearEvents", gameDocId, newEvents);
+					if (requestType != "NewGameSetup"){
+						Meteor.call("giveYearPoints", gameDoc.gameCode);
+					}
 				}
 			});
 		},
@@ -83,13 +91,16 @@ Meteor.startup(function () {
 						Factories.find({$and: [{"gameCode": gameDoc.gameCode}, {"gID": gn}]}).forEach(function (f) {
 							// console.log(f + " " + f.production);
 							if (f != undefined){
-								AllStocks.update({$and: [
+								stockDoc = AllStocks.findOne({$and: [
 									{"gameCode": gameDoc.gameCode},
 									{"gID": gn},
 									{"itemNo": f.itemNo},
-								]},
-								{$inc: {"amount": f.production}}
+								]});
+								AllStocks.update(
+									{ _id: stockDoc._id},
+									{$inc: {"amount": f.production}}
 								);
+								Meteor.call('updateIndividualStock', stockDoc, "NewYearUpdates");
 							}
 						});
 					}

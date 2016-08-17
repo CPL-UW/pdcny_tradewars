@@ -287,7 +287,7 @@ Template.priceGraph.rendered = function () {
   if(Session.get("Role") == "userDash" && Session.get("StockChartItem") != undefined){
     // console.log("entered this condition");
     Tracker.autorun(function () {
-      var gp = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}, {"group": Session.get("GroupNo")}]}, {sort: {"timestamp": -1}}).map(function (u) {return u.price});
+      var gp = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}, {"group": Session.get("GroupNo")}]}, {sort: {"timestamp": 1}}).map(function (u) {return u.price});
 
       goldPrices = gp;
 

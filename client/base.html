@@ -62,6 +62,7 @@
         </div>
     {{/each}}
     {{>alertsTemp}}
+    <br />
 </template>
 
 <template name = "userDash">
@@ -94,6 +95,9 @@
         <div class="row">
             {{>requestsTemp}}
         </div>
+        <div class="row">
+            {{>allReadAlerts}}
+        </div>
         {{/if}}
 
         {{#if activeTab 'messages-tab'}}
@@ -118,7 +122,7 @@
 	
     {{#if anyUnreadAlerts}}
     	<form class="clear-alerts">
-    		<input type="submit" value = "Mark Alerts as Read" class = "btn btn-default"/>
+    		<input type="submit" value = "Mark Alerts as Read" class = "btn btn-default btn-sm"/>
     	</form>
     {{/if}}
 	
@@ -147,6 +151,7 @@
     </div>
 
 </template>
+
 
 <template name="yearInfo">
 	{{#each annualResource 'polluted'}}

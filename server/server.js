@@ -83,7 +83,8 @@ Meteor.startup(function () {
 			reqLog = {
 				"gameCode": gCode, 
 				"timestamp": (new Date()).getTime(),
-				"user": recipient, 
+				"user": recipient,
+				"username": Meteor.users.findOne({_id: recipient}).username,
 				"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
 				"type": "request",  
 				"contents": {
@@ -101,7 +102,18 @@ Meteor.startup(function () {
 			};
 			insertId = 0;
 			Alerts.insert(reqLog);
-			insertId = Alerts.findOne(reqLog)._id
+			insertId = Alerts.findOne(reqLog)._id;
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "TradeRequestSent",
+				"description": "",
+				"gameCode": gCode,
+				"player": requester,
+				"contents": reqLog
+			}
+
+			Meteor.call("logEvent", evLog)
+			
 			console.log(insertId);
 			return insertId;
 		},
@@ -135,22 +147,40 @@ Meteor.startup(function () {
 			
 			Meteor.call('readRequest', reqId, true);
 
-			Meteor.call('updateStocks', gCode);
+			Meteor.call('updateStocks', gCode, "TradeCausedUpdate");
 		},
 
-		readRequest: function (reqId, state) {
+		readRequest: function (reqId, state = true) {
 			val = 1;
 			if (state == false)
 				val = -1;
 			Alerts.update({_id: reqId}, {$set: {"contents.read": val}});
+			
+			req = Alerts.findOne({_id: reqId});
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "TradeRequestResponded",
+				"description": "",
+				"gameCode": req.gameCode,
+				"player": req.user,
+				"response": state,
+				"contents": req
+			};
+			Meteor.call("logEvent", evLog)
+
 		},
 
 		insertPlayer: function (gameCode, joinerID, grp, role) {
+			grpname = "";
+			if (grp >= 0) {
+				grpname = groupNames[grp];
+			}
 			RunningGames.insert({
 				"gameCode": gameCode,
 				"player": joinerID,
 				"playerName": Meteor.users.findOne({"_id": joinerID}).username,
 				"group": grp,
+				"groupName": grpname,
 				"role": role,
 				"lastLogin": (new Date()).getTime(),
 				"status": "running"
@@ -196,7 +226,12 @@ Meteor.startup(function () {
 			r = 1;
 			RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {marketValue:-1}}).forEach(function (gameDoc) {
 				// console.log(r + " " + gameDoc.group);
-				RunningGames.update({_id: gameDoc._id}, {$set: {"rank": r}});
+				if (gameDoc.hasOwnProperty("points")){
+					RunningGames.update({_id: gameDoc._id}, {$set: {"rank": r}});
+				}
+				else{
+					RunningGames.update({_id: gameDoc._id}, {$set: {"rank": r, "points": 0}});	
+				}
 				r += 1;
 			});
 		},
@@ -234,12 +269,12 @@ Meteor.startup(function () {
 				//which in turn calls a function that compares all groups' market values, and assigns a rank
 		},
 
-		updateStocks: function (gameCode) {
+		updateStocks: function (gameCode, updateType = "RegularUpdate") {
 			// newPricefn = gaussian(150, 50);
 			console.log(gameCode + " stock update");		//** Needs to be rewritten **//
 			AllStocks.find({"gameCode": gameCode}).forEach(function (stockDoc) {
 				
-				Meteor.call("updateIndividualStock", stockDoc, "RegularUpdate");
+				Meteor.call("updateIndividualStock", stockDoc, updateType);
 			});
 			///*** MATTHEW TODO: Integrate resource price calculation here ***///
 		},
