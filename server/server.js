@@ -352,6 +352,16 @@ Meteor.startup(function () {
 	});
 });
 
+Meteor.startup(function () {
+	AllStocks._ensureIndex({ "gameCode": 1});
+	AllStocks._ensureIndex({ "gameCode": 1, "gID": 1});
+	Alerts._ensureIndex({"gameCode": 1, "user": 1});
+	Alerts._ensureIndex({"gameCode": 1, "user": 1, "type": 1});
+	RunningGames._ensureIndex({"gameCode": 1, "group": 1});
+	RunningGames._ensureIndex({"gameCode": 1, "group": 1, "status": 1});
+	
+});
+
 Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 1000);
 
 Meteor.setInterval(function () {

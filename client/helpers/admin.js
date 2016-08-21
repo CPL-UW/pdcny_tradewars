@@ -1,8 +1,18 @@
 // import { RunningGames } from '../../lib/collections';
 // import { AllStocks } from '../../lib/collections';
 
-Template.adminDash.helpers({
-	"click .skipYear": function (event) {
+Template.adminDash.events({
+	'click .pauseYear': function (event) {
+		// console.log(event);
+		event.preventDefault();
+		console.log("paused");
+		Meteor.call("pauseYear", RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}));
+	},
+
+	'click .skipYear': function (event) {
+		// console.log(event);
+		event.preventDefault();
+		console.log("year skipped");
 		Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]})._id, "AdminSkip");
 	}
 });
@@ -18,6 +28,8 @@ Template.userKicks.events({
 	"submit .kickPlayer": function (event) {
 		// console.log("trast");
 		event.preventDefault();
+		console.log("gah"
+			);
 		if (event.target.player.value != "None"){
 			Meteor.call("kickPlayer", Session.get("GameCode"), event.target.player.value, function (err, result){
 				if (err){

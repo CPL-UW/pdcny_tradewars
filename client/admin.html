@@ -1,10 +1,15 @@
 <template name = "adminDash">
 	<!-- {{> gameInfo}} -->
+	<div id = "yearProgressBar">
+    Year Progress: {{> yearProgress}}
+    </div>
+
 	<h4> Kick users!!1! </h4>
 	{{> userKicks}}
 	<br />
 
-	<button class="skipYear"></button>
+	<button class="pauseYear btn btn-default">Pause Year</button>
+	<button class="skipYear btn btn-default">Skip Year</button>
 
 	<h4> Edit Stocks </h4>
 	{{> stockEditor}}

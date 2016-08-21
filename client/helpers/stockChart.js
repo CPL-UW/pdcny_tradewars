@@ -72,7 +72,7 @@ Template.priceGraph.rendered = function () {
   function initData() {
     // console.log(goldPrices + " " + goldPrices[2]);
     price_data = [];
-    for (i = 0; i < (1 + moving_window); i++) {
+    for (i = 0; i < currentLength; i++) {
       maxTime += 10;
       time = +maxTime * 10000;
       // p_bismuth = computeCurrentPrice('bismuth');
@@ -81,7 +81,7 @@ Template.priceGraph.rendered = function () {
       p_gold = goldPrices[i];
 
       if (p_gold != undefined && p_gold != NaN){
-        console.log(p_gold);
+        // console.log(p_gold);
         price_data.push({'date': aTime, 'gold':p_gold.toString() });
       }
       // amount_data.push({'date': aTime, 'bismuth': 100.0, 'gold':100.0 ,'lead':100.0 });
@@ -251,7 +251,7 @@ Template.priceGraph.rendered = function () {
   }
 
   function updateAll() {
-    updateData();
+    // updateData();
     updateLine();
     metalLines();
   }

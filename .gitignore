@@ -2,3 +2,5 @@
 mup.json
 
 lib/secrets.js
+
+.deploy/mup.js

@@ -35,6 +35,15 @@ Template.topAlerts.helpers({
 	}
 });
 
+Template.yearProgress.helpers({
+	yearFraction: function() {
+		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
+		fr = (game.elapsedTimeYear * 100) / game.yearLength;
+		return fr;
+	}
+});
+
+
 Template.topAlerts.events({
 	'click .readThisAlert': function (e) {
 		e.preventDefault();
@@ -130,5 +139,28 @@ Template.requestsTemp.events({
 			// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request accepted! Woohoo", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");	
 		}
 		Meteor.call('readRequest', reqId, acceptance);
+	}
+});
+
+Template.factoryList.helpers({
+	yearLength: function () {
+		yl = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).yearLength / 60000;
+		yl = parseInt(yl * 100) / 100;
+		return yl;
+	},
+
+	factories: function () {
+		return Factories.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}]});
+	},
+
+	itemName: function (id) {
+		fact = Factories.findOne({_id: id});
+		// console.log(fact);
+		if (fact.hasOwnProperty("item")) {
+			return fact.item;
+		}
+		else {
+			return fact.itemNo;
+		}
 	}
 });

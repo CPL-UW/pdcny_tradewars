@@ -114,5 +114,17 @@ Meteor.startup(function () {
 			AllStocks.update({_id: stockDoc._id}, {$set: {"mean": newmean, "yearmod": newyearmod}});
 		},
 
+		pauseYear: function (gameDoc) {
+			// console.log(gameDoc);
+			if (gameDoc.status == "running"){
+				console.log("paused")
+				RunningGames.update({_id: gameDoc._id}, {$set: {status: "paused"}});
+			}
+			else {
+				console.log("running");
+				RunningGames.update({_id: gameDoc._id}, {$set: {status: "running"}});	
+			}
+		}
+
 	});
 });

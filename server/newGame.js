@@ -4,7 +4,7 @@ Meteor.startup(function () {
 			//*** generate random 4 character string
 			console.log(size);
 			while (RunningGames.findOne({"gameCode": codeString}) != undefined){
-				codeString = Math.random().toString(36).substring(2,8);
+				codeString = Math.random().toString(36).substring(4,8);
 			}
 			// codeString = "1730";
 			if (RunningGames.findOne({"gameCode": codeString}) == undefined){
@@ -74,7 +74,7 @@ Meteor.startup(function () {
 					for (res in resList){
 						// console.log(resList[res]);
 						// console.log(res);
-						Meteor.call("makeFactory", code, groupIndices[g], resList[res], parseInt(parseInt(res) + 1));
+						Meteor.call("makeFactory", code, groupIndices[g], resNames[resList[res]], resList[res], parseInt(parseInt(res) + 1));
 						// console.log(res);
 						AllStocks.insert({
 							"gameCode": code,
@@ -98,10 +98,11 @@ Meteor.startup(function () {
 		},
 
 
-		makeFactory: function (gameCode, groupNo, resource, productionRate) {
+		makeFactory: function (gameCode, groupNo, resName, resource, productionRate) {
 			Factories.insert({
 				"gameCode": gameCode,
 				"gID": groupNo,
+				"item": resName,
 				"itemNo": resource,
 				"production": productionRate,
 				"makeTime": (new Date()).getTime(),

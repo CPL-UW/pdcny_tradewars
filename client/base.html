@@ -65,8 +65,49 @@
     <br />
 </template>
 
+<template name = "yearProgress">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{yearFraction}}" aria-valuemin="0" aria-valuemax="100" style="width: {{yearFraction}}%;">
+        <span class="sr-only">{{yearFraction}}% Complete</span>
+      </div>
+    </div>
+</template>
+
+<template name = "factoryList">
+    You have a bunch of factories that'll produce some resources every year. Each year is {{yearLength}} minutes long.
+
+    <div class = "table-responsive">
+    <table class="table table-hover table-condensed">
+    <thead>
+    <tr> 
+        <th>Resource</th>
+        <th>Production Rate</th>
+    </tr>
+    </thead>
+    <tbody>
+        {{#each factories}}
+        <tr>
+            <td>
+                {{itemName _id}} 
+                <!-- !!! update this to just use item when dbs are reset and remade -->
+            </td>
+            <td>
+                {{production}}
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+    </table>
+    </div>
+
+
+</template>
+
 <template name = "userDash">
 	{{#if currentUser}}
+    <div id = "yearProgressBar">
+    Year Progress: {{> yearProgress}}
+    </div>
     <div id = "alertsAtTop">
     {{> topAlerts}}
     </div>
@@ -105,6 +146,10 @@
         {{/if}}
 
         {{/unless}}
+
+        {{#if thisIsBase}}
+            {{> factoryList}}
+        {{/if}}
         </div>
 	{{/if}}
 </template>
@@ -233,9 +278,9 @@
     </thead>
     <tbody>
 		{{#each resources}}
+        <a class= "viewPriceGraph" value = "{{itemNo}}">
 		<tr>
 			<td>
-                <a class= "viewPriceGraph" value = "{{itemNo}}">
                     {{item}} 
                     {{#if coolCheck yearmod.kind}}
                         - cool right now!
@@ -243,7 +288,7 @@
                     {{#if pollutedCheck yearmod.kind}}
                         - polluted right now :(
                     {{/if}}
-                </a>
+                
             </td>
 			<td>{{amount}}</td>
 			{{#if stockFeatureShow 'price'}}
@@ -253,6 +298,7 @@
 				<td>{{groupName}}</td>
 			{{/if}}
 		</tr>
+        </a>
 		{{/each}}
     </tbody>
 	</table>

@@ -35,7 +35,8 @@
         <ul class="list-group">
     	{{#each readRequests}}
             <li class="list-group-item">  
-            Requested {{contents.reqAmt}} {{contents.reqRes}} of {{username}} by {{contents.requester.username}} offering {{contents.recvAmt}} {{contents.recvRes}}
+            Requested {{contents.reqAmt}} {{contents.reqRes}} of {{username}} by {{contents.requester.username}} offering {{contents.recvAmt}} {{contents.recvRes}}.
+            This request was {{requestResponse _id}}
       		</li>
   		{{/each}}
       </ul>

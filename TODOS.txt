@@ -1,3 +1,42 @@
+0. in base station, highlight resource being charted
+
+// done
+//~~ done but not verified yet
+
+// 1. raise alert when trade received 
+	 increment issue
+
+// 4. in sent request, and request accepted/rejected, show request details
+
+// 2. move clear all alerts button above
+
+// 3. when alert is raised, force scroll up to alert. Or add a hovering thing that shows unread notifications
+
+// 6. add read alerts and read requests box
+	add time for corresponding things too
+
+// 5. when request form is entered, clear form
+
+// 7. make stock price change happen when trade occurs
+
+
+
+
+// make central screen display
+	// add score functionality for yearly goals
+
+
+// check that pause and skip year buttons in admin work correctly
+
+
+
+***
+Fill up all ADAGE kind logs
+
+
+
+
+
 
 
 

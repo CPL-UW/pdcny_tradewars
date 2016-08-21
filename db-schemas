@@ -1,6 +1,7 @@
 Factories.insert({
 	"gameCode": gameCode,
 	"gID": groupNo,
+	"item": resName,
 	"itemNo": resource,
 	"production": productionRate,
 	"makeTime": (new Date()).getTime(),
