@@ -4,3 +4,15 @@ mup.json
 lib/secrets.js
 
 .deploy/mup.js
+
+lib/config/.DS_Store
+
+lib/.DS_Store
+
+server/.DS_Store
+
+client/.DS_Store
+
+client/helpers/.DS_Store
+
+.meteor/.DS_Store

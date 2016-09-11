@@ -4,7 +4,8 @@ Meteor.startup(function () {
 			//*** generate random 4 character string
 			console.log(size);
 			while (RunningGames.findOne({"gameCode": codeString}) != undefined){
-				codeString = Math.random().toString(36).substring(4,8);
+				// codeString = Math.random().toString(36).substring(4,8);
+				codeString = parseInt(Math.random()*100000).toString();
 			}
 			// codeString = "1730";
 			if (RunningGames.findOne({"gameCode": codeString}) == undefined){
