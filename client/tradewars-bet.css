@@ -21,3 +21,9 @@ path {
 .tab-content {
 	padding: 10px;
 }
+
+td a { 
+   display: block; 
+   /*border: 1px solid black;*/
+   padding: 3px; 
+}
