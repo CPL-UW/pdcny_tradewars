@@ -268,37 +268,37 @@
 	<tr> 
 		<th>Resource</th>
 		<th>In Stock</th>
-		{{#if stockFeatureShow 'price'}}
+		<!-- {{#if stockFeatureShow 'price'}}
 			<th>Price</th>
 		{{/if}}
 		{{#if stockFeatureShow 'group'}}
 			<th>Group</th>
-		{{/if}}
+		{{/if}} -->
 	</tr>
     </thead>
     <tbody>
 		{{#each resources}}
-        <a class= "viewPriceGraph" value = "{{itemNo}}">
-		<tr>
-			<td>
-                    {{item}} 
-                    {{#if coolCheck yearmod.kind}}
-                        - cool right now!
-                    {{/if}}
-                    {{#if pollutedCheck yearmod.kind}}
-                        - polluted right now :(
-                    {{/if}}
-                
-            </td>
-			<td>{{amount}}</td>
-			{{#if stockFeatureShow 'price'}}
-				<td>{{price}}</td>
-			{{/if}}
-			{{#if stockFeatureShow 'group'}}
-				<td>{{groupName}}</td>
-			{{/if}}
-		</tr>
-        </a>
+            <a class= "viewPriceGraph" value = "{{itemNo}}">
+        		<tr>
+        			<td>
+                            {{item}} 
+                            {{#if coolCheck yearmod.kind}}
+                                - cool right now!
+                            {{/if}}
+                            {{#if pollutedCheck yearmod.kind}}
+                                - polluted right now :(
+                            {{/if}}
+                        
+                    </td>
+        			<td>{{amount}}</td>
+        <!-- 			{{#if stockFeatureShow 'price'}}
+        				<td>{{price}}</td>
+        			{{/if}}
+        			{{#if stockFeatureShow 'group'}}
+        				<td>{{groupName}}</td>
+        			{{/if}} -->
+        		</tr>
+            </a>
 		{{/each}}
     </tbody>
 	</table>
