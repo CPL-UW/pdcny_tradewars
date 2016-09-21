@@ -1,6 +1,9 @@
 Launch scripts
 
-cd /Library/WebServer/Documents/leadcaravan/bundle
+cd Documents/pdcnytradewars-bet
+meteor build ../lc-build
+cd ../lc-build/bundle/
+(cd programs/server && npm install)
 export PORT=8011
 export MONGO_URL=mongodb://localhost:27017/leadcaravan ROOT_URL=http://caravan.complexplay.org 
 node main.js

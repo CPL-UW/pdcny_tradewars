@@ -59,7 +59,8 @@ Meteor.startup(function () {
 				// console.log("new things " + gameDoc.gameCode);
 				groupNos = gameDoc.groupNumbers;
 				for (g in groupNos){
-					resourcesToAffect = (shuffle(gameDoc.cheapRes)).slice(2);
+					resourcesToAffect = (shuffle(gameDoc.cheapRes)).slice(-2);
+					
 
 					stockDoc = AllStocks.findOne({$and: [{"gID": groupNos[g]}, {"gameCode": gameDoc.gameCode}, {"itemNo": resourcesToAffect[0]}]});
 					factor = 0.5;
