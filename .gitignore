@@ -16,3 +16,5 @@ client/.DS_Store
 client/helpers/.DS_Store
 
 .meteor/.DS_Store
+
+server/kadira.js

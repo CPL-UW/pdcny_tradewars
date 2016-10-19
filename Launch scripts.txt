@@ -1,7 +1,9 @@
 Launch scripts
 
-cd Documents/pdcnytradewars-bet
-meteor build ../lc-build
+cd ~/Documents/pdcnytradewars
+git pull
+(cd ../lc-build && rm -rf bundle)
+meteor build ../lc-build --directory
 cd ../lc-build/bundle/
 (cd programs/server && npm install)
 export PORT=8011
