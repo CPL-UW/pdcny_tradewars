@@ -18,3 +18,7 @@ client/helpers/.DS_Store
 .meteor/.DS_Store
 
 server/kadira.js
+
+poster/LeadCaravan.ai
+
+server/secrets.js

@@ -282,10 +282,10 @@
                     <a class= "viewPriceGraph" value = "{{itemNo}}">
                         {{item}}
                         {{#if coolCheck yearmod.kind}}
-                            - cool right now!
+                            - /\ /\
                         {{/if}}
                         {{#if pollutedCheck yearmod.kind}}
-                            - polluted right now :(
+                            - \/ \/
                         {{/if}}
                     </a>
                 </td>
@@ -302,7 +302,9 @@
     </tbody>
 	</table>
     </div>
-	Market value: {{totalValue}}
+    <sup>/\ /\ is highly in demand, so it's extra expensive this year! <br />
+    \/ \/ is totally out of fashion, so cheaper than average this year. <br /> <br /></sup>
+	<b>Market value: {{totalValue}}</b> <sup>(The total value of all the things your group has right now. To see current stock prices, visit your base station) </sup>
 </template>
 
 <template name="priceGraph">
@@ -342,7 +344,7 @@
       <form class = "gameChoice form form-inline" role = "form">
         <div class="form-group">
             <label for="gameCodeTextBox" class="control-label">Game Code:</label>
-            <input type="text" placeholder="1730" name="gameCode" class = "form-control" id = "gameCodeTextBox"/>
+            <input type="text" placeholder="" name="gameCode" class = "form-control" id = "gameCodeTextBox"/>
             <input type="submit" value = "Join a game" class = "btn btn-default"/>
         </div>
       </form>
