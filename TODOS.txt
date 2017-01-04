@@ -1,3 +1,19 @@
+UI Refinements:
+
+Ambitious
+1. Try adding overlay tutorials
+2. When the first time a year ends, try adding a notification telling about popular and polluted resources
+
+More doable:
+3. fix information in menu bar
+4. Add colors/icons to polluted and cool resources
+5. *** Highlight item being graphed in base station view
+6. 
+
+
+
+
+
 0. in base station, highlight resource being charted
 
 // done

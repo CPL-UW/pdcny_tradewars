@@ -262,11 +262,12 @@
 <template name = "stockInfo">
 	<!-- {{prices}} -->
     <div class = "table-responsive">
-    <table class="table table-hover table-condensed">
+    <!-- <table class="table table-borderless table-hover table-condensed"> -->
+    <table class="table table-condensed">
     <thead>
 	<tr> 
 		<th>Resource</th>
-		<th>In Stock</th>
+		<th>In Group's Stock</th>
 		{{#if stockFeatureShow 'price'}}
 			<th>Price</th>
 		{{/if}}
@@ -289,9 +290,9 @@
                         {{/if}}
                     </a>
                 </td>
-    			<td>{{amount}}</td>
+    			<td>{{amount}} pieces</td>
     			{{#if stockFeatureShow 'price'}}
-    				<td>{{price}}</td>
+    				<td>${{price}}</td>
     			{{/if}}
     			{{#if stockFeatureShow 'group'}}
     				<td>{{groupName}}</td>

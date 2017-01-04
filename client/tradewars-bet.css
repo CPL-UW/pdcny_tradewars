@@ -1,7 +1,7 @@
 /* CSS declarations go here */
 
 html {
-	margin: 70px;
+	margin: 10px;
 }
 
 path {
@@ -26,4 +26,18 @@ td a {
    display: block; 
    /*border: 1px solid black;*/
    padding: 3px; 
+}
+
+./*table th {
+    border-top: 0px solid #555;
+}
+*/
+
+/*.table-borderless tbody tr td,*/
+/*.table-borderless tbody tr th,*/
+.table-borderless thead tr th,
+/*.table-borderless thead tr td,*/
+/*.table-borderless tfoot tr th,*/
+.table-borderless tfoot tr td {
+    border: none;
 }
