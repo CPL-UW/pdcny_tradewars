@@ -15,7 +15,7 @@ a {
 }
 
 a:hover, a:focus {
-  color: rgb(181, 115, 151);
+  color: #E3F2FD;
   text-decoration: none;
 }
 
@@ -25,6 +25,26 @@ a:hover, a:focus {
 
 .navbar-default, .navbar-default .navbar-collapse, .navbar-default .navbar-form {
   background-color: #454747;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    color: #BBDEFB;
+    background-color: #333;
+}
+
+.dropdown-menu {
+  background-color: #333;
+  color: #BBDEFB;
+}
+
+.dropdown-menu > li > a {
+  color: #BBDEFB;
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    color: #333;
+    text-decoration: none;
+    background-color: #BBDEFB ;
 }
 
 .list-group-item {
@@ -59,6 +79,12 @@ a:hover, a:focus {
 .btn-default {
   background-color: #333;
   color: #BBDEFB;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: #BBDEFB;
+    border-color: #adadad;
 }
 
 .progress {
