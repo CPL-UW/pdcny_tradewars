@@ -7,7 +7,7 @@ html {
 
 body {
   background-color: #454747;
-  color: rgb(150, 73, 115);
+  color: #BBDEFB;
 }
 
 a {
@@ -17,6 +17,10 @@ a {
 a:hover, a:focus {
   color: rgb(181, 115, 151);
   text-decoration: none;
+}
+
+.navbar-default .navbar-brand {
+  color: #BBDEFB;
 }
 
 .navbar-default, .navbar-default .navbar-collapse, .navbar-default .navbar-form {
@@ -29,44 +33,42 @@ a:hover, a:focus {
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
   background-color: #333;
-  color: rgb(150, 73, 115);
+  color: #BBDEFB;
 }
 
 .nav-tabs > li > a:hover {
   background-color: rgba(51,51,51, 0.2);
-  color: rgb(181, 115, 151);
+  color: #BBDEFB;
 }
 
 .panel {
   background-color: #333;
-  color: rgb(150, 73, 115);
+  color: #BBDEFB;
 }
 
 .panel-default > .panel-heading {
   background-color: #333;
-  color: rgb(150, 73, 115);
+  color: #BBDEFB;
 }
 
 .form-control {
-  background-color: rgba(150, 73, 115, 0.2)
+  background-color: rgba(51, 51, 51, 0.8);
+  color: #BBDEFB;
 }
 
 .btn-default {
   background-color: #333;
-  color: rgba(150, 73, 115, 1);
+  color: #BBDEFB;
 }
 
 .progress {
-  background-color: #E1BEE7;
+  background-color: #BBDEFB;
 }
 
 .progress-bar {
-  background-color: rgb(150, 73, 115);
+  background-color: #64B5F6;
 }
 
-.form-control {
-  color: rgb(181, 115, 151);
-}
 
 path {
   stroke: steelblue;
