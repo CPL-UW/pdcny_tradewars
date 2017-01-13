@@ -37,7 +37,17 @@
 // 	"contents": reqLog
 // }
 
-//keys: StockPriceChange, NewGameStart, TradeRequestSent
+// evLog = {
+// 	"timestamp": (new Date()).getTime(),
+// 	"key": "TradeRequestResponded",
+// 	"description": "",
+// 	"gameCode": req.gameCode,
+// 	"player": req.user,
+// 	"response": state,
+// 	"contents": req
+// };
+
+//keys: StockPriceChange, NewGameStart, TradeRequestSent, TradeRequestResponded
 
 Meteor.startup(function () {
 	Meteor.methods({

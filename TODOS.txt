@@ -8,9 +8,11 @@ More doable:
 3. fix information in menu bar
 4. Add colors/icons to polluted and cool resources
 5. *** Highlight item being graphed in base station view
-6. 
+6. In warning notification of request received, link it so clicking on it moves you to notifications tab.    OR maybe pop up a modal window
+7. 
 
-
+BUGS:
+In Responded requests, status detection of request response is faulty
 
 
 
