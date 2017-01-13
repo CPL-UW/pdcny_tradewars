@@ -2,6 +2,70 @@
 
 html {
 	margin: 10px;
+  background-color: black;
+}
+
+body {
+  background-color: #454747;
+  color: rgb(150, 73, 115);
+}
+
+a {
+  color: grey;
+}
+
+a:hover, a:focus {
+  color: rgb(181, 115, 151);
+  text-decoration: none;
+}
+
+.navbar-default, .navbar-default .navbar-collapse, .navbar-default .navbar-form {
+  background-color: #454747;
+}
+
+.list-group-item {
+  background-color: #454747;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+  background-color: #333;
+  color: rgb(150, 73, 115);
+}
+
+.nav-tabs > li > a:hover {
+  background-color: rgba(51,51,51, 0.2);
+  color: rgb(181, 115, 151);
+}
+
+.panel {
+  background-color: #333;
+  color: rgb(150, 73, 115);
+}
+
+.panel-default > .panel-heading {
+  background-color: #333;
+  color: rgb(150, 73, 115);
+}
+
+.form-control {
+  background-color: rgba(150, 73, 115, 0.2)
+}
+
+.btn-default {
+  background-color: #333;
+  color: rgba(150, 73, 115, 1);
+}
+
+.progress {
+  background-color: #E1BEE7;
+}
+
+.progress-bar {
+  background-color: rgb(150, 73, 115);
+}
+
+.form-control {
+  color: rgb(181, 115, 151);
 }
 
 path {
@@ -9,6 +73,7 @@ path {
   stroke-width: 2;
   fill: none;
 }
+
 
 .axis path,
 .axis line {
