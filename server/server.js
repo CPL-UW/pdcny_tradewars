@@ -241,6 +241,16 @@ Meteor.startup(function () {
 			AllStocks.find({$and: [{"gameCode": gameCode}, {"gID": group}]}).map( function (u) { c += (u.price * u.amount) } );
 			c = (parseInt(c * 100)) / 100;
 			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": group}, {"role": "homebase"}]}, {$set: {"marketValue": c}}, {multi: true});
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "StockPriceChange",
+				"gameCode": gameCode,
+				"group": group,
+				"itemNo": "555",
+				"price": c
+			};
+			Meteor.call("logEvent", evLog);
+
 			Meteor.call("setGroupRanks", gameCode);
 		},
 

@@ -9,10 +9,10 @@ Template.allReadAlerts.helpers({
 
 	requestResponse: function (id) {
 		req = Alerts.findOne({_id: id});
-		if (req.read == 1){
+		if (req.contents.read == 1){
 			return "accepted.";
 		}
-		else if (req.read == -1){
+		else if (req.contents.read == -1){
 			return "rejected.";
 		}
 		else {

@@ -13,3 +13,24 @@ node main.js
 
 
 128.104.83.38:8011
+
+
+
+
+view group when you come in
+check balancing of price changing
+progress bar not enough; needs to feel more dynamic
+
+
+** graph of market total
+*** rescind trade requests
+** fix responded requests - status info
+	responded requests dropdown confusing
+		keep it default open, and set div height max
+
+
+
+block making of trades when no other users are around
+make read alerts / responded requests header smaller
+
+per year notification to everybody about who won the round

@@ -1,11 +1,36 @@
 UI Refinements:
 
+Jan 16 test run:
+
+// 1. ** graph of market total
+// 2. ** fix responded requests - status info
+2.1		responded requests dropdown confusing
+			keep it default open, and set div height max
+
+3. *** rescind trade requests
+
+4. fix information in menu bar
+5. view group when you come in
+
+check balancing of price changing
+progress bar not enough; needs to feel more dynamic
+
+
+
+----
+
+block making of trades when no other users are around
+make read alerts / responded requests header smaller
+
+per year notification to everybody about who won the round
+
+--------------
+
 Ambitious
 1. Try adding overlay tutorials
 2. When the first time a year ends, try adding a notification telling about popular and polluted resources
 
 More doable:
-3. fix information in menu bar
 4. Add colors/icons to polluted and cool resources
 5. *** Highlight item being graphed in base station view
 6. In warning notification of request received, link it so clicking on it moves you to notifications tab.    OR maybe pop up a modal window
@@ -15,8 +40,13 @@ BUGS:
 In Responded requests, status detection of request response is faulty
 
 
-
 0. in base station, highlight resource being charted
+
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
 
 // done
 //~~ done but not verified yet

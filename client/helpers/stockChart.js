@@ -288,28 +288,12 @@ Template.priceGraph.rendered = function () {
     // console.log("entered this condition");
     Tracker.autorun(function () {
       var gp = Events.find({$and: [{"itemNo": Session.get("StockChartItem")}, {"gameCode": Session.get("GameCode")}, {"key": "StockPriceChange"}, {"group": Session.get("GroupNo")}]}, {sort: {"timestamp": 1}}).map(function (u) {return u.price});
-
       goldPrices = gp;
-
       currentLength = goldPrices.length;
-
       // console.log("attempts to work " + startLength + " " + currentLength + " " + goldPrices);
-
       initAll();
       updateAll();
 
-      // if (chartItemChanged == true || (startLength == 0 && currentLength != 0)) {
-      //   price_data = [];
-      //   initAll();
-      //   chartItemChanged = false;
-      //   updateAll();
-      // }
-
-      // else if (startLength != currentLength && startLength != 0 && currentLength != 0 && goldPrices[0] != undefined){
-      //   price_data.push({'date': aTime, 'gold':goldPrices[0].toString() });
-      //   // console.log("refresh");
-      //   updateAll(); //*** TODO: update should add all pending values, not just latest value ***///
-      // }
     });
   }
 

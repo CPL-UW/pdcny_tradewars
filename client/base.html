@@ -192,6 +192,25 @@
             </li>
     	{{/each}}
         </ul>
+
+        <ul class="list-group">
+        {{#each sentRequests}}
+            <li class="list-group-item">  
+            <form class="form form-horizontal" id = "{{_id}}">
+            <div class="form-group">
+                <label class="col-md-9">
+                    {{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
+                </label>
+                <div class="col-md-3">
+                    <!-- <input class = "btn btn-success" type="submit" value="Accept" id = "accept" /> -->
+                    <input class = "btn btn-danger" type="submit" value="Cancel" id = "rescind" />
+                </div>
+            </div>
+            </form>
+            </li>
+        {{/each}}
+        </ul>
+
     </div>
 
 </template>
@@ -305,7 +324,7 @@
     </div>
     <sup>/\ /\ is highly in demand, so it's extra expensive this year! <br />
     \/ \/ is totally out of fashion, so cheaper than average this year. <br /> <br /></sup>
-	<b>Market value: {{totalValue}}</b> <sup>(The total value of all the things your group has right now. To see current stock prices, visit your base station) </sup>
+	<a class= "viewPriceGraph" value = "555"> <b>Market value: {{totalValue}}</b> </a> <sup>(The total value of all the things your group has right now. To see current stock prices, visit your base station) </sup>
 </template>
 
 <template name="priceGraph">
