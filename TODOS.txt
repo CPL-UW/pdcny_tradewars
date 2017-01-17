@@ -12,6 +12,8 @@ Jan 16 test run:
 4. fix information in menu bar
 5. view group when you come in
 
+6. Add gameJoin event for each player. And gamePause, and such.
+
 check balancing of price changing
 progress bar not enough; needs to feel more dynamic
 
