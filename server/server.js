@@ -53,7 +53,7 @@ Meteor.startup(function () {
 			}
 			else if (alert.text == "clearOne" && alert.contextKind == "id") {
 				console.log(alert.context);
-				console.log(Alerts.findOne({_id: alert.context}));
+				// console.log(Alerts.findOne({_id: alert.context}));
 				Alerts.update({_id: alert.context}, {$set: {"contents.read": 1}});
 			}
 			else {
@@ -65,14 +65,15 @@ Meteor.startup(function () {
 		},
 
 		zoneValidator: function (zoneCode, gameCode, gameYear, groupNo, userId) {
-			console.log(validZoneCodes + " " + zoneCode + " " + validZoneCodes.indexOf(parseInt(zoneCode)));
-
-			if (validZoneCodes.indexOf(zoneCode) > -1) {
-
-				return true;
+			// console.log(validZoneCodes + " " + zoneCode + " " + validZoneCodes.indexOf(parseInt(zoneCode)));
+			zone = validZoneCodes.indexOf(parseInt(zoneCode));
+			if ( zone > -1) {
+				console.log("correct zone");
+				return 1;
 			}
 			else{
-				return false;
+				console.log("wrong zone");
+				return 0;
 			}
 		},
 
@@ -147,7 +148,7 @@ Meteor.startup(function () {
 			}
 		},
 
-		exchangeResources: function (reqId, gCode, gameYear){
+		exchangeResources: function (reqId, gCode, zoneCode, gameYear){
 			reqt = Alerts.findOne({_id: reqId})
 			recvGrp = reqt.requestedGroup;
 			request = reqt.contents;
@@ -175,12 +176,12 @@ Meteor.startup(function () {
 			finalReceiverReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}).amount) - parseInt(request["reqAmt"]);
 			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
 			
-			Meteor.call('readRequest', reqId, true, gameYear);
+			Meteor.call('readRequest', reqId, true, gameYear, zoneCode);
 			reqt["currentYear"] = gameYear;
 			Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
 		},
 
-		readRequest: function (reqId, state = true, gameYear) {
+		readRequest: function (reqId, state = true, gameYear, zoneCode = 0000) {
 			val = 1;
 			if (state == false)
 				val = -1;

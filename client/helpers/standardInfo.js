@@ -102,36 +102,52 @@ Template.requestsTemp.events({
 			Meteor.call('raiseAlert', usr, {"text": text, "contextKind": contextKind, "context": reqId}, Session.get("GameCode"), urgency);
 		}
 		gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
-		console.log(e);
-		if($(e.target).prop("id") == "cancel") {
+		
+
+		if($(e.target).prop("id") == "reject") {
+			eee = e;
+			console.log(eee);	
+			console.log($(e.target)[0].form);
 
 		}
 		else {
-			if($(e.target).prop("id") == "accepts"){
-				// console.log("accept");
-				e.preventDefault();
-				reqResStock = AllStocks.findOne({$and: [{gID: Session.get("GroupNo")}, {gameCode: Session.get("GameCode")}, {item: request["reqRes"]}]});
-				if (reqResStock == undefined){
-					alertFn("Your group doesn't have the item you're trying to give! Trade fail *sad trombone*", "danger", "requestFail");
-					acceptance = false;
+			// if (validZoneCodes.indexOf(parseInt(e.target.form.zoneCode.value)) == -1 ) {
+			// 	alert(" Invalid Zone Code");
+			// }
+			// else {
+
+			if($(e.target).prop("id") == "accept"){
+				if (validZoneCodes.indexOf(parseInt(e.target.form.zoneCode.value)) == -1 ) {
+					alert(" Invalid Zone Code");
+					acceptance = "invalid";
+					e.preventDefault();
 				}
-				else if(reqResStock.amount < request["reqAmt"]){
-					alertFn("Your group doesn't have enough of the item you're trying to give! Trade fail *sad trombone*", "warning", "requestFail");
-					acceptance = false;
-				}
-				else{
-					Meteor.call('exchangeResources', reqId, Session.get("GameCode"), gameYear, function(err, result){
-						if(err){
-							alertFn("The server's dying man. Sorry", "danger", "requestFail");
-							// Meteor.call('raiseAlert', Meteor.userId(), {"text": "The server's dying man. Sorry", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
-						}
-						else {
-							alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess");
-							// Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request completed, you have the things you were offered!", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");
-						}
-					});
-					
-					acceptance = true;
+				else {
+					console.log("accept");
+					e.preventDefault();
+					reqResStock = AllStocks.findOne({$and: [{gID: Session.get("GroupNo")}, {gameCode: Session.get("GameCode")}, {item: request["reqRes"]}]});
+					if (reqResStock == undefined){
+						alertFn("Your group doesn't have the item you're trying to give! Trade fail *sad trombone*", "danger", "requestFail");
+						acceptance = false;
+					}
+					else if(reqResStock.amount < request["reqAmt"]){
+						alertFn("Your group doesn't have enough of the item you're trying to give! Trade fail *sad trombone*", "warning", "requestFail");
+						acceptance = false;
+					}
+					else{
+						Meteor.call('exchangeResources', reqId, Session.get("GameCode"), parseInt(e.target.form.zoneCode.value), gameYear, function(err, result){
+							if(err){
+								alertFn("The server's dying man. Sorry", "danger", "requestFail");
+								// Meteor.call('raiseAlert', Meteor.userId(), {"text": "The server's dying man. Sorry", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
+							}
+							else {
+								alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess");
+								// Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request completed, you have the things you were offered!", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");
+							}
+						});
+						
+						acceptance = true;
+					}
 				}
 			}
 			else{
@@ -140,16 +156,16 @@ Template.requestsTemp.events({
 				acceptance = false;
 				// console.log("reject", $(e.target).prop("fNo"));
 			}
+		}
 
-			if(acceptance == false){
-				alertFn("Request rejected/failed! :(", "danger", "requestFail" ,request["requester"].id);
-				// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request rejected/failed.", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
-			}
-			else {
-				alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess", request["requester"].id);
-				// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request accepted! Woohoo", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");	
-			}
+		if(acceptance == false){
+			alertFn("Request rejected/failed! :(", "danger", "requestFail" ,request["requester"].id);
 			Meteor.call('readRequest', reqId, acceptance, gameYear);
+			// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request rejected/failed.", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
+		}
+		else if(acceptance == true) {
+			alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess", request["requester"].id);
+			// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request accepted! Woohoo", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");	
 		}
 	}
 });
