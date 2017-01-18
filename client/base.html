@@ -182,7 +182,7 @@
             <form class="form form-horizontal" id = "{{_id}}">
             <div class="form-group">
                 <label class="col-md-7">
-            		{{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
+            		{{contents.requester.username}} has asked you for {{contents.reqAmt}} pieces of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} pieces of {{contents.recvRes}}.
                 </label>
         		<div class="col-md-5">
                     <input type="number" id = "responseZone" name="zoneCode" class = "form-control" placeholder="Zone Code" /><br />
@@ -195,13 +195,13 @@
     	{{/each}}
         </ul>
 
-        <!-- <ul class="list-group">
+        <ul class="list-group">
         {{#each sentRequests}}
             <li class="list-group-item">  
             <form class="form form-horizontal" id = "{{_id}}">
             <div class="form-group">
                 <label class="col-md-9">
-                    {{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
+                    You have asked {{contents.user}} for {{contents.reqAmt}} pieces of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} pieces of {{contents.recvRes}}.
                 </label>
                 <div class="col-md-3">
                     <input class = "btn btn-danger" type="submit" value="Cancel" id = "rescind" />
@@ -210,7 +210,7 @@
             </form>
             </li>
         {{/each}}
-        </ul> -->
+        </ul>
 
     </div>
 

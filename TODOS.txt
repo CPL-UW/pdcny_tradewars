@@ -1,10 +1,12 @@
 UI Refinements:
 
+verify repetition of location for trades and block
+
 //~ adding resource numbers to trade request info
 //~ add reqId to stockpricechange caused by trades
 
 slider;
-location area
+/~ location area
 
 BUGS:
 
@@ -18,9 +20,9 @@ Jan 16 test run:
 // 2.1		responded requests dropdown confusing
 			keep it default open, and set div height max
 
-3. *** rescind trade requests
+// 3. *** rescind trade requests
 
-4. fix information in menu bar
+/~/ 4. fix information in menu bar
 5. view group when you come in
 
 6. Add gameJoin event for each player. And gamePause, and such.

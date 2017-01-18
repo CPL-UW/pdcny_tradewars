@@ -15,6 +15,9 @@ Template.allReadAlerts.helpers({
 		else if (req.contents.read == -1){
 			return "rejected.";
 		}
+		else if (req.contents.read == -2) {
+			return "canceled by the sender.";
+		}
 		else {
 			return "(strangely, ) not responded to!"
 		}

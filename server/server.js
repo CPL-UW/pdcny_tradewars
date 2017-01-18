@@ -148,6 +148,10 @@ Meteor.startup(function () {
 			}
 		},
 
+		rescindRequest: function (reqId, gCode, gameYear) {
+			Meteor.call('readRequest', reqId, -2, gameYear);
+		},
+
 		exchangeResources: function (reqId, gCode, zoneCode, gameYear){
 			reqt = Alerts.findOne({_id: reqId})
 			recvGrp = reqt.requestedGroup;
@@ -176,15 +180,19 @@ Meteor.startup(function () {
 			finalReceiverReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}).amount) - parseInt(request["reqAmt"]);
 			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
 			
-			Meteor.call('readRequest', reqId, true, gameYear, zoneCode);
-			reqt["currentYear"] = gameYear;
+			Meteor.call('readRequest', reqId, 1, gameYear, zoneCode);
+			reqt["tradeYear"] = gameYear;
 			Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
 		},
 
-		readRequest: function (reqId, state = true, gameYear, zoneCode = 0000) {
+		readRequest: function (reqId, state = 1, gameYear, zoneCode = 0000) {
 			val = 1;
-			if (state == false)
+			if (state == -1){
 				val = -1;
+			}
+			else if (state == -2){
+				val = -2;
+			}
 			Alerts.update({_id: reqId}, {$set: {"contents.read": val}});
 			
 			req = Alerts.findOne({_id: reqId});
@@ -193,9 +201,11 @@ Meteor.startup(function () {
 				"key": "TradeRequestResponded",
 				"description": "",
 				"gameCode": req.gameCode,
+				"year": gameYear,
 				"player": req.user,
 				"response": state,
-				"contents": req
+				"contents": req,
+				"zone": zoneCode
 			};
 			Meteor.call("logEvent", evLog)
 
