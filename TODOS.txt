@@ -1,10 +1,21 @@
 UI Refinements:
 
+//~ adding resource numbers to trade request info
+//~ add reqId to stockpricechange caused by trades
+
+slider;
+location area
+
+BUGS:
+
+// base station - group number
+
+
 Jan 16 test run:
 
 // 1. ** graph of market total
 // 2. ** fix responded requests - status info
-2.1		responded requests dropdown confusing
+// 2.1		responded requests dropdown confusing
 			keep it default open, and set div height max
 
 3. *** rescind trade requests

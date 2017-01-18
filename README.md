@@ -1,8 +1,8 @@
 # Lead Caravan
 
-## Enabling base users
+### Enabling base users
 
-If you don't have a file called secrets.js, make any file in the lib/ folder and store a password string in a variable called basePass (basePass = <'something'>). 
+If you don't have a file called secrets.js, make any file in the startup/server/ folder and store a password string in a variable called basePass (basePass = <'something'>). startup/sever/ is the location secrets.js goes, even if you do have it, and I forgot to tell you where to put it.
 
 ### Seeing the base station view
 

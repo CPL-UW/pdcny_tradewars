@@ -4,6 +4,7 @@
 // 	"timestamp": (new Date()).getTime(),
 // 	"key": "StockPriceChange",
 // 	"description": "RegularUpdate",
+//
 // 	"gameCode": gameCode,
 // 	"group": groupIDs[g],
 // 	"item": resources[r],
@@ -21,7 +22,7 @@
 
 // evLog = {
 // 		"timestamp": (new Date()).getTime(),
-// 		"key": "GameYearChange",
+// 		"key": "GameYearIncrease",
 // 		"description": "RegularUpdate",
 // 		"lastYear": game.year,
 // 		"newYear": year,
@@ -31,10 +32,11 @@
 // evLog = {
 // 	"timestamp": (new Date()).getTime(),
 // 	"key": "TradeRequestSent",
+//	"reqId": reqLog._id,
 // 	"description": "",
 // 	"gameCode": gCode,
 // 	"player": requester,
-// 	"contents": reqLog
+// 	"contents": reqLog 			--year added
 // }
 
 // evLog = {
@@ -44,7 +46,7 @@
 // 	"gameCode": req.gameCode,
 // 	"player": req.user,
 // 	"response": state,
-// 	"contents": req
+// 	"contents": req 			--year added
 // };
 
 //keys: StockPriceChange, NewGameStart, TradeRequestSent, TradeRequestResponded

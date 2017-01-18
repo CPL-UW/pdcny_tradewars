@@ -77,7 +77,6 @@ Template.yearInfo.helpers({
 	}
 });
 
-
 Template.trade.helpers({
 	otherUsers: function () {
 		///playername not in baseusers  , {{"playerName": }} 
@@ -86,15 +85,16 @@ Template.trade.helpers({
 	},
 
 	givingResources: function () {
-		return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"amount": {$gt: 0}}] }, {"item": 1, "amount": 1});
+		return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"amount": {$gt: 0}}] }, {"item": 1, "amount": 1, "itemNo": 1});
 	},
 
 	allResources: function () {
-		ar = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"amount": {$gt: 0}}]}, {"item": 1}).fetch();
+		ar = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"amount": {$gt: 0}}]}, {"item": 1, "amount": 1, "itemNo": 1}).fetch();
 		distinctArray = _.uniq(ar, false, function(d) {return d.item});
 		distinctValues = _.pluck(distinctArray, 'item');
 		ar = distinctValues.map(function (x){return {"item": x}});
-		return ar;
+		// console.log(distinctArray);
+		return distinctArray;
 	}
 
 });
@@ -105,8 +105,10 @@ Template.trade.events({
 		event.preventDefault();
 
 		var checkAvailability = function(res, amt) {
-			a = parseInt(AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"item": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch().length);
-			// console.log(a != 0);
+			// console.log(res);
+			resStocks = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch();
+			a = parseInt(resStocks.length);
+			// console.log(resStocks[0]);
 			if (a > 0){
 				// console.log("tru");
 				return true;
@@ -117,21 +119,70 @@ Template.trade.events({
 			}
 		}
 
+		var getResName = function (res) {
+			// console.log(res + " ");
+			resStock = AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}]});
+			// console.log(resStock)
+			return resStock.item;
+		}
+		gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+
 		clearForm = function (e) {
 			e.target.giveAmount.value = "";
 			e.target.requestAmount.value = "";
 		}
-		if (event.target.giveAmount.value == ""){
+		// validZone = false;
+		validZone = true;
+
+		// Meteor.call('zoneValidator', 
+		// 	event.target.zoneCode.value, 
+		// 	Session.set("GameCode"), 
+		// 	gameYear, 
+		// 	Session.set("GroupNo"), 
+		// 	Meteor.userId(), function (error, result) {
+		// 		if (error) {
+		// 			validZone = false;
+		// 			console.log(error);
+		// 		}
+		// 		else {
+		// 			console.log(result)
+		// 			validZone = result;
+		// 			console.log(validZone);
+		// 		}
+		// } );
+
+		if (event.target.Recipient.value == "") {
+			$("input[name=Recipient]").focus();
+		}
+		else if (event.target.giveAmount.value == ""){
 			$("input[name=giveAmount]").focus();
 		}
 		else if (event.target.requestAmount.value == "") {
 			$("input[name=requestAmount]").focus();
 		}
+		else if (!validZone) {
+			$("input[name=zoneCode]").focus();
+			// alert("Invalid zone code!");
+		}
 		else {
-			if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value)){
+			// console.log( getResName(event.target.GivingResource.value) + " " + getResName(event.target.TakingResource.value));
+			if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value) ){
 				// console.log(event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value);
 				// console.log(event.target.Recipient.value);
-				Meteor.call('reqTrade', Session.get("GameCode"), event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value, function (error, result){
+				console.log(RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear);
+				zoneCode = event.target.zoneCode.value;
+				// console.log(gameYear);
+				Meteor.call('reqTrade', 
+					Session.get("GameCode"), 
+					event.target.Recipient.value, 
+					Meteor.userId(), 
+					event.target.GivingResource.value, 
+					getResName(event.target.GivingResource.value), 
+					event.target.giveAmount.value, 
+					event.target.TakingResource.value, 
+					getResName(event.target.TakingResource.value), 
+					event.target.requestAmount.value, zoneCode,
+					gameYear, function (error, result){
 					if (error){
 						console.log("faaaaiiil");
 						Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed due to server's fault. The machines are rising against us, run.", "contextKind": "serverError", "context": "server"}, Session.get("GameCode"), "danger");

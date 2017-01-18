@@ -64,7 +64,19 @@ Meteor.startup(function () {
 			// console.log(d3.random.normal(1,10));
 		},
 
-		reqTrade : function (gCode, recipient, requester, giveRes, giveAmt, takeRes, takeAmt) {
+		zoneValidator: function (zoneCode, gameCode, gameYear, groupNo, userId) {
+			console.log(validZoneCodes + " " + zoneCode + " " + validZoneCodes.indexOf(parseInt(zoneCode)));
+
+			if (validZoneCodes.indexOf(zoneCode) > -1) {
+
+				return true;
+			}
+			else{
+				return false;
+			}
+		},
+
+		reqTrade : function (gCode, recipient, requester, giveRes, giveResName, giveAmt, takeRes, takeResName, takeAmt, zoneCode, gameYear) {
 			// console.log(recipient, giveRes, giveAmt, takeRes, takeAmt);
 			/*
 			requests should look like:
@@ -80,47 +92,65 @@ Meteor.startup(function () {
 				{replied: }					replied
 			]
 			*/
-			reqLog = {
-				"gameCode": gCode, 
-				"timestamp": (new Date()).getTime(),
-				"user": recipient,
-				"username": Meteor.users.findOne({_id: recipient}).username,
-				"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
-				"type": "request",  
-				"contents": {
-					"requester": {
-						"id": requester, 
-						"username": Meteor.users.findOne({_id:requester}).username, 
-						"group": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": requester}]}).group
-					},
-					"reqRes": takeRes, 
-					"reqAmt": parseInt(takeAmt), 
-					"recvRes": giveRes, 
-					"recvAmt": parseInt(giveAmt), 
-					"read": 0
+			// takeResName = expRes[takeRes];
+			// if (takeResName == undefined){
+			// 	takeResName = cheapRes[takeRes];
+			// }
+			// giveResName = expRes[giveRes];
+			// if (giveResName == undefined) {
+			// 	giveResName = cheapRes[giveRes];
+			// }
+			console.log(giveResName + " " + takeResName);
+			if (giveResName != undefined && takeResName != undefined){
+				reqLog = {
+					"gameCode": gCode, 
+					"timestamp": (new Date()).getTime(),
+					"year": gameYear,
+					"user": recipient,
+					"username": Meteor.users.findOne({_id: recipient}).username,
+					"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
+					"type": "request",
+					"zone": zoneCode,
+					"contents": {
+						"requester": {
+							"id": requester, 
+							"username": Meteor.users.findOne({_id:requester}).username, 
+							"group": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": requester}]}).group
+						},
+						"reqRes": takeResName,
+						"reqResNo": takeRes, 
+						"reqAmt": parseInt(takeAmt),
+						"recvRes": giveResName,
+						"recvResNo": giveRes,
+						"recvAmt": parseInt(giveAmt),
+						"read": 0
+					}
+				};
+				insertId = 0;
+				Alerts.insert(reqLog);
+				insertId = Alerts.findOne(reqLog)._id;
+				postedReqLog = Alerts.findOne({_id: insertId});
+				evLog = {
+					"timestamp": (new Date()).getTime(),
+					"key": "TradeRequestSent",
+					"reqId": insertId,
+					"description": "",
+					"gameCode": gCode,
+					"player": requester,
+					"contents": postedReqLog
 				}
-			};
-			insertId = 0;
-			Alerts.insert(reqLog);
-			insertId = Alerts.findOne(reqLog)._id;
-			evLog = {
-				"timestamp": (new Date()).getTime(),
-				"key": "TradeRequestSent",
-				"description": "",
-				"gameCode": gCode,
-				"player": requester,
-				"contents": reqLog
-			}
 
-			Meteor.call("logEvent", evLog)
-			
-			console.log(insertId);
-			return insertId;
+				Meteor.call("logEvent", evLog)
+				console.log("Making request");
+				console.log(insertId);
+				return insertId;
+			}
 		},
 
-		exchangeResources: function (reqId, gCode){
-			recvGrp = Alerts.findOne({_id: reqId}).requestedGroup;
-			request = Alerts.findOne({_id: reqId}).contents;
+		exchangeResources: function (reqId, gCode, gameYear){
+			reqt = Alerts.findOne({_id: reqId})
+			recvGrp = reqt.requestedGroup;
+			request = reqt.contents;
 			reqingGrp = request.requester.group;
 
 			//recvGrp is the one that received the request
@@ -145,12 +175,12 @@ Meteor.startup(function () {
 			finalReceiverReceivedStock = parseInt(AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}).amount) - parseInt(request["reqAmt"]);
 			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
 			
-			Meteor.call('readRequest', reqId, true);
-
-			Meteor.call('updateStocks', gCode, "TradeCausedUpdate");
+			Meteor.call('readRequest', reqId, true, gameYear);
+			reqt["currentYear"] = gameYear;
+			Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
 		},
 
-		readRequest: function (reqId, state = true) {
+		readRequest: function (reqId, state = true, gameYear) {
 			val = 1;
 			if (state == false)
 				val = -1;
@@ -259,7 +289,8 @@ Meteor.startup(function () {
 			AllStocks.update({_id: id}, {$set: {amount: newamt}});
 		},
 
-		updateIndividualStock: function (stockDoc, updateType) {
+		updateIndividualStock: function (stockDoc, updateType, context = {}) {
+			oldPrice = stockDoc.price;
 			newPrice = stockDoc.mean / (stockDoc.amount + stockDoc.stdev);
 			newPrice = parseInt(newPrice * 100) / 100;
 			AllStocks.update({"_id": stockDoc._id}, {$set: {"price": newPrice}});
@@ -270,7 +301,9 @@ Meteor.startup(function () {
 				"gameCode": stockDoc.gameCode,
 				"group": stockDoc.gID,
 				"itemNo": stockDoc.itemNo,
-				"price": newPrice
+				"oldPrice": oldPrice,
+				"newPrice": newPrice,
+				"context": context
 			}
 			Meteor.call("logEvent", evLog);
 
@@ -279,12 +312,12 @@ Meteor.startup(function () {
 				//which in turn calls a function that compares all groups' market values, and assigns a rank
 		},
 
-		updateStocks: function (gameCode, updateType = "RegularUpdate") {
+		updateStocks: function (gameCode, updateType = "RegularUpdate", context = {}) {
 			// newPricefn = gaussian(150, 50);
 			console.log(gameCode + " stock update");		//** Needs to be rewritten **//
 			AllStocks.find({"gameCode": gameCode}).forEach(function (stockDoc) {
 				
-				Meteor.call("updateIndividualStock", stockDoc, updateType);
+				Meteor.call("updateIndividualStock", stockDoc, updateType, context);
 			});
 			///*** MATTHEW TODO: Integrate resource price calculation here ***///
 		},

@@ -2,6 +2,7 @@
 
 activeTab = new ReactiveVar('stocks-tab'); //Your default tab
 groupNameVar = new ReactiveVar('admin');
+// gameYear = new ReactiveVar('year')
 
 Template.gameInfo.helpers ({
 	gameYear: function () {
@@ -100,11 +101,13 @@ Template.requestsTemp.events({
 			console.log(text + " " + urgency);
 			Meteor.call('raiseAlert', usr, {"text": text, "contextKind": contextKind, "context": reqId}, Session.get("GameCode"), urgency);
 		}
+		gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+		console.log(e);
 		if($(e.target).prop("id") == "cancel") {
 
 		}
 		else {
-			if($(e.target).prop("id") == "accept"){
+			if($(e.target).prop("id") == "accepts"){
 				// console.log("accept");
 				e.preventDefault();
 				reqResStock = AllStocks.findOne({$and: [{gID: Session.get("GroupNo")}, {gameCode: Session.get("GameCode")}, {item: request["reqRes"]}]});
@@ -117,7 +120,7 @@ Template.requestsTemp.events({
 					acceptance = false;
 				}
 				else{
-					Meteor.call('exchangeResources', reqId, Session.get("GameCode"), function(err, result){
+					Meteor.call('exchangeResources', reqId, Session.get("GameCode"), gameYear, function(err, result){
 						if(err){
 							alertFn("The server's dying man. Sorry", "danger", "requestFail");
 							// Meteor.call('raiseAlert', Meteor.userId(), {"text": "The server's dying man. Sorry", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
@@ -146,7 +149,7 @@ Template.requestsTemp.events({
 				alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess", request["requester"].id);
 				// Meteor.call('raiseAlert', request["requester"].id, {"text": "Request accepted! Woohoo", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");	
 			}
-			Meteor.call('readRequest', reqId, acceptance);
+			Meteor.call('readRequest', reqId, acceptance, gameYear);
 		}
 	}
 });

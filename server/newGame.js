@@ -8,6 +8,7 @@ Meteor.startup(function () {
 				codeString = parseInt(Math.random()*100000).toString();
 			}
 			// codeString = "1730";
+			firstYear = 2253;
 			if (RunningGames.findOne({"gameCode": codeString}) == undefined){
 				RunningGames.insert({
 					"gameCode": codeString,
@@ -18,7 +19,7 @@ Meteor.startup(function () {
 					"size": size,
 					"lastLogin": (new Date()).getTime(),
 					"gameStart": (new Date()).getTime(),
-					"currentYear": 2253,
+					"currentYear": firstYear,
 					"elapsedTimeTotal": 0,
 					"elapsedTimeYear": 0,
 					"status": "running",
@@ -35,7 +36,8 @@ Meteor.startup(function () {
 							"description": "",
 							"gameCode": codeString,
 							"size": size,		//****TODO***//: add dynamicness in number of groups playing
-							"admin": adminID
+							"admin": adminID,
+							"startingYear": firstYear
 						}
 						Meteor.call("logEvent", evLog);
 						Meteor.call("basesToGroups", codeString, size);
@@ -117,7 +119,7 @@ Meteor.startup(function () {
 			grps = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]}).groupNumbers;
 			// console.log(grps);
 			while (i < size){
-				joinerID = Meteor.users.findOne({"username": baseUsers[i]})._id;
+				joinerID = Meteor.users.findOne({"username": baseUsers[grps[i]]})._id;
 				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase");
 				i++;
 			}

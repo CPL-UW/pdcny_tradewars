@@ -23,6 +23,7 @@
 
 <template name = "leaderBoard">
     {{#if currentUser}}
+    <a href="/cv"> <h4> Leaderboard here </h4> </a>
         {{>centralView}}
     {{/if}}
 </template>
@@ -180,10 +181,11 @@
             <li class="list-group-item">  
             <form class="form form-horizontal" id = "{{_id}}">
             <div class="form-group">
-                <label class="col-md-9">
+                <label class="col-md-7">
             		{{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
                 </label>
-        		<div class="col-md-3">
+        		<div class="col-md-5">
+                    <input type="number" name="zoneCode" class = "form-control" placeholder="Zone Code" /><br />
         			<input class = "btn btn-success" type="submit" value="Accept" id = "accept" />
         			<input class = "btn btn-danger" type="submit" value="Reject" id = "reject" />
                 </div>
@@ -193,7 +195,7 @@
     	{{/each}}
         </ul>
 
-        <ul class="list-group">
+        <!-- <ul class="list-group">
         {{#each sentRequests}}
             <li class="list-group-item">  
             <form class="form form-horizontal" id = "{{_id}}">
@@ -202,14 +204,13 @@
                     {{contents.requester.username}} has asked you for {{contents.reqAmt}} of {{contents.reqRes}}, in exchange for {{contents.recvAmt}} of {{contents.recvRes}}.
                 </label>
                 <div class="col-md-3">
-                    <!-- <input class = "btn btn-success" type="submit" value="Accept" id = "accept" /> -->
                     <input class = "btn btn-danger" type="submit" value="Cancel" id = "rescind" />
                 </div>
             </div>
             </form>
             </li>
         {{/each}}
-        </ul>
+        </ul> -->
 
     </div>
 
@@ -243,14 +244,14 @@
             <div class = "col-sm-8">
             <select name = "GivingResource" class = "form-control">
                 {{#each givingResources}}
-                    <option value="{{item}}">{{item}} (Inventory: {{amount}})</option>
+                    <option value="{{itemNo}}">{{item}} (Inventory: {{amount}})</option>
                 {{/each}}
             </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label class = "control-label col-sm-4">And how much?</label>
+            <label class = "control-label col-sm-4">How much?</label>
             <div class = "col-sm-8">
         		<input type="number" name="giveAmount" class = "form-control"/><br />
             </div>
@@ -261,16 +262,23 @@
             <div class = "col-sm-8">
             <select name = "TakingResource" class = "form-control">
                 {{#each allResources}}
-                    <option value="{{item}}">{{item}}</option> 
+                    <option value="{{itemNo}}">{{item}}</option> 
                 {{/each}}
             </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label class = "control-label col-sm-4">And how much?</label>
+            <label class = "control-label col-sm-4">How much?</label>
             <div class = "col-sm-8">
                 <input type="number" name="requestAmount" class = "form-control"/><br />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class = "control-label col-sm-4">Where are you right now? (zone code)</label>
+            <div class = "col-sm-8">
+                <input type="number" name="zoneCode" class = "form-control"/><br />
             </div>
         </div>
 
