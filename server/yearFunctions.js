@@ -1,6 +1,6 @@
 Meteor.startup(function () {
 	Meteor.methods({
-		
+
 		checkYearStatus: function (requestType) {
 			RunningGames.find({$and: [{"group": "admin"}, {"status": "running"}]}).forEach(function (game) {
 				if (game.elapsedTimeYear >= game.yearLength){
@@ -9,9 +9,19 @@ Meteor.startup(function () {
 			});
 		},
 
-		giveYearPoints: function (gameCode) {
-			maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"marketValue":-1}}).fetch()[0];
+		giveYearPoints: function (gameCode, year) {
+			// maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"marketValue":-1}}).fetch()[0];
+			maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"cash":-1}}).fetch()[0];
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "AnnualPointAward",
+				"year": year,
+				"gameCode": gameCode,
+				"group": maxScore.group
+			}
+			Meteor.call("logEvent", evLog);
 			RunningGames.update({_id: maxScore._id}, {$inc: {"points": 1}});
+			RunningGames.update( {$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0} }, {multi: true} );
 		},
 
 		incrementGameYear: function (gameDocId, requestType, newEvents = "all"){
@@ -31,7 +41,8 @@ Meteor.startup(function () {
 					Meteor.call("logEvent", evLog);
 					Meteor.call("newYearEvents", gameDocId, newEvents);
 					if (requestType != "NewGameSetup"){
-						Meteor.call("giveYearPoints", gameDoc.gameCode);
+						Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
+
 					}
 				}
 			});
@@ -106,7 +117,6 @@ Meteor.startup(function () {
 						});
 					}
 				});
-				
 			}
 		},
 

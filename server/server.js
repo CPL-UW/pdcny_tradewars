@@ -211,7 +211,29 @@ Meteor.startup(function () {
 
 		},
 
-		insertPlayer: function (gameCode, joinerID, grp, role) {
+		cashOutResource: function (sellRes, sellResName, sellAmount, gameCode, userId, groupNo, gameYear) {
+			// db.collection.find({ "fieldToCheck" : { $exists : true, $not : null } });
+			// AllStocks.update()
+			AllStocks.update( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes}]}, {$inc: {"amount": -1 * sellAmount} } );
+			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": "admin"}]}, {$inc: {"cash": Math.log(sellAmount)} } );
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "CashingOutResources",
+				"description": "",
+				"gameCode": gameCode,
+				"user": userId,
+				"year": gameYear,
+				"resource": sellRes,
+				"resourceName": sellResName,
+				"amount": sellAmount				
+			};
+			Meteor.call("logEvent", evLog);
+
+			Meteor.call('updateStocks', gameCode, "CashoutUpdate");
+
+		},
+
+		insertPlayer: function (gameCode, joinerID, grp, role, cash = -1) {
 			grpname = "";
 			if (grp >= 0) {
 				grpname = groupNames[grp];
@@ -224,7 +246,8 @@ Meteor.startup(function () {
 				"groupName": grpname,
 				"role": role,
 				"lastLogin": (new Date()).getTime(),
-				"status": "running"
+				"status": "running",
+				"cash": cash
 			});
 		},
 

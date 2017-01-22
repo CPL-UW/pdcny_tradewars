@@ -120,7 +120,7 @@ Meteor.startup(function () {
 			// console.log(grps);
 			while (i < size){
 				joinerID = Meteor.users.findOne({"username": baseUsers[grps[i]]})._id;
-				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase");
+				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase", 0);
 				i++;
 			}
 			Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]})._id, "NewGameSetup");

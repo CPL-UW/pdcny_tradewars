@@ -1,5 +1,8 @@
 UI Refinements:
 
+add resource cashing out mechanism
+
+add event log for point awarding at end of year. Should also have general information about ranks
 verify repetition of location for trades and block
 
 //~ adding resource numbers to trade request info

@@ -135,84 +135,6 @@ Template.trade.events({
 		validZone = false;
 		// validZone = true;
 		zoneCode = parseInt(event.target.zoneCode.value);
-		// Meteor.call('zoneValidator', 
-		// 	zoneCode, 
-		// 	Session.set("GameCode"), 
-		// 	gameYear, 
-		// 	Session.set("GroupNo"), 
-		// 	Meteor.userId(), function (error, result) {
-		// 		if (error) {
-		// 			validZone = false;
-		// 			console.log(error);
-		// 			Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – something server side wrong with zone validation", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
-		// 			$(document).scrollTop( $("#alertsAtTop").offset().top );
-		// 			clearForm(event);
-		// 		}
-		// 		else {
-		// 			console.log(result)
-		// 			validZone = (result == 1);
-		// 			console.log(validZone);
-
-		// 			if (result == 1){
-		// 				if (event.target.Recipient.value == "") {
-		// 					$("input[name=Recipient]").focus();
-		// 				}
-		// 				else if (event.target.giveAmount.value == ""){
-		// 					$("input[name=giveAmount]").focus();
-		// 				}
-		// 				else if (event.target.requestAmount.value == "") {
-		// 					$("input[name=requestAmount]").focus();
-		// 				}
-		// 				else {
-		// 					// console.log( getResName(event.target.GivingResource.value) + " " + getResName(event.target.TakingResource.value));
-		// 					if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value) ){
-		// 						// console.log(event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value);
-		// 						// console.log(event.target.Recipient.value);
-		// 						console.log(RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear);
-		// 						zoneCode = event.target.zoneCode.value;
-		// 						// console.log(gameYear);
-		// 						Meteor.call('reqTrade', 
-		// 							Session.get("GameCode"), 
-		// 							event.target.Recipient.value, 
-		// 							Meteor.userId(), 
-		// 							event.target.GivingResource.value, 
-		// 							getResName(event.target.GivingResource.value), 
-		// 							event.target.giveAmount.value, 
-		// 							event.target.TakingResource.value, 
-		// 							getResName(event.target.TakingResource.value), 
-		// 							event.target.requestAmount.value, zoneCode,
-		// 							gameYear, function (error, result){
-		// 							if (error){
-		// 								console.log("faaaaiiil");
-		// 								Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed due to server's fault. The machines are rising against us, run.", "contextKind": "serverError", "context": "server"}, Session.get("GameCode"), "danger");
-		// 								$(document).scrollTop( $("#alertsAtTop").offset().top );
-		// 								clearForm(event);
-		// 							}
-		// 							else {
-		// 								Meteor.call('raiseAlert', Meteor.userId(), {"text": "Sent Request", "contextKind": "requestCreation", "context": result}, Session.get("GameCode"), "success");
-		// 								Meteor.call('raiseAlert', event.target.Recipient.value, {"text": "Request received!", "contextKind": "requestReceival", "context": result}, Session.get("GameCode"), "warning");
-		// 								$(document).scrollTop( $("#alertsAtTop").offset().top );
-		// 								clearForm(event);
-		// 							}
-		// 						});
-		// 					}
-		// 					else{
-		// 						Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – probably not enough resource", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
-		// 						event.target.giveAmount.value = "";
-		// 						$("input[name=giveAmount]").focus();
-		// 						$(document).scrollTop( $("#alertsAtTop").offset().top );
-		// 					}
-		// 				}
-		// 			} 
-		// 			else {
-		// 				Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request sending failed – probably wrong zone code", "contextKind": "userError", "context": "thisUser"}, Session.get("GameCode"), "danger");
-		// 				$(document).scrollTop( $("#alertsAtTop").offset().top );
-		// 				clearForm(event);
-		// 			}
-
-		// 		}
-		// 	} 
-		// );
 
 		if (event.target.Recipient.value == "") {
 			$("input[name=Recipient]").focus();
@@ -228,15 +150,9 @@ Template.trade.events({
 			$("input[name=zoneCode]").focus();	
 		}
 		else {
-			// console.log( getResName(event.target.GivingResource.value) + " " + getResName(event.target.TakingResource.value));
 			if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value) ){
 				giveResName = getResName(event.target.GivingResource.value);
 				takeResName = getResName(event.target.TakingResource.value);
-				// console.log(event.target.Recipient.value, Meteor.userId(), event.target.GivingResource.value, event.target.giveAmount.value, event.target.TakingResource.value, event.target.requestAmount.value);
-				// console.log(event.target.Recipient.value);
-				// console.log(RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear);
-				// zoneCode = event.target.zoneCode.value;
-				// console.log(gameYear);
 				Meteor.call('reqTrade', 
 					Session.get("GameCode"), 
 					event.target.Recipient.value, 
@@ -271,4 +187,94 @@ Template.trade.events({
 		}
 	}
 });
+
+Template.cashOut.helpers({
+	availableResources: function () {
+		return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"amount": {$gt: 0}}] }, {"item": 1, "amount": 1, "itemNo": 1});
+	},
+
+	teamCash: function () {
+		// game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
+		// // console.log(game);
+		// if (game.cash != undefined){
+		// 	// console.log("true");
+		// 	c = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
+		// }
+		// else {
+		// 	// console.log("false");
+		// 	c = 0;
+		// }
+		c = 0;
+		// console.log(c);
+		return c;
+	}
+});
+
+Template.cashOut.events({
+	"submit .selling": function (event) {
+		event.preventDefault();
+		var checkAvailability = function(res, amt) {
+			// console.log(res);
+			resStocks = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch();
+			a = parseInt(resStocks.length);
+			// console.log(resStocks[0]);
+			if (a > 0){
+				// console.log("tru");
+				return true;
+			}
+			else {
+				// console.log("fal");
+				return false;
+			}
+		}
+
+		var getResName = function (res) {
+			// console.log(res + " ");
+			resStock = AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}]});
+			// console.log(resStock)
+			return resStock.item;
+		}
+
+		if (event.target.sellResource.value == "") {
+			$("input[name=sellResource]").focus();
+		}
+		else if (event.target.sellAmount.value == ""){
+			$("input[name=sellAmount]").focus();
+		}
+		else {
+			gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+
+			if (checkAvailability(event.target.sellResource.value, event.target.sellAmount.value)) {
+				Meteor.call('cashOutResource', 
+					event.target.sellResource.value, 
+					getResName(event.target.sellResource.value), 
+					parseInt(event.target.sellAmount.value), 
+					Session.get("GameCode"), 
+					Meteor.userId(), Session.get("GroupNo"), gameYear, 
+					function (err, res) {
+						if (err) {
+							console.log(err);
+							alert("Cash out failed at server end");
+						}
+						else {
+							event.target.sellAmount.value = "";
+						}
+					}
+				);
+			}
+			else {
+				alert("Our system thinks you're trying to sell more than you have. Not gonna work.")
+			}
+
+		}
+	}
+});
+
+
+
+
+
+
+
+
 
