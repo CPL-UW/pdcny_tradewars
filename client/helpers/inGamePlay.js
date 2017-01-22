@@ -62,7 +62,9 @@ Template.stockInfo.events({
 Template.playerView.helpers({
 	thisIsBase: function () {
 		return baseUsers.indexOf(Meteor.user().username) != -1;
-	}
+	},
+	showModal: function () {return Session.get("showModal");}
+
 });
 
 Template.playerView.events({
@@ -76,9 +78,13 @@ Template.playerView.events({
 	
 	'click #btn-modal': function(){
 		console.log("success");
-		Session.set('showModal', true); // Show modal
-		Session.set('showModal', false); // Hide modal
-		console.log("show")
+		console.log("show");
+		if (Session.get("showModal") == true){
+			Session.set('showModal', false);
+		}
+		else{
+			Session.set('showModal', true);// Hide modal
+		}
 	}
 });
 
