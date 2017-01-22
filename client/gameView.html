@@ -1,4 +1,6 @@
 <template name = "playerView">
+
+	<button type="button" class="btn btn-primary" id="btn-modal" data-toggle="modal" data-target="#exampleModal">Test</button>
 	<ul class="nav nav-tabs" id = "main-tabs">
 		<!-- <div class="col-xs-4"> -->
 	  <li role="presentation" class="active col-md-4"><a href="#" value = "stocks-tab" class = "view-tabs" data-toggle="tab">Stocks</a></li>
@@ -18,4 +20,26 @@
 		<li class="tab col s4"><a id="page-two" href="#">Page Two</a></li>
 		<li class="tab col s4"><a id="page-three" href="#">Page Three</a></li>
 	</ul> -->
+	<!-- Modal -->
+	{{#if showModal}}
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        ...
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary">Save changes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{{/if}}
 </template>

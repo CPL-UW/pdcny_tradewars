@@ -6,12 +6,12 @@ html {
 }
 
 body {
-  background-color: #454747;
+  background-color: black;
   color: #BBDEFB;
 }
 
 a {
-  color: grey;
+  color: #2196F3;
 }
 
 a:hover, a:focus {
@@ -51,6 +51,23 @@ a:hover, a:focus {
   background-color: #454747;
 }
 
+.nav-tabs {
+  border-bottom: none;
+}
+
+.nav-tabs > li {
+  width: 33%;
+  padding-left: 0px;
+  padding-right: 0px; 
+  text-align: center;
+}
+
+.nav-tabs > li > a {
+  background-color: transparent;
+  border-top: 1px solid white;
+  border-right: 1px solid white;
+}
+
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
   background-color: #333;
   color: #BBDEFB;
@@ -59,6 +76,10 @@ a:hover, a:focus {
 .nav-tabs > li > a:hover {
   background-color: rgba(51,51,51, 0.2);
   color: #BBDEFB;
+  border-top: 1px solid white;
+  border-right: 1px solid white;
+  border-bottom: none;
+  border-left: none;  
 }
 
 .panel {
