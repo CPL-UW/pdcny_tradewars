@@ -78,12 +78,15 @@ Template.playerView.events({
 	
 	'click #btn-modal': function(){
 		console.log("success");
-		console.log("show");
 		if (Session.get("showModal") == true){
 			Session.set('showModal', false);
+			$('#btn-modal').modal('hide');
+			console.log(Session.get("showModal"));
 		}
 		else{
-			Session.set('showModal', true);// Hide modal
+			Session.set('showModal', true);
+			$('#btn-modal').modal('show');
+			console.log(Session.get("showModal"));
 		}
 	}
 });
