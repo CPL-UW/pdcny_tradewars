@@ -116,6 +116,20 @@ a:hover, a:focus {
   background-color: #64B5F6;
 }
 
+.modal-content {
+  background-color: black;
+  border: 1px solid #999;
+}
+
+
+.close {
+  color:#BBDEFB;
+  opacity: .8;
+  }
+
+.close:hover, .close:focus {
+  color:#BBDEFB;
+}
 
 path {
   stroke: steelblue;
@@ -123,6 +137,15 @@ path {
   fill: none;
 }
 
+.btn-primary {
+  background-color:#BBDEFB;
+  color: black;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn.focus {
+  background-color:#2196F3;
+  color: black;
+}
 
 .axis path,
 .axis line {
