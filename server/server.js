@@ -141,10 +141,10 @@ Meteor.startup(function () {
 						"recvResNo": giveRes,
 						"recvAmt": parseInt(giveAmt),
 						"read": 0,
-						"reqResRequester": takeResTaker,
-						"reqResRecipient": takeResGiver,
-						"recvResRequester": giveResTaker,
-						"recvResRecipient": giveResGiver,
+						"reqResRequester": takeResGiver,
+						"reqResRecipient": takeResTaker,
+						"recvResRequester": giveResGiver,
+						"recvResRecipient": giveResTaker,
 					}
 				};
 				insertId = 0;
@@ -332,6 +332,7 @@ Meteor.startup(function () {
 			evLog = {
 				"timestamp": (new Date()).getTime(),
 				"key": "StockPriceChange",
+				"description": "This is the change of this group's total market value",
 				"gameCode": gameCode,
 				"group": group,
 				"itemNo": "555",
@@ -361,8 +362,12 @@ Meteor.startup(function () {
 				"itemNo": stockDoc.itemNo,
 				"oldPrice": oldPrice,
 				"newPrice": newPrice,
-				"context": context
+				"context": context,
+				"stockBeforeUpdate": stockDoc,
+				"stockAfterUpdate": AllStocks.findOne({"_id": stockDoc._id})
 			}
+
+			
 			Meteor.call("logEvent", evLog);
 
 			Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID);
@@ -460,6 +465,7 @@ Meteor.startup(function () {
 	Alerts._ensureIndex({"gameCode": 1, "user": 1, "type": 1});
 	RunningGames._ensureIndex({"gameCode": 1, "group": 1});
 	RunningGames._ensureIndex({"gameCode": 1, "group": 1, "status": 1});
+	Events._ensureIndex({"gameCode": 1, "key": 1});
 	
 });
 

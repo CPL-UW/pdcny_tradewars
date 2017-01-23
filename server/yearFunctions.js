@@ -19,7 +19,7 @@ Meteor.startup(function () {
 				"year": year,
 				"gameCode": gameCode,
 				"group": maxScore.group,
-				"allGames": RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch()
+				"allGroups": RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch()
 			}
 			Meteor.call("logEvent", evLog);
 

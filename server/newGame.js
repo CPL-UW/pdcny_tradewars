@@ -37,7 +37,8 @@ Meteor.startup(function () {
 							"gameCode": codeString,
 							"size": size,		//****TODO***//: add dynamicness in number of groups playing
 							"admin": adminID,
-							"startingYear": firstYear
+							"startingYear": firstYear,
+							"contents": RunningGames.findOne({$and: [{"gameCode": codeString}, {"group": admin}]})
 						}
 						Meteor.call("logEvent", evLog);
 						Meteor.call("basesToGroups", codeString, size);
@@ -118,6 +119,7 @@ Meteor.startup(function () {
 			var i = 0;
 			grps = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]}).groupNumbers;
 			// console.log(grps);
+			console.log(size == grps.length + " size of game and number of groups");
 			while (i < size){
 				joinerID = Meteor.users.findOne({"username": baseUsers[grps[i]]})._id;
 				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase", 0);
