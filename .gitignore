@@ -22,3 +22,5 @@ server/kadira.js
 poster/LeadCaravan.ai
 
 server/secrets.js
+
+.DS_Store

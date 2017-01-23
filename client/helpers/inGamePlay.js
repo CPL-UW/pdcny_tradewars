@@ -1,6 +1,9 @@
 // import AllStocks from '../../lib/collections';
 // import RunningGames from '../../lib/collections';
 
+
+
+
 Template.stockInfo.helpers ({
 	resources: function () {
 		// return AllStocks.findOne({gID: groupID}).market;
@@ -68,15 +71,32 @@ Template.stockInfo.events({
 Template.playerView.helpers({
 	thisIsBase: function () {
 		return baseUsers.indexOf(Meteor.user().username) != -1;
-	}
+	},
+	showModal: function () {return Session.get("showModal");}
+
 });
 
 Template.playerView.events({
+
 	'click .view-tabs': function (e) {
 		// e.preventDefault();
 		console.log(e.currentTarget.attributes.value.value);
 		activeTab.set(e.currentTarget.attributes.value.value);
 		return true;
+	},
+	
+	'click #btn-modal': function(){
+		console.log("success");
+		if (Session.get("showModal") == true){
+			Session.set('showModal', false);
+			$('#btn-modal').modal('hide');
+			console.log(Session.get("showModal"));
+		}
+		else{
+			Session.set('showModal', true);
+			$('#btn-modal').modal('show');
+			console.log(Session.get("showModal"));
+		}
 	}
 });
 
