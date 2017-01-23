@@ -96,7 +96,8 @@
         <input type = "submit" class = "btn btn-default"/>
     </form>
     <br />
-    <!-- Current amount cashed out: {{> teamCash}} -->
+    Current amount cashed out: {{teamCash}}
+    <br /> <br />
 </template>
 
 <template name = "factoryList">
@@ -337,7 +338,7 @@
     <tbody>
 		{{#each resources}}
     		<tr>
-    			<td>
+    			<td class="{{isHighlighted itemNo}}">
                     <a class= "viewPriceGraph" value = "{{itemNo}}">
                         {{item}}
                         {{#if coolCheck yearmod.kind}}

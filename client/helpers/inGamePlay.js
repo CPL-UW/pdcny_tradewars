@@ -40,6 +40,15 @@ Template.stockInfo.helpers ({
 		}
 	},
 
+	isHighlighted: function (resNo) {
+		if (Session.get("StockChartItem") == resNo) {
+			return "highlightedStock";
+		}
+		else{
+			return "";
+		}
+	},
+
 	coolCheck: function (kind) {
 		return kind == "cool";
 	},
@@ -171,17 +180,18 @@ Template.trade.events({
 		}
 		else {
 			if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value) ){
-				giveResName = getResName(event.target.GivingResource.value);
-				takeResName = getResName(event.target.TakingResource.value);
+				// giveResName = getResName(event.target.GivingResource.value);
+				// takeResName = getResName(event.target.TakingResource.value);
 				Meteor.call('reqTrade', 
 					Session.get("GameCode"), 
 					event.target.Recipient.value, 
 					Meteor.userId(), 
+					Session.get("GroupNo"),
 					event.target.GivingResource.value, 
-					giveResName, 
+					// giveResName, 
 					event.target.giveAmount.value, 
 					event.target.TakingResource.value, 
-					takeResName, 
+					// takeResName, 
 					event.target.requestAmount.value, zoneCode,
 					gameYear, function (error, result){
 					if (error){
@@ -214,18 +224,18 @@ Template.cashOut.helpers({
 	},
 
 	teamCash: function () {
-		// game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
-		// // console.log(game);
-		// if (game.cash != undefined){
-		// 	// console.log("true");
-		// 	c = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
-		// }
-		// else {
-		// 	// console.log("false");
-		// 	c = 0;
-		// }
-		c = 0;
-		// console.log(c);
+		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
+		// console.log(game);
+		if (game.cash != undefined){
+			// console.log("true");
+			c = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
+		}
+		else {
+			// console.log("false");
+			c = 0;
+		}
+		// c = "0";
+		console.log(c);
 		return c;
 	}
 });
@@ -283,7 +293,7 @@ Template.cashOut.events({
 				);
 			}
 			else {
-				alert("Our system thinks you're trying to sell more than you have. Not gonna work.")
+				alert("Are you trying to sell more than you have? That wouldn't work.")
 			}
 
 		}

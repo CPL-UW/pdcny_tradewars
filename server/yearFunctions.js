@@ -12,15 +12,17 @@ Meteor.startup(function () {
 		giveYearPoints: function (gameCode, year) {
 			// maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"marketValue":-1}}).fetch()[0];
 			maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"cash":-1}}).fetch()[0];
+			RunningGames.update({_id: maxScore._id}, {$inc: {"points": 1}});
 			evLog = {
 				"timestamp": (new Date()).getTime(),
 				"key": "AnnualPointAward",
 				"year": year,
 				"gameCode": gameCode,
-				"group": maxScore.group
+				"group": maxScore.group,
+				"allGames": RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch()
 			}
 			Meteor.call("logEvent", evLog);
-			RunningGames.update({_id: maxScore._id}, {$inc: {"points": 1}});
+
 			RunningGames.update( {$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0} }, {multi: true} );
 		},
 

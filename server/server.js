@@ -77,7 +77,16 @@ Meteor.startup(function () {
 			}
 		},
 
-		reqTrade : function (gCode, recipient, requester, giveRes, giveResName, giveAmt, takeRes, takeResName, takeAmt, zoneCode, gameYear) {
+		reqTrade : function (gCode, 
+			recipient, 
+			requester, 
+			requesterGroup, 
+			giveRes, 
+			giveAmt, 
+			takeRes, 
+			takeAmt, 
+			zoneCode, 
+			gameYear) {
 			// console.log(recipient, giveRes, giveAmt, takeRes, takeAmt);
 			/*
 			requests should look like:
@@ -101,7 +110,14 @@ Meteor.startup(function () {
 			// if (giveResName == undefined) {
 			// 	giveResName = cheapRes[giveRes];
 			// }
-			console.log(giveResName + " " + takeResName);
+			// console.log(giveResName + " " + takeResName);
+			requestedGroup = RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group;
+			giveResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": giveRes}]]});
+			giveResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": giveRes}]]});
+			takeResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": takeRes}]]});
+			takeResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": takeRes}]]});
+			
+			takeResName = req
 			if (giveResName != undefined && takeResName != undefined){
 				reqLog = {
 					"gameCode": gCode, 
@@ -109,22 +125,26 @@ Meteor.startup(function () {
 					"year": gameYear,
 					"user": recipient,
 					"username": Meteor.users.findOne({_id: recipient}).username,
-					"requestedGroup": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group,
+					"requestedGroup": requestedGroup,
 					"type": "request",
 					"zone": zoneCode,
 					"contents": {
 						"requester": {
 							"id": requester, 
 							"username": Meteor.users.findOne({_id:requester}).username, 
-							"group": RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": requester}]}).group
+							"group": requesterGroup
 						},
-						"reqRes": takeResName,
+						"reqRes": takeResGiver.item,
 						"reqResNo": takeRes, 
 						"reqAmt": parseInt(takeAmt),
-						"recvRes": giveResName,
+						"recvRes": giveResGiver.item,
 						"recvResNo": giveRes,
 						"recvAmt": parseInt(giveAmt),
-						"read": 0
+						"read": 0,
+						"reqResRequester": takeResTaker,
+						"reqResRecipient": takeResGiver,
+						"recvResRequester": giveResTaker,
+						"recvResRecipient": giveResGiver,
 					}
 				};
 				insertId = 0;
@@ -205,6 +225,10 @@ Meteor.startup(function () {
 				"player": req.user,
 				"response": state,
 				"contents": req,
+				"reqResRequester": AllStocks.findOne({_id: req.contents.reqResRequester}),
+				"reqResRecipient": AllStocks.findOne({_id: req.contents.reqResRecipient}),
+				"recvResRequester": AllStocks.findOne({_id: req.contents.recvResRequester}),
+				"recvResRecipient": AllStocks.findOne({_id: req.contents.recvResRecipient}),
 				"zone": zoneCode
 			};
 			Meteor.call("logEvent", evLog)
@@ -215,7 +239,7 @@ Meteor.startup(function () {
 			// db.collection.find({ "fieldToCheck" : { $exists : true, $not : null } });
 			// AllStocks.update()
 			AllStocks.update( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes}]}, {$inc: {"amount": -1 * sellAmount} } );
-			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": "admin"}]}, {$inc: {"cash": Math.log(sellAmount)} } );
+			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"role": "homebase"}]}, {$inc: {"cash": Math.log(sellAmount)} } );
 			evLog = {
 				"timestamp": (new Date()).getTime(),
 				"key": "CashingOutResources",
