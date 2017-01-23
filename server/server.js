@@ -112,13 +112,13 @@ Meteor.startup(function () {
 			// }
 			// console.log(giveResName + " " + takeResName);
 			requestedGroup = RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group;
-			giveResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": giveRes}]});
-			giveResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": giveRes}]});
-			takeResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": takeRes}]});
-			takeResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": takeRes}]});
-			
-			takeResName = req
-			if (giveResName != undefined && takeResName != undefined){
+			giveResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requesterGroup)}, {"itemNo": giveRes}]});
+			giveResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requestedGroup)}, {"itemNo": giveRes}]});
+			takeResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requesterGroup)}, {"itemNo": takeRes}]});
+			takeResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requestedGroup)}, {"itemNo": takeRes}]});
+			console.log(giveResGiver + " " + takeResGiver);
+			// takeResName = takeRe
+			// if (giveResName != undefined && takeResName != undefined){
 				reqLog = {
 					"gameCode": gCode, 
 					"timestamp": (new Date()).getTime(),
@@ -165,7 +165,7 @@ Meteor.startup(function () {
 				console.log("Making request");
 				console.log(insertId);
 				return insertId;
-			}
+			// }
 		},
 
 		rescindRequest: function (reqId, gCode, gameYear) {
