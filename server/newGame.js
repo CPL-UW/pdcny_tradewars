@@ -38,7 +38,7 @@ Meteor.startup(function () {
 							"size": size,		//****TODO***//: add dynamicness in number of groups playing
 							"admin": adminID,
 							"startingYear": firstYear,
-							"contents": RunningGames.findOne({$and: [{"gameCode": codeString}, {"group": admin}]})
+							"contents": RunningGames.findOne({$and: [{"gameCode": codeString}, {"group": "admin"}]})
 						}
 						Meteor.call("logEvent", evLog);
 						Meteor.call("basesToGroups", codeString, size);
