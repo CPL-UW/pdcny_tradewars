@@ -24,12 +24,24 @@ a:hover, a:focus {
 }
 
 .navbar-default, .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-  background-color: #454747;
+  background-color: black;
 }
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     color: #BBDEFB;
     background-color: #333;
+}
+
+.navbar-nav > li > p {
+  padding-left: 15px;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #BBDEFB;
+}
+
+.navbar-btn {
+  margin-left: 15px;
 }
 
 .dropdown-menu {
@@ -90,6 +102,14 @@ a:hover, a:focus {
 .panel-default > .panel-heading {
   background-color: #333;
   color: #BBDEFB;
+}
+
+.panel-group > h4, .panel-heading > h4 {
+  color: #BBDEFB;
+}
+
+.panel-group > h4:hover, .panel-group > h4:focus, .panel-heading > h4:hover, .panel-heading > h4:focus{
+  color: #2196F3;
 }
 
 .form-control {
@@ -157,6 +177,19 @@ path {
 
 .tab-content {
 	padding: 10px;
+}
+
+.row {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.tab-content tr:first-child td {
+    margin-top: 10px;
+}
+
+.panel {
+  margin-bottom: 4px;
 }
 
 td a { 
