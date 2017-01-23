@@ -85,19 +85,21 @@ Template.playerView.events({
 		return true;
 	},
 	
-	'click #btn-modal': function(){
-		console.log("success");
-		if (Session.get("showModal") == true){
-			Session.set('showModal', false);
-			$('#btn-modal').modal('hide');
-			console.log(Session.get("showModal"));
-		}
-		else{
-			Session.set('showModal', true);
-			$('#btn-modal').modal('show');
-			console.log(Session.get("showModal"));
-		}
-	}
+	// 'click #btn-modal': function(){
+	// 	console.log("success");
+	// 	if (Session.get("showModal") == true){
+	// 		Session.set('showModal', false);
+	// 		// $('#btn-modal').modal('hide');
+	// 		$('#myModal').modal('hide');
+	// 		console.log(Session.get("showModal"));
+	// 	}
+	// 	else{
+	// 		Session.set('showModal', true);
+	// 		// $('#btn-modal').modal('show');
+	// 		$('#myModal').modal('show');
+	// 		console.log(Session.get("showModal"));
+	// 	}
+	// }
 });
 
 Template.yearInfo.helpers({

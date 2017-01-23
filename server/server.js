@@ -112,10 +112,10 @@ Meteor.startup(function () {
 			// }
 			// console.log(giveResName + " " + takeResName);
 			requestedGroup = RunningGames.findOne({$and: [{"gameCode": gCode}, {"player": recipient}]}).group;
-			giveResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": giveRes}]]});
-			giveResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": giveRes}]]});
-			takeResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": takeRes}]]});
-			takeResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": takeRes}]]});
+			giveResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": giveRes}]});
+			giveResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": giveRes}]});
+			takeResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requesterGroup}, {"item": takeRes}]});
+			takeResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": requestedGroup}, {"item": takeRes}]});
 			
 			takeResName = req
 			if (giveResName != undefined && takeResName != undefined){
