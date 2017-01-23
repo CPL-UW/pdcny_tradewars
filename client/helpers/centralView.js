@@ -8,6 +8,7 @@ Template.centralView.helpers ({
 		}
 	},
 
+
 	rankedGroups: function () {
 		// allGroups = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).groupNumbers;
 		// groupRanks = [];
@@ -32,7 +33,7 @@ Template.centralView.helpers ({
 				{"role": "homebase"}
 			]}, 
 			{sort: 
-				{rank:1}
+				{cash: -1, points: -1, rank: 1}
 			}
 			);
 	}	
