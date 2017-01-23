@@ -352,25 +352,27 @@ Meteor.startup(function () {
 			oldPrice = stockDoc.price;
 			newPrice = stockDoc.mean / (stockDoc.amount + stockDoc.stdev);
 			newPrice = parseInt(newPrice * 100) / 100;
-			AllStocks.update({"_id": stockDoc._id}, {$set: {"price": newPrice}});
-			evLog = {
-				"timestamp": (new Date()).getTime(),
-				"key": "StockPriceChange",
-				"description": updateType,
-				"gameCode": stockDoc.gameCode,
-				"group": stockDoc.gID,
-				"itemNo": stockDoc.itemNo,
-				"oldPrice": oldPrice,
-				"newPrice": newPrice,
-				"context": context,
-				"stockBeforeUpdate": stockDoc,
-				"stockAfterUpdate": AllStocks.findOne({"_id": stockDoc._id})
-			}
+			// if (newPrice == oldPrice)
+				AllStocks.update({"_id": stockDoc._id}, {$set: {"price": newPrice}});
+				evLog = {
+					"timestamp": (new Date()).getTime(),
+					"key": "StockPriceChange",
+					"description": updateType,
+					"gameCode": stockDoc.gameCode,
+					"group": stockDoc.gID,
+					"itemNo": stockDoc.itemNo,
+					"oldPrice": oldPrice,
+					"newPrice": newPrice,
+					"context": context,
+					"stockBeforeUpdate": stockDoc,
+					"stockAfterUpdate": AllStocks.findOne({"_id": stockDoc._id})
+				}
 
-			
-			Meteor.call("logEvent", evLog);
+				
+				Meteor.call("logEvent", evLog);
 
-			Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID);
+				Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID);
+			// }
 			//call function that computes and updates this group's market value
 				//which in turn calls a function that compares all groups' market values, and assigns a rank
 		},
