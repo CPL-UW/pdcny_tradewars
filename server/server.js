@@ -158,7 +158,7 @@ Meteor.startup(function () {
 					"description": "",
 					"gameCode": gCode,
 					"player": requester,
-					"contents": postedReqLog
+					"reqLogContents": postedReqLog
 				}
 
 				Meteor.call("logEvent", evLog)
@@ -440,7 +440,7 @@ Meteor.startup(function () {
 
 		//setup base station users
 		setupBaseUsers: function () {
-			if (Meteor.users.findOne({"username": "group-1-base"}) == undefined) {
+			if (Meteor.users.findOne({"username": baseUsers[0]}) == undefined) {
 				for (uname in baseUsers){
 					Accounts.createUser({
 						username: baseUsers[uname],
