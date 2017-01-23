@@ -327,6 +327,9 @@
 	<tr> 
 		<th>Resource</th>
 		<th>In Group's Stock</th>
+        {{#unless stockFeatureShow 'group'}}
+            <th>Buy</th>
+        {{/unless}}
 		{{#if stockFeatureShow 'price'}}
 			<th>Price</th>
 		{{/if}}
@@ -350,6 +353,9 @@
                     </a>
                 </td>
     			<td>{{amount}} pieces</td>
+                {{#unless stockFeatureShow 'group'}}
+                    <td><button type="button" class="btn btn-primary" id="request-{{itemNo}}" data-toggle="modal" data-target="#myModal">Buy</button></td>
+                {{/unless}}
     			{{#if stockFeatureShow 'price'}}
     				<td>${{price}}</td>
     			{{/if}}

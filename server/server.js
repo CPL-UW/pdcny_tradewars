@@ -116,7 +116,7 @@ Meteor.startup(function () {
 			giveResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requestedGroup)}, {"itemNo": giveRes}]});
 			takeResGiver = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requesterGroup)}, {"itemNo": takeRes}]});
 			takeResTaker = AllStocks.findOne({$and: [{"gameCode": gCode}, {"gID": parseInt(requestedGroup)}, {"itemNo": takeRes}]});
-			console.log(giveResGiver + " " + takeResGiver);
+			// console.log(giveResGiver + " " + takeResGiver);
 			// takeResName = takeRe
 			// if (giveResName != undefined && takeResName != undefined){
 				reqLog = {
@@ -162,8 +162,8 @@ Meteor.startup(function () {
 				}
 
 				Meteor.call("logEvent", evLog)
-				console.log("Making request");
-				console.log(insertId);
+				// console.log("Making request");
+				// console.log(insertId);
 				return insertId;
 			// }
 		},
@@ -343,7 +343,7 @@ Meteor.startup(function () {
 		},
 
 		changeStockAmount: function (id, newamt) {
-			console.log(id + " " + newamt);
+			// console.log(id + " " + newamt);
 			AllStocks.update({_id: id}, {$set: {amount: newamt}});
 		},
 
