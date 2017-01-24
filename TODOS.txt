@@ -1,14 +1,39 @@
 UI Refinements:
 
-add resource cashing out mechanism
 
-add event log for point awarding at end of year. Should also have general information about ranks
+add table caption to leaderboard
+	and year progress bar
+
+fix trade modal
+
+fix market value progress
+
+Make a chart or some easy visualization for ranks of people
+fix cash out display to 2 decimals
+	fix cash out further to happen only at year end
+
+Add a notification for rescinded requests
+Disable new game functionality for all no bosses
+
 verify repetition of location for trades and block
+
+slider;
+
+Add gameJoin event for each player. And gamePause, and such.
+
+
+
+-------
+
+//~ add resource cashing out mechanism
+
+// add event log for point awarding at end of year. Should also have general information about ranks
+
 
 //~ adding resource numbers to trade request info
 //~ add reqId to stockpricechange caused by trades
 
-slider;
+
 /~ location area
 
 BUGS:

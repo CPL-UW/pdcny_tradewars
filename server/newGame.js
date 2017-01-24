@@ -35,7 +35,7 @@ Meteor.startup(function () {
 							"key": "NewGameStart",
 							"description": "",
 							"gameCode": codeString,
-							"size": size,		//****TODO***//: add dynamicness in number of groups playing
+							"size": size,
 							"admin": adminID,
 							"startingYear": firstYear,
 							"contents": RunningGames.findOne({$and: [{"gameCode": codeString}, {"group": "admin"}]})

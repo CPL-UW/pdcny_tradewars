@@ -158,7 +158,8 @@ Meteor.startup(function () {
 					"description": "",
 					"gameCode": gCode,
 					"player": requester,
-					"reqLogContents": postedReqLog
+					"reqLogContents": postedReqLog,
+					"zone": postedReqLog.zone
 				}
 
 				Meteor.call("logEvent", evLog)
@@ -224,7 +225,7 @@ Meteor.startup(function () {
 				"year": gameYear,
 				"player": req.user,
 				"response": state,
-				"contents": req,
+				"reqLogContents": req,
 				"reqResRequester": AllStocks.findOne({_id: req.contents.reqResRequester}),
 				"reqResRecipient": AllStocks.findOne({_id: req.contents.reqResRecipient}),
 				"recvResRequester": AllStocks.findOne({_id: req.contents.recvResRequester}),
@@ -324,7 +325,7 @@ Meteor.startup(function () {
 			});
 		},
 
-		updateGroupMarketValue: function (gameCode, group) {
+		updateGroupMarketValue: function (gameCode, group, updateType) {
 			c = 0;
 			AllStocks.find({$and: [{"gameCode": gameCode}, {"gID": group}]}).map( function (u) { c += (u.price * u.amount) } );
 			c = (parseInt(c * 100)) / 100;
@@ -332,11 +333,11 @@ Meteor.startup(function () {
 			evLog = {
 				"timestamp": (new Date()).getTime(),
 				"key": "StockPriceChange",
-				"description": "This is the change of this group's total market value",
+				"description": updateType,
 				"gameCode": gameCode,
 				"group": group,
 				"itemNo": "555",
-				"price": c
+				"newPrice": c
 			};
 			Meteor.call("logEvent", evLog);
 
