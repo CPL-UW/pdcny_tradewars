@@ -250,7 +250,7 @@ Template.cashOut.events({
 			resStocks = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch();
 			a = parseInt(resStocks.length);
 			// console.log(resStocks[0]);
-			if (a > 0){
+			if (a > 0 && parseInt(amt) >= 0){
 				// console.log("tru");
 				return true;
 			}
