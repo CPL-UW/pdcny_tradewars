@@ -10,6 +10,10 @@ Template.baseDash.helpers({
 	playingGames() {
 		return RunningGames.find({$and: [{'player': Meteor.userId()}, {'group': {$ne: 'admin'}}, {'status': 'running'}]});
 	},
+
+	bossUser() {
+		return (Meteor.user().username == bossUsername);
+	}
 });
 
 Template.baseDash.events({

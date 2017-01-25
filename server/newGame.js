@@ -114,15 +114,46 @@ Meteor.startup(function () {
 			});
 		},
 
+		setupBaseCash: function (gameCode, baseId, group, cRes, eRes, year) {
+			for (res in cRes){
+				Cashes.insert({
+					"gameCode": gameCode,
+					"user": baseId,
+					"group": group,
+					"amount": 0,
+					"resPrice": 0,
+					"cash": 0,
+					"year": year,
+					"res": cRes[res],
+					"resName": cheapRes[cRes[res]]
+				});
+			}
+			for (res in eRes){
+				Cashes.insert({
+					"gameCode": gameCode,
+					"user": baseId,
+					"group": group,
+					"amount": 0,
+					"resPrice": 0,
+					"cash": 0,
+					"year": year,
+					"res": eRes[res],
+					"resName": expRes[eRes[res]]
+				});
+			}
+			
+		},
 
 		basesToGroups: function (gameCode, size) {
 			var i = 0;
-			grps = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]}).groupNumbers;
+			adminGame = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]});
+			grps = adminGame.groupNumbers;
 			// console.log(grps);
 			console.log(size == grps.length + " size of game and number of groups");
 			while (i < size){
 				joinerID = Meteor.users.findOne({"username": baseUsers[grps[i]]})._id;
 				Meteor.call("insertPlayer", gameCode, joinerID, grps[i], "homebase", 0);
+				Meteor.call("setupBaseCash", gameCode, joinerID, grps[i], adminGame.cheapRes, adminGame.expensiveRes, adminGame.currentYear);
 				i++;
 			}
 			Meteor.call("incrementGameYear", RunningGames.findOne({$and: [{"gameCode": gameCode}, {"group": "admin"}]})._id, "NewGameSetup");

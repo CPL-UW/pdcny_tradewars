@@ -1,3 +1,13 @@
+Cashes.insert({
+	"gameCode": gameCode,
+	"user": baseId,
+	"group": group,
+	"cash": 0,
+	"res": cRes[res],
+	"resName": cheapRes[cRes[res]]
+});
+
+
 Factories.insert({
 	"gameCode": gameCode,
 	"gID": groupNo,

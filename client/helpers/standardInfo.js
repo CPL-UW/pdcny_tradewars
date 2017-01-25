@@ -95,7 +95,8 @@ Template.requestsTemp.events({
 		e.preventDefault();
 		// console.log($(e.target)[0].form.id);
 		reqId = $(e.target)[0].form.id;
-		request = Alerts.findOne({_id: reqId}).contents;
+		reqLog = Alerts.findOne({_id: reqId});
+		request = reqLog.contents;
 		acceptance = "false";
 		alertFn = function (text, urgency, contextKind = "request", usr = Meteor.userId()) {
 			console.log(text + " " + urgency);
@@ -171,6 +172,8 @@ Template.requestsTemp.events({
 		else if (acceptance == "rescind") {
 			Meteor.call('rescindRequest', reqId, Session.get("GameCode"), gameYear);
 			alertFn("You have canceled the request!", "danger", "requestSuccess", request["requester"].id);
+			alertFn(request["requester"].username + " canceledthe request they sent you!", "danger", "requestSuccess", reqLog.user);
+
 		}
 	}
 });

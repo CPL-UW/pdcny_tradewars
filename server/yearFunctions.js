@@ -43,11 +43,38 @@ Meteor.startup(function () {
 					Meteor.call("logEvent", evLog);
 					Meteor.call("newYearEvents", gameDocId, newEvents);
 					if (requestType != "NewGameSetup"){
+						
+						// Meteor.call("cashOutAllResources", gameDoc.gameCode, gameCode.currentYear);
+						Meteor.call("resetCashes", gameDoc.gameCode, gameDoc.currentYear);
 						Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
 
 					}
 				}
 			});
+		},
+
+		// makeMoney: function (gameCode, group, amount, res){
+		// 	stock = AllStocks.findOne({$and: [{"gameCode": gameCode}, {"gID": group}, {"itemNo": res}]});
+		// 	cost = stock.price;
+		// 	cash = (parseInt(Math.log(amount)*100) * cost) / 100;
+		// 	// RunningGames.update({$and: [{"gameCode": gameCode}, {"group": group}, {"role": "homebase"}]}})
+		// },
+
+		// cashOutAllResources: function (gameCode, year) {
+		// 	Cashes.find({$and: [ 
+		// 		{"gameCode": gameCode}, 
+		// 		// { "year": year }, 
+		// 		{"amount": {$gt: 0}} ]}).forEach( function (cashDoc) {
+		// 			if (cashDoc != undefined){
+		// 				Meteor.call("makeMoney", cashDoc.gameCode, cashDoc.group, cashDoc.amount, cashDoc.res);
+		// 			}
+		// 	});
+
+		// },
+
+		resetCashes: function (gameCode, year) {
+			Cashes.update({"gameCode": gameCode}, {$set: {"amount": 0, "year": year}}, {multi: true});
+			Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
 		},
 
 		newYearEvents: function (gameId, newEvents) {
@@ -131,11 +158,24 @@ Meteor.startup(function () {
 			// console.log(gameDoc);
 			if (gameDoc.status == "running"){
 				console.log("paused")
-				RunningGames.update({_id: gameDoc._id}, {$set: {status: "paused"}});
+				RunningGames.update({"gameCode": gameDoc.gameCode}, {$set: {status: "paused"}}, {multi: true});
+				evLog = {
+					"timestamp": (new Date()).getTime(),
+					"key": "GamePaused",
+					"gameCode": gameDoc.gameCode,
+				};
+				Meteor.call("logEvent", evLog);
+
 			}
 			else {
 				console.log("running");
-				RunningGames.update({_id: gameDoc._id}, {$set: {status: "running"}});	
+				RunningGames.update({"gameCode": gameDoc.gameCode}, {$set: {status: "running"}}, {multi: true});
+				evLog = {
+					"timestamp": (new Date()).getTime(),
+					"key": "GameResumed",
+					"gameCode": gameDoc.gameCode,
+				};
+				Meteor.call("logEvent", evLog);
 			}
 		}
 

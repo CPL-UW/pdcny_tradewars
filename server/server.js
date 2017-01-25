@@ -239,22 +239,35 @@ Meteor.startup(function () {
 		cashOutResource: function (sellRes, sellResName, sellAmount, gameCode, userId, groupNo, gameYear) {
 			// db.collection.find({ "fieldToCheck" : { $exists : true, $not : null } });
 			// AllStocks.update()
-			AllStocks.update( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes}]}, {$inc: {"amount": -1 * sellAmount} } );
-			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"role": "homebase"}]}, {$inc: {"cash": Math.log(sellAmount)} } );
-			evLog = {
-				"timestamp": (new Date()).getTime(),
-				"key": "CashingOutResources",
-				"description": "",
-				"gameCode": gameCode,
-				"user": userId,
-				"year": gameYear,
-				"resource": sellRes,
-				"resourceName": sellResName,
-				"amount": sellAmount				
-			};
-			Meteor.call("logEvent", evLog);
+			
+			// RunningGames.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"role": "homebase"}]}, {$inc: {"cash": Math.log(sellAmount)} } );
+			cashDoc = Cashes.findOne({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"res": sellRes}]});
+			
+			if (cashDoc == undefined) {
+				console.log(gameCode + " " + groupNo + " " + sellRes + " cash doc not found while cashing out");
+			}
+			else {
+				AllStocks.update( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes}]}, {$inc: {"amount": -1 * sellAmount} } );
+				Cashes.update({_id: cashDoc._id}, {$inc: {"amount": sellAmount}});
+				Meteor.call("updateCash", cashDoc);
+			
+				// Cashes.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"res": sellRes}, {"year": gameYear}]}, {$inc: {"amount": sellAmount}});
+				
+				evLog = {
+					"timestamp": (new Date()).getTime(),
+					"key": "CashingOutResources",
+					"description": "",
+					"gameCode": gameCode,
+					"user": userId,
+					"year": gameYear,
+					"resource": sellRes,
+					"resourceName": sellResName,
+					"amount": sellAmount				
+				};
+				Meteor.call("logEvent", evLog);
 
-			Meteor.call('updateStocks', gameCode, "CashoutUpdate");
+				Meteor.call('updateStocks', gameCode, "CashoutUpdate");
+			}
 
 		},
 
@@ -263,10 +276,11 @@ Meteor.startup(function () {
 			if (grp >= 0) {
 				grpname = groupNames[grp];
 			}
+			uname = Meteor.users.findOne({"_id": joinerID}).username
 			RunningGames.insert({
 				"gameCode": gameCode,
 				"player": joinerID,
-				"playerName": Meteor.users.findOne({"_id": joinerID}).username,
+				"playerName": uname,
 				"group": grp,
 				"groupName": grpname,
 				"role": role,
@@ -274,6 +288,17 @@ Meteor.startup(function () {
 				"status": "running",
 				"cash": cash
 			});
+
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "PlayerJoinsGame",
+				"gameCode": gameCode,
+				"player": joinerID,
+				"group": grp,
+				"playername": uname,
+				"groupName": grpname,
+			};
+			Meteor.call("logEvent", evLog);
 		},
 
 		joinGame: function (gCode, joinerID) {
@@ -309,6 +334,13 @@ Meteor.startup(function () {
 
 		updateGameJoin: function (gameCode, player) {
 			RunningGames.update({$and: [{"gameCode": gameCode}, {"player": player}]}, {$set: {"lastLogin": (new Date()).getTime()}});
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "UserLoggedIn",
+				"player": player,
+				"gameCode": gameCode
+			};
+			Meteor.call("logEvent", evLog);
 		},
 
 		setGroupRanks: function (gameCode) {
@@ -344,6 +376,13 @@ Meteor.startup(function () {
 			Meteor.call("setGroupRanks", gameCode);
 		},
 
+		updateTotalCash: function (gameCode, group) {
+			c = 0;
+			Cashes.find({$and: [{"gameCode": gameCode}, {"group": group}]}).map( function (u) { c += u.cash; } );
+			c = parseInt(c * 100) / 100;
+			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": group}, {"role": "homebase"}]}, {$set: {cash: c}});
+		},
+
 		changeStockAmount: function (id, newamt) {
 			// console.log(id + " " + newamt);
 			AllStocks.update({_id: id}, {$set: {amount: newamt}});
@@ -372,10 +411,35 @@ Meteor.startup(function () {
 				
 				Meteor.call("logEvent", evLog);
 
-				Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID);
+				Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID, updateType);
+
+				Meteor.call("updateCashPrice", stockDoc.gameCode, stockDoc.gID, stockDoc.itemNo, stockDoc.price);
 			// }
 			//call function that computes and updates this group's market value
 				//which in turn calls a function that compares all groups' market values, and assigns a rank
+		},
+
+		updateCashPrice: function (gameCode, group, res, price) {
+			cashDoc = Cashes.findOne({$and: [{"gameCode": gameCode}, {"group": group}, {"res": res}]});
+			if (cashDoc == undefined) {
+				console.log(gameCode + " " + group + " " + res + " cash doc not found");
+			}
+			else {
+				Cashes.update({_id: cashDoc._id}, {$set: {"resPrice": price}});
+				Meteor.call("updateCash", cashDoc);
+			}
+		},
+
+		updateCash: function (cashDoc) {
+			if (cashDoc.amount > 0){
+				cashAmt = parseInt((Math.log(cashDoc.amount) * 100) * cashDoc.resPrice)  / 100;
+			}
+			else{
+				cashAmt = 0;
+			}
+			Cashes.update({_id: cashDoc._id}, {$set: {"cash": cashAmt}});
+
+			Meteor.call("updateTotalCash", cashDoc.gameCode, cashDoc.group);
 		},
 
 		updateStocks: function (gameCode, updateType = "RegularUpdate", context = {}) {
