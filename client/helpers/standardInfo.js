@@ -172,7 +172,7 @@ Template.requestsTemp.events({
 		else if (acceptance == "rescind") {
 			Meteor.call('rescindRequest', reqId, Session.get("GameCode"), gameYear);
 			alertFn("You have canceled the request!", "danger", "requestSuccess", request["requester"].id);
-			alertFn(request["requester"].username + " canceledthe request they sent you!", "danger", "requestSuccess", reqLog.user);
+			alertFn(request["requester"].username + " canceled the request they sent you!", "danger", "requestSuccess", reqLog.user);
 
 		}
 	}

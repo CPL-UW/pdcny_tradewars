@@ -2,23 +2,25 @@ UI Refinements:
 
 add event logs for cash updates
 
+// fix trade modal
+
+Make a chart or some easy visualization for ranks of people
+
+verify repetition of location for trades and block
+
+slider;
+
 //add table caption to leaderboard
 	//~ and year progress bar
 
-fix trade modal
-
 ??? fix market value progress
 
-Make a chart or some easy visualization for ranks of people
+
 //fix cash out display to 2 decimals
 	//fix cash out further to happen only at year end
 
 //~ Add a notification for rescinded requests
 //~ Disable new game functionality for all no bosses
-
-verify repetition of location for trades and block
-
-slider;
 
 // Add gameJoin event for each player. And gamePause, and such.
 
