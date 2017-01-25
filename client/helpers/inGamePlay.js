@@ -177,8 +177,12 @@ Template.trade.events({
 			$("input[name=requestAmount]").focus();
 		}
 		else if (validZoneCodes.indexOf(zoneCode) == -1){
-			alert("invalid zone code");
+			alert("Invalid zone code");
 			$("input[name=zoneCode]").focus();	
+		}
+		else if (parseInt(event.target.giveAmount.value) < 0 ||  parseInt(event.target.requestAmount.value) < 0) {
+			alert("Negative trade amounts not allowed!");
+			$("input[name=giveAmount]").focus();
 		}
 		else {
 			if (checkAvailability(event.target.GivingResource.value, event.target.giveAmount.value) ){

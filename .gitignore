@@ -1,8 +1,6 @@
 
 mup.json
 
-lib/secrets.js
-
 .deploy/mup.js
 
 lib/config/.DS_Store

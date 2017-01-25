@@ -202,7 +202,7 @@ Meteor.startup(function () {
 			AllStocks.update({$and: [{"gameCode": gCode}, {"gID": recvGrp}, {"item": request["reqRes"]}]}, {$set: {"amount": finalReceiverReceivedStock}});
 			
 			Meteor.call('readRequest', reqId, 1, gameYear, zoneCode);
-			reqt["tradeYear"] = gameYear;
+			reqt["year"] = gameYear;
 			Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
 		},
 
@@ -247,7 +247,8 @@ Meteor.startup(function () {
 				console.log(gameCode + " " + groupNo + " " + sellRes + " cash doc not found while cashing out");
 			}
 			else {
-				AllStocks.update( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes}]}, {$inc: {"amount": -1 * sellAmount} } );
+				stockDoc = AllStocks.findOne( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes} ] } );
+				AllStocks.update( { stockDoc._id }, {$inc: {"amount": -1 * sellAmount} } );
 				Cashes.update({_id: cashDoc._id}, {$inc: {"amount": sellAmount}});
 				Meteor.call("updateCash", cashDoc, "CashOut");
 			
@@ -260,13 +261,22 @@ Meteor.startup(function () {
 					"gameCode": gameCode,
 					"user": userId,
 					"year": gameYear,
+					"group": groupNo,
 					"resource": sellRes,
 					"resourceName": sellResName,
-					"amount": sellAmount				
+					"amount": sellAmount,
+					"price": stockDoc.price,
+					"stockDoc": stockDoc,
+					"cashDoc": cashDoc				
 				};
 				Meteor.call("logEvent", evLog);
 
-				Meteor.call('updateStocks', gameCode, "CashoutUpdate");
+				contextLog = {
+					"amount": sellAmount,
+					"year": gameYear
+				};
+
+				Meteor.call('updateStocks', gameCode, "CashoutUpdate", contextLog);
 			}
 
 		},
@@ -389,7 +399,7 @@ Meteor.startup(function () {
 				"gameCode": gameCode,
 				"group": group,
 				// "year": cashDoc.year,
-				// "resource": cashDoc.res,
+				"resource": "666",
 				"cash": c
 			};
 			Meteor.call("logEvent", evLog);
@@ -492,7 +502,7 @@ Meteor.startup(function () {
 				});
 				//update staocks for each of those unique game codes
 				recentGameCodes.forEach(function(gCode) {
-					Meteor.call('updateStocks', gCode);
+					Meteor.call('updateStocks', gCode, "RegularUpdate");
 				});
 			}
 			return true;
