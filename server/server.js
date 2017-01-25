@@ -249,7 +249,7 @@ Meteor.startup(function () {
 			else {
 				AllStocks.update( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes}]}, {$inc: {"amount": -1 * sellAmount} } );
 				Cashes.update({_id: cashDoc._id}, {$inc: {"amount": sellAmount}});
-				Meteor.call("updateCash", cashDoc);
+				Meteor.call("updateCash", cashDoc, "CashOut");
 			
 				// Cashes.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"res": sellRes}, {"year": gameYear}]}, {$inc: {"amount": sellAmount}});
 				
@@ -376,11 +376,23 @@ Meteor.startup(function () {
 			Meteor.call("setGroupRanks", gameCode);
 		},
 
-		updateTotalCash: function (gameCode, group) {
+		updateTotalCash: function (gameCode, group, updateType) {
 			c = 0;
 			Cashes.find({$and: [{"gameCode": gameCode}, {"group": group}]}).map( function (u) { c += u.cash; } );
 			c = parseInt(c * 100) / 100;
 			RunningGames.update({$and: [{"gameCode": gameCode}, {"group": group}, {"role": "homebase"}]}, {$set: {cash: c}});
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "CashChange",
+				"description": updateType,
+				"note": "Change of total cash value per group",
+				"gameCode": gameCode,
+				"group": group,
+				// "year": cashDoc.year,
+				// "resource": cashDoc.res,
+				"cash": c
+			};
+			Meteor.call("logEvent", evLog);
 		},
 
 		changeStockAmount: function (id, newamt) {
@@ -413,24 +425,25 @@ Meteor.startup(function () {
 
 				Meteor.call("updateGroupMarketValue", stockDoc.gameCode, stockDoc.gID, updateType);
 
-				Meteor.call("updateCashPrice", stockDoc.gameCode, stockDoc.gID, stockDoc.itemNo, stockDoc.price);
+				Meteor.call("updateCashPrice", stockDoc.gameCode, stockDoc.gID, stockDoc.itemNo, stockDoc.price, updateType);
 			// }
 			//call function that computes and updates this group's market value
 				//which in turn calls a function that compares all groups' market values, and assigns a rank
 		},
 
-		updateCashPrice: function (gameCode, group, res, price) {
+		updateCashPrice: function (gameCode, group, res, price, updateType) {
 			cashDoc = Cashes.findOne({$and: [{"gameCode": gameCode}, {"group": group}, {"res": res}]});
 			if (cashDoc == undefined) {
 				console.log(gameCode + " " + group + " " + res + " cash doc not found");
 			}
 			else {
 				Cashes.update({_id: cashDoc._id}, {$set: {"resPrice": price}});
-				Meteor.call("updateCash", cashDoc);
+				Meteor.call("updateCash", cashDoc, updateType);
 			}
 		},
 
-		updateCash: function (cashDoc) {
+		updateCash: function (cashDoc, updateType) {
+			cashDoc = Cashes.findOne({_id: cashDoc._id});
 			if (cashDoc.amount > 0){
 				cashAmt = parseInt((Math.log(cashDoc.amount) * 100) * cashDoc.resPrice)  / 100;
 			}
@@ -439,7 +452,19 @@ Meteor.startup(function () {
 			}
 			Cashes.update({_id: cashDoc._id}, {$set: {"cash": cashAmt}});
 
-			Meteor.call("updateTotalCash", cashDoc.gameCode, cashDoc.group);
+			evLog = {
+				"timestamp": (new Date()).getTime(),
+				"key": "CashChange",
+				"description": updateType,
+				"gameCode": cashDoc.gameCode,
+				"group": cashDoc.group,
+				"year": cashDoc.year,
+				"resource": cashDoc.res,
+				"cash": cashAmt
+			};
+			Meteor.call("logEvent", evLog);
+
+			Meteor.call("updateTotalCash", cashDoc.gameCode, cashDoc.group, updateType);
 		},
 
 		updateStocks: function (gameCode, updateType = "RegularUpdate", context = {}) {
