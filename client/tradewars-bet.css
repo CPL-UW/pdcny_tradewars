@@ -174,7 +174,7 @@ a:hover, a:focus {
 }
 
 .progress-bar {
-  background-color: #64B5F6;
+  background-color: #2196F3;
 }
 
 .modal-content {
@@ -193,7 +193,7 @@ a:hover, a:focus {
 }
 
 path {
-  stroke: steelblue;
+  stroke: #2196F3;
   stroke-width: 2;
   fill: none;
 }
@@ -263,6 +263,11 @@ thead {
   text-align: left;
 }
 
+.viewPriceGraph > b {
+  text-align: left;
+  color: #2196F3;
+}
+
 thead > tr > th {
   text-align: center;
   color: white;
@@ -296,4 +301,12 @@ tbody > tr > td > a:hover, tbody > tr > td > a:focus{
 
 .modal-close{
   float: left;
+}
+
+.highlightedStock {
+  background-color: #BBDEFB;
+}
+
+.trade-error{
+  background-color: rgba(244, 67, 54, 0.4)
 }
