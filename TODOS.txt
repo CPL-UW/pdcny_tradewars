@@ -5,17 +5,17 @@ change the background colors
 // change Buy to trade
 // change spelling of turqoise
 
-clicking the notification should open the notification tab
+// clicking the notification should open the notification tab
 
 label the graph axes for price charts
 
 improve cash out form
-	at least crop its width, 
+	// at least crop its width, 
 
 add column of amount cashed out column for bases
 	add fourth column of log(amount) price
 
-add points, market value, amount cashed at the top
+// add points, market value, amount cashed at the top
 
 // add checks for negatives in trades and cash outs
 

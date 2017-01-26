@@ -53,6 +53,7 @@
 
 
     {{#each unreadAlerts}}
+    <a href = "#" class="notification-tab">
         <div class="alert alert-{{contents.urgency}} alert-dismissible" role="alert"> 
         <button type="button" class="close readThisAlert" data-dismiss="alert" aria-label="Close" id ="{{_id}}" ><span aria-hidden="true">&times;</span></button>
             {{contents.text}}
@@ -60,6 +61,7 @@
             ({{contextInfo _id}})
             </small>
         </div>
+    </a>
     {{/each}}
     {{>alertsTemp}}
     <br />
@@ -74,29 +76,43 @@
 </template>
 
 <template name = "cashOut">
-     <form class = "selling form-horizontal" id = "cashOut-form">
-        <div class="form-group">
-            <label class = "control-label col-sm-4">What do you want to sell?</label>
-            <div class = "col-sm-8">
-            <select name = "sellResource" class = "form-control">
-                {{#each availableResources}}
-                    <option value="{{itemNo}}">{{item}} (Inventory: {{amount}})</option>
-                {{/each}}
-            </select>
-            </div>
-        </div>
+    <div class = "row">
+        <div class = "col-md-9 col-sm-9">
+         <!-- <form class = "selling form-horizontal" id = "cashOut-form"> -->
+         <form class = "selling form-inline" id = "cashOut-form">
 
-        <div class="form-group">
-            <label class = "control-label col-sm-4">How much?</label>
-            <div class = "col-sm-8">
-                <input type="number" name="sellAmount" class = "form-control"/><br />
+            <div class="form-group">
+                <!-- <label class = "control-label col-sm-4"> -->
+                <label class = "control-label">
+                What do you want to sell?
+                </label>
+                <!-- <div class = "col-sm-8"> -->
+                <select name = "sellResource" class = "form-control">
+                    {{#each availableResources}}
+                        <option value="{{itemNo}}">{{item}} (Inventory: {{amount}})</option>
+                    {{/each}}
+                </select>
+                <!-- </div> -->
             </div>
-        </div>
 
-        <input type = "submit" class = "btn btn-default"/>
-    </form>
-    <br />
-    Current amount cashed out: {{teamCash}}
+            <div class="form-group">
+                <!-- <label class = "control-label col-sm-4"> -->
+                <label class = "control-label">
+                    How much?
+                </label>
+                <!-- <div class = "col-sm-8"> -->
+                    <input type="number" name="sellAmount" class = "form-control"/><br />
+                <!-- </div> -->
+            </div>
+
+            <input type = "submit" class = "btn btn-default"/>
+        </form>
+        </div>
+        <div class="col-md-3 col-sm-3">
+        </div>
+    </div>
+    <!-- <br />
+    Current amount cashed out: {{teamCash}} -->
     <br /> <br />
 </template>
 
@@ -328,6 +344,14 @@
 
 <template name = "stockInfo">
 	<!-- {{prices}} -->
+    <p class="explanation"><a class= "viewPriceGraph" value = "555"> <b>Market value: {{totalValue}}</b> </a> (The total value of all the things your group has right now. To see current stock prices, visit your base station) </p>
+
+    <br />
+    <p class="explanation">
+        <b> Current amount cashed out: {{teamCash}} </b>
+    </p>
+    <br />
+    
     <div class = "table-responsive">
     <!-- <table class="table table-borderless table-hover table-condensed"> -->
     <table class="table table-condensed">
@@ -378,7 +402,7 @@
     </div>
     <p class="explaination">/\ /\ is highly in demand, so it's extra expensive this year! <br />
     \/ \/ is totally out of fashion, so cheaper than average this year. <br /> <br /></p>
-	<p class="explaination"><a class= "viewPriceGraph" value = "555"> <b>Market value: {{totalValue}}</b> </a> (The total value of all the things your group has right now. To see current stock prices, visit your base station) </p>
+	
 </template>
 
 <template name="priceGraph">

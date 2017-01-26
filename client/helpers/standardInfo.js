@@ -41,7 +41,9 @@ Template.yearProgress.helpers({
 		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
 		fr = (game.elapsedTimeYear * 100) / game.yearLength;
 		return fr;
-	}
+	},
+
+
 });
 
 
@@ -58,6 +60,13 @@ Template.topAlerts.events({
 				console.log("alert successfully read");
 			}
 		});
+	},
+
+	'click .notification-tab': function (e) {
+		$('#main-tabs a[value="notif-tab"]').tab('show');
+
+		activeTab.set("notif-tab");
+		return true;
 	}
 });
 

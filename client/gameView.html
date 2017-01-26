@@ -3,9 +3,10 @@
 	<!-- <button type="button" class="btn btn-primary" id="btn-modal" data-toggle="modal" data-target="#myModal">Test</button> -->
 	<ul class="nav nav-tabs" id = "main-tabs">
 		<!-- <div class="col-xs-4"> -->
+		{{#unless thisIsBase}}
 	  <li role="presentation" class="active col-md-4"><a href="#" value = "stocks-tab" class = "view-tabs" data-toggle="tab">Stocks</a></li>
 	  <!-- </div> -->
-	  {{#unless thisIsBase}}
+	  
 	  <!-- <div class="col-xs-4"> -->
 	  <li role="presentation" class = "col-md-4"><a href="#" value = "notif-tab" class = "view-tabs" data-toggle="tab">Notifications</a></li>
 	  <!-- </div> -->

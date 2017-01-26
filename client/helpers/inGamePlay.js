@@ -28,6 +28,22 @@ Template.stockInfo.helpers ({
 		return c;
 	},
 
+	teamCash: function () {
+		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
+		// console.log(game);
+		if (game.cash != undefined){
+			// console.log("true");
+			c = game.cash;
+		}
+		else {
+			// console.log("false");
+			c = 0;
+		}
+		// c = "0";
+		console.log(c);
+		return c;
+	},
+
 	stockFeatureShow: function (feature) {
 		if (Session.get("GroupNo") == "admin"){
 			return true;
@@ -234,7 +250,7 @@ Template.cashOut.helpers({
 		// console.log(game);
 		if (game.cash != undefined){
 			// console.log("true");
-			c = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
+			c = game.cash;
 		}
 		else {
 			// console.log("false");
