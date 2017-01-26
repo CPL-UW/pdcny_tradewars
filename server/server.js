@@ -232,7 +232,7 @@ Meteor.startup(function () {
 				"recvResRecipient": AllStocks.findOne({_id: req.contents.recvResRecipient}),
 				"zone": zoneCode
 			};
-			Meteor.call("logEvent", evLog)
+			Meteor.call("logEvent", evLog);
 
 		},
 
@@ -250,7 +250,7 @@ Meteor.startup(function () {
 				stockDoc = AllStocks.findOne( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes} ] } );
 				AllStocks.update( { stockDoc._id }, {$inc: {"amount": -1 * sellAmount} } );
 				Cashes.update({_id: cashDoc._id}, {$inc: {"amount": sellAmount}});
-				Meteor.call("updateCash", cashDoc, "CashOut");
+				Meteor.call("updateCash", gameCode cashDoc, "CashOut");
 			
 				// Cashes.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"res": sellRes}, {"year": gameYear}]}, {$inc: {"amount": sellAmount}});
 				
