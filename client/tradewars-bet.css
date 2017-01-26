@@ -2,12 +2,12 @@
 
 html {
 	margin: 10px;
-  background-color: black;
+  background-color: #FFF;
 }
 
 body {
-  background-color: black;
-  color: #BBDEFB;
+  background-color: #FFF;
+  color: #000;
 }
 
 a {
@@ -20,11 +20,19 @@ a:hover, a:focus {
 }
 
 .navbar-default .navbar-brand {
-  color: #BBDEFB;
+  color: #FFF;
+}
+
+.navbar-default .navbar-toggle .icon-bar{
+  background-color: #FFF;
 }
 
 .navbar-default, .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-  background-color: black;
+  background-color: #2196F3;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+  background-color: #BBDEFB;
 }
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
@@ -76,20 +84,20 @@ a:hover, a:focus {
 
 .nav-tabs > li > a {
   background-color: transparent;
-  border-top: 1px solid white;
-  border-right: 1px solid white;
+  border-top: 1px solid #333;
+  border-right: 1px solid #333;
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-  background-color: #333;
-  color: #BBDEFB;
+  background-color: #2196F3;
+  color: #FFF;
 }
 
 .nav-tabs > li > a:hover {
   background-color: rgba(51,51,51, 0.2);
   color: #BBDEFB;
-  border-top: 1px solid white;
-  border-right: 1px solid white;
+  border-top: 1px solid #333;
+  border-right: 1px solid #333;
   border-bottom: none;
   border-left: none;  
 }
@@ -158,12 +166,12 @@ path {
 }
 
 .btn-primary {
-  background-color:#BBDEFB;
-  color: black;
+  background-color:#2196F3;
+  color: #FFF;
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn.focus {
-  background-color:#2196F3;
+  background-color:#BBDEFB;
   color: black;
 }
 
@@ -210,4 +218,27 @@ td a {
 /*.table-borderless tfoot tr th,*/
 .table-borderless tfoot tr td {
     border: none;
+
 }
+
+thead {
+  background-color: #BBDEFB;
+}
+
+.viewPriceGraph {
+  text-align: left;
+}
+
+thead > tr > th {
+  text-align: center;
+}
+
+tbody > tr > td {
+  text-align: center;
+}
+
+.explaination{
+  font-size: 13px;
+}
+
+
