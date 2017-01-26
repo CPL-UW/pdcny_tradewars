@@ -248,9 +248,9 @@ Meteor.startup(function () {
 			}
 			else {
 				stockDoc = AllStocks.findOne( { $and: [{"gameCode": gameCode}, {"gID": groupNo}, {"itemNo": sellRes} ] } );
-				AllStocks.update( { stockDoc._id }, {$inc: {"amount": -1 * sellAmount} } );
+				AllStocks.update( { "_id": stockDoc._id }, {$inc: {"amount": -1 * sellAmount} } );
 				Cashes.update({_id: cashDoc._id}, {$inc: {"amount": sellAmount}});
-				Meteor.call("updateCash", gameCode cashDoc, "CashOut");
+				Meteor.call("updateCash", gameCode, cashDoc, "CashOut");
 			
 				// Cashes.update({$and: [{"gameCode": gameCode}, {"group": groupNo}, {"res": sellRes}, {"year": gameYear}]}, {$inc: {"amount": sellAmount}});
 				
