@@ -226,7 +226,7 @@ Template.trade.events({
 						Meteor.call('raiseAlert', Meteor.userId(), {"text": "Sent Request", "contextKind": "requestCreation", "context": result}, Session.get("GameCode"), "success");
 						Meteor.call('raiseAlert', event.target.Recipient.value, {"text": "Request received!", "contextKind": "requestReceival", "context": result}, Session.get("GameCode"), "warning");
 						$(document).scrollTop( $("#alertsAtTop").offset().top );
-						$("input[name=giveAmount]").class("form-control"); //trying to remove the class "trade-error" that I add below
+						$("input[name=giveAmount]").removeClass("trade-error"); //trying to remove the class "trade-error" that I add below
 						clearForm(event);
 					}
 				});
