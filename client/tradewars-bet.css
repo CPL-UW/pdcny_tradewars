@@ -11,7 +11,7 @@ body {
 }
 
 a {
-  color: #2196F3;
+  color: #607D8B;
 }
 
 a:hover, a:focus {
@@ -32,11 +32,11 @@ a:hover, a:focus {
 }
 
 .navbar-default, .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-  background-color: #2196F3;
+  background-color: #607D8B;
 }
 
 .container > .navbar-header, .container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse {
-  border-bottom: 4px solid #6200EA;
+  border-bottom: 4px solid #2196F3 ;
 }
 
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
@@ -97,20 +97,21 @@ a:hover, a:focus {
 
 .nav-tabs > li > a {
   background-color: transparent;
-  border-top: 1px solid #6200EA;
-  border-right: 1px solid #6200EA;
+  color: #000;
+  border-top: 1px solid #2196F3 ;
+  border-right: 1px solid #2196F3 ;
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-  background-color: #2196F3;
+  background-color: #607D8B;
   color: #FFF;
 }
 
 .nav-tabs > li > a:hover {
   background-color: rgba(187, 222, 251, 0.2);
   color: #333;
-  border-top: 1px solid #333;
-  border-right: 1px solid #333;
+  border-top: 1px solid #2196F3 ;
+  border-right: 1px solid #2196F3 ;
   border-bottom: none;
   border-left: none;  
 }
@@ -121,23 +122,23 @@ a:hover, a:focus {
 }
 
 .panel-group .panel {
-  border: 1px solid #2196F3;
+  border: 1px solid #607D8B;
 }
 
 .panel-default > .panel-heading {
-  background-color: #2196F3;
+  background-color: #607D8B;
   color: #FFF;
 }
  .panel > .list-group > a {
-  color: #6200EA;
+  color: #2196F3 ;
  }
 
  .panel > .list-group > a:hover, .panel > .list-group > a:hover{
-  color: #2196F3;
+  color: #607D8B;
  }
 
 .panel-group .panel-heading {
-  background-color: #2196F3;
+  background-color: #607D8B;
 }
 
 .panel-group > h4, .panel-heading > h4 {
@@ -153,12 +154,12 @@ a:hover, a:focus {
 }
 
 .form-control {
-  background-color: rgba(33, 150, 243, 0.8);
+  background-color: rgba(96, 125, 139, 0.8);
   color: #FFF;
 }
 
 .btn-default {
-  background-color: #2196F3;
+  background-color: #607D8B;
   color: #FFF;
 }
 
@@ -198,8 +199,9 @@ path {
 }
 
 .btn-primary {
-  background-color:#2196F3;
+  background-color:#2196F3 ;
   color: #FFF;
+  border-color: #2196F3 ;
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn.focus {
@@ -254,7 +256,7 @@ td a {
 }
 
 thead {
-  background-color: #6200EA;
+  background-color: #607D8B;
 }
 
 .viewPriceGraph {
@@ -271,12 +273,12 @@ tbody > tr > td {
 }
 
 tbody > tr > td > a{
-  color: #6200EA;
+  color: #000;
   font-weight: bold;
 }
 
 tbody > tr > td > a:hover, tbody > tr > td > a:focus{
-  color: #6200EA;
+  color: #000;
   font-weight: bold;
 }
 
@@ -290,4 +292,8 @@ tbody > tr > td > a:hover, tbody > tr > td > a:focus{
 
 .gameChoice > .form-group > .btn {
   margin-top: 10px;
+}
+
+.modal-close{
+  float: left;
 }
