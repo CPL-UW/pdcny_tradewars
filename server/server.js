@@ -158,6 +158,7 @@ Meteor.startup(function () {
 					"description": "",
 					"gameCode": gCode,
 					"player": requester,
+					"year": gameYear,
 					"reqLogContents": postedReqLog,
 					"zone": postedReqLog.zone
 				}
@@ -453,7 +454,11 @@ Meteor.startup(function () {
 		},
 
 		updateCash: function (cashDoc, updateType) {
-			cashDoc = Cashes.findOne({_id: cashDoc._id});
+			//************* ************// see why this was buggy
+			console.log(cashDoc);
+			console.log(cashDoc._id);
+			console.log(Cashes.findOne({"_id": cashDoc._id}));
+			// cashDoc = Cashes.findOne({"_id": cashDoc._id});
 			if (cashDoc.amount > 0){
 				cashAmt = parseInt((Math.log(cashDoc.amount) * 100) * cashDoc.resPrice)  / 100;
 			}

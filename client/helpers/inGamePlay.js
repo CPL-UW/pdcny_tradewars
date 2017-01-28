@@ -238,7 +238,9 @@ Template.trade.events({
 				$(document).scrollTop( $("#alertsAtTop").offset().top );
 				$("input[name=giveAmount]").addClass("trade-error");
 			}
+
 		}
+		$("#myModal").modal('toggle');
 	}
 });
 
