@@ -45,15 +45,16 @@ Template.stockInfo.helpers ({
 	},
 
 	stockFeatureShow: function (feature) {
-		if (Session.get("GroupNo") == "admin"){
-			return true;
-		}
-		else if (feature = 'price' && baseUsers.indexOf(Meteor.user().username) != -1) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		// if (Session.get("GroupRole") == "admin"){
+		// 	return true;
+		// }
+		// else if (feature = 'price' && baseUsers.indexOf(Meteor.user().username) != -1) {
+		// 	return true;
+		// }
+		// else {
+		// 	return false;
+		// }
+		return Session.get("GroupRole") == feature;
 	},
 
 	isHighlighted: function (resNo) {
@@ -79,16 +80,78 @@ Template.stockInfo.helpers ({
 Template.stockInfo.events({
 	'click .viewPriceGraph': function(e) {
 		e.preventDefault();
-		console.log(e.currentTarget.attributes.value.value);
+		// console.log(e.currentTarget.attributes.value.value);
 		Session.set("StockChartItem", e.currentTarget.attributes.value.value);
+	},
+
+	'click .tradeRequestButton': function (e) {
+		// console.log(e);
+		itemNo = e.target.id.substring(8);
+		// Session.get("ModalTradeResource", itemNo);
+		$("#myModal").modal('toggle');
+		ggg = $('#TradeGivingResource option[value=itemNo]');
+		console.log(ggg);
+		fff = $('#GivingResource-' + itemNo);
+		console.log(fff);
+		$('#GivingResource-' + itemNo).prop('selected', true);
 	}
  });
+
+Template.cashOutForm.helpers({
+	resourceAmounts: function () {
+		// resNo = this.itemNo;
+		// console.log(this);
+		// res = AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": resNo}]});
+		// amountArray = {};
+		amountArray = [];
+		i = 0;
+		for (; i <= this.amount; i++){
+			// amountArray["amt"] = i;
+			amountArray.push({"amt": i});
+		}
+		return amountArray;
+	},
+
+	cashOutValue: function (resNo) {
+		// cra = $('#' + resNo + '-cashingAmt');
+		// console.log($('#' + resNo + '-cashingAmt'));
+		// res = AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": resNo}]});
+		// console.log(this.price + " " + parseInt($('#' + this.itemNo + '-cashingAmt').val()));
+		return parseInt($('#' + this.itemNo + '-cashingAmt').val()) * this.price;
+	},
+
+	isTraded: function () {
+		if (Cashes.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"itemNo": this.itemNo}]}).sold) {
+			return "disabled";
+		}
+		else {
+			return "";
+		}
+	}
+});
+
+Template.cashOutForm.events({
+	'submit .cashOutResource': function (e) {
+		e.preventDefault();
+		// console.log(parseInt(e.target.cashOutAmount.value) + " " + this.itemNo);
+		Meteor.call("cashOutRes", this.itemNo, this.item, parseInt(e.target.cashOutAmount.value), this, Session.get("GameCode"), Meteor.userId(), Session.get("GroupNo"), Session.get("Year"), function (err, result) {
+			if (err) {
+				alert("cashing out failed at server end");
+			}
+			else {
+				alert(result);
+			}
+		});
+	}
+});
 
 Template.playerView.helpers({
 	thisIsBase: function () {
 		return baseUsers.indexOf(Meteor.user().username) != -1;
 	},
-	showModal: function () {return Session.get("showModal");}
+	showModal: function () {
+		return Session.get("showModal");
+	}
 
 });
 
@@ -173,7 +236,8 @@ Template.trade.events({
 			return resStock.item;
 		}
 
-		gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+		// gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+		gameYear = Session.get("Year");
 
 		clearForm = function (e) {
 			e.target.giveAmount.value = "";
@@ -298,7 +362,8 @@ Template.cashOut.events({
 			$("input[name=sellAmount]").focus();
 		}
 		else {
-			gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+			// gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+			gameYear = Session.set("Year");
 
 			if (checkAvailability(event.target.sellResource.value, event.target.sellAmount.value)) {
 				Meteor.call('cashOutResource', 

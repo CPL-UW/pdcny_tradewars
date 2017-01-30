@@ -1,20 +1,22 @@
 ------------
 back end: 
 
-fix cash out
-	do negative check at server side as well – if the thing is becoming negative, don't do it.
+//fix cash out
+	//do negative check at server side as well – if the thing is becoming negative, don't do it.
 
 point system
 
-cash out a resource only once per year
+// cash out a resource only once per year
 
 verify repetition of location for trades and block
+
+// fix year length
 
 ---------------
 UI Refinements:
 
 // close the pop up on submit trade
-trade pop up should select corresponding item
+// trade pop up should select corresponding item
 
 cash out thingie
 
@@ -27,7 +29,7 @@ slider;
 label the graph axes for price charts
 	make a rolling compacter history
 
-improve cash out form
+// improve cash out form
 
 add column of amount cashed out column for bases
 	add fourth column of log(amount) price

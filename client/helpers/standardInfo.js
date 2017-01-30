@@ -2,15 +2,18 @@
 
 activeTab = new ReactiveVar('stocks-tab'); //Your default tab
 groupNameVar = new ReactiveVar('admin');
-// gameYear = new ReactiveVar('year')
+// gameYear = new ReactiveVar('year');
+// Sess
 
 Template.gameInfo.helpers ({
 	gameYear: function () {
 		gameDoc = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
+		year = "";
 		if (gameDoc != null)
-			return gameDoc.currentYear;
+			year = gameDoc.currentYear;
 		else
-			return "This game doesn't have a year, very strange.";
+			year = "This game doesn't have a year, very strange.";
+		Session.set("Year", year);
 	}
 
 });

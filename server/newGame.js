@@ -115,31 +115,27 @@ Meteor.startup(function () {
 		},
 
 		setupBaseCash: function (gameCode, baseId, group, cRes, eRes, year) {
+			defaultCash =  {
+				"gameCode": gameCode,
+				"user": baseId,
+				"group": group,
+				"amount": 0,
+				"itemPrice": 0,
+				"cash": 0,
+				"year": year,
+				"itemNo": "",
+				"item": "",
+				"sold": false
+			}
 			for (res in cRes){
-				Cashes.insert({
-					"gameCode": gameCode,
-					"user": baseId,
-					"group": group,
-					"amount": 0,
-					"resPrice": 0,
-					"cash": 0,
-					"year": year,
-					"res": cRes[res],
-					"resName": cheapRes[cRes[res]]
-				});
+				defaultCash["itemNo"] = cRes[res];
+				defaultCash["item"] = cheapRes[cRes[res]];
+				Cashes.insert(defaultCash);
 			}
 			for (res in eRes){
-				Cashes.insert({
-					"gameCode": gameCode,
-					"user": baseId,
-					"group": group,
-					"amount": 0,
-					"resPrice": 0,
-					"cash": 0,
-					"year": year,
-					"res": eRes[res],
-					"resName": expRes[eRes[res]]
-				});
+				defaultCash["itemNo"] = eRes[res];
+				defaultCash["item"] = expRes[eRes[res]];
+				Cashes.insert(defaultCash);
 			}
 			
 		},

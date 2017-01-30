@@ -194,7 +194,7 @@
 
         {{#if thisIsBase}}
            
-            {{> cashOut}}
+            <!-- {{> cashOut}} -->
 
             {{> factoryList}}
         {{/if}}
@@ -291,9 +291,9 @@
     		<div class="form-group">
                 <label class = "control-label col-sm-4">What do you want to give?</label>
                 <div class = "col-sm-8">
-                <select name = "GivingResource" class = "form-control">
+                <select name = "GivingResource" id = "TradeGivingResource" class = "form-control">
                     {{#each givingResources}}
-                        <option value="{{itemNo}}">{{item}} (Inventory: {{amount}})</option>
+                        <option value="{{itemNo}}" id = "GivingResource-{{itemNo}}">{{item}} (Inventory: {{amount}})</option>
                     {{/each}}
                 </select>
                 </div>
@@ -344,11 +344,11 @@
 
 <template name = "stockInfo">
 	<!-- {{prices}} -->
-    <p class="explanation"><a class= "viewPriceGraph" value = "555"> <b>Market value: {{totalValue}}</b> </a> (The total value of all the things your group has right now. To see current stock prices, visit your base station) </p>
+    <p class="explanation"><a class= "viewPriceGraph" value = "555"> <b>Market value: ${{totalValue}}</b> </a> (The total value of all the things your group has right now. To see current stock prices, visit your base station) </p>
 
     <br />
     <p class="explanation">
-        <b> Current amount cashed out: {{teamCash}} </b>
+        <b> Current amount cashed out: ${{teamCash}} </b>
     </p>
     <br />
     
@@ -359,13 +359,14 @@
 	<tr> 
 		<th>Resource</th>
 		<th>In Group's Stock</th>
-        {{#unless stockFeatureShow 'group'}}
+        {{#if stockFeatureShow 'regular'}}
             <th>Trade</th>
-        {{/unless}}
-		{{#if stockFeatureShow 'price'}}
+        {{/if}}
+		{{#if stockFeatureShow 'homebase'}}
 			<th>Price</th>
+            <th>Cash Out</th>
 		{{/if}}
-		{{#if stockFeatureShow 'group'}}
+		{{#if stockFeatureShow 'admin'}}
 			<th>Group</th>
 		{{/if}}
 	</tr>
@@ -385,13 +386,18 @@
                     </a>
                 </td>
     			<td>{{amount}} pieces</td>
-                {{#unless stockFeatureShow 'group'}}
-                    <td><button type="button" class="btn btn-primary" id="request-{{itemNo}}" data-toggle="modal" data-target="#myModal">Trade</button></td>
-                {{/unless}}
-    			{{#if stockFeatureShow 'price'}}
+                {{#if stockFeatureShow 'regular'}}
+                    <!-- <td><button type="button" class="btn btn-primary tradeRequestButton" id="request-{{itemNo}}" data-toggle="modal" data-target="#myModal">Trade</button></td> -->
+                    <td><button type="button" class="btn btn-primary tradeRequestButton" id="request-{{itemNo}}">Trade</button></td>
+
+                {{/if}}
+    			{{#if stockFeatureShow 'homebase'}}
     				<td>${{price}}</td>
+                    <td>
+                        {{> cashOutForm this}}
+                    </td>
     			{{/if}}
-    			{{#if stockFeatureShow 'group'}}
+    			{{#if stockFeatureShow 'admin'}}
     				<td>{{groupName}}</td>
     			{{/if}}
     		</tr>
@@ -400,9 +406,22 @@
     </tbody>
 	</table>
     </div>
-    <p class="explaination">/\ /\ is highly in demand, so it's extra expensive this year! <br />
+    <p class="explanation">/\ /\ is highly in demand, so it's extra expensive this year! <br />
     \/ \/ is totally out of fashion, so cheaper than average this year. <br /> <br /></p>
 	
+</template>
+
+<template name="cashOutForm">
+    <form class = "cashOutResource form form-inline" role = "form">
+        <select name = "cashOutAmount" class="form-control" id = "{{itemNo}}-cashingAmt" {{isTraded}}>
+            {{#each resourceAmounts}}
+                <option value="{{amt}}"> {{amt}} </option>
+            {{/each}}
+        </select>
+        <!-- <input type="submit" value = "{{cashOutValue itemNo}}"/> -->
+        <input type="submit" value = "Sell" class="btn btn-default"  {{isTraded}}/>
+
+    </form> 
 </template>
 
 <template name="priceGraph">

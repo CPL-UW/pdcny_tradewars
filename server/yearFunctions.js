@@ -73,7 +73,7 @@ Meteor.startup(function () {
 		// },
 
 		resetCashes: function (gameCode, year) {
-			Cashes.update({"gameCode": gameCode}, {$set: {"amount": 0, "year": year}}, {multi: true});
+			Cashes.update({"gameCode": gameCode}, {$set: {"amount": 0, "year": year, "sold": false}}, {multi: true});
 			Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
 		},
 

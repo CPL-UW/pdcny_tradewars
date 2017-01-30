@@ -10,6 +10,8 @@ Router.route('/', function() {
 	Session.set("GroupNo", "home");
 	Session.set("Role", "none");
 	Session.set("GameSeconds", 0);
+	Session.set("GroupRole", "");
+	Session.set("Year", 0);
 
 });
 
@@ -18,10 +20,13 @@ Router.route('/games/:gameCode', function () {
 		role = "none";
 		group = "none";
 		game = RunningGames.findOne({$and: [{"gameCode": gameCode}, {"player": Meteor.userId()}, {"status": {$ne: "killed"}}] });
+		
+
 		//does this game exist
 		if (game != undefined) {
 			group = game.group;
 			// console.log(group);  // **this is being called a lot of times, need to figure this out
+			console.log(game.role);
 			if (group == "admin"){
 				//is this user an admin
 				role = "adminDash";
@@ -30,9 +35,17 @@ Router.route('/games/:gameCode', function () {
 				//is this user a normal player
 				role = "userDash";
 			}
-			Session.set("GameCode", gameCode);
-			Session.set("GroupNo", group);
-			Session.set("Role", role);
+			
+			if (game.status != "running" && game.role != "admin"){
+				gameCode = 0;
+			}
+			else {
+				Session.set("GameCode", gameCode);
+				Session.set("GroupNo", group);
+				Session.set("Role", role);
+				Session.set("GroupRole", game.role);
+				Session.set("Year", 0);
+			}
 		}
 		else {
 			// console.log("nothing found");
