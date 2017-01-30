@@ -89,10 +89,10 @@ Template.stockInfo.events({
 		itemNo = e.target.id.substring(8);
 		// Session.get("ModalTradeResource", itemNo);
 		$("#myModal").modal('toggle');
-		ggg = $('#TradeGivingResource option[value=itemNo]');
-		console.log(ggg);
-		fff = $('#GivingResource-' + itemNo);
-		console.log(fff);
+		// ggg = $('#TradeGivingResource option[value=itemNo]');
+		// console.log(ggg);
+		// fff = $('#GivingResource-' + itemNo);
+		// console.log(fff);
 		$('#GivingResource-' + itemNo).prop('selected', true);
 	}
  });
