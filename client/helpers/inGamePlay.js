@@ -94,6 +94,7 @@ Template.stockInfo.events({
 		// fff = $('#GivingResource-' + itemNo);
 		// console.log(fff);
 		$('#GivingResource-' + itemNo).prop('selected', true);
+		$('#tradeFormZoneCode').prop('value', "");
 	}
  });
 

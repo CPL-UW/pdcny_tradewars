@@ -2,7 +2,11 @@
 back end: 
 
 2 notifications for canceling and rejection of request - make one
+
+verify repetition of location for trades and block
+
 //~ change random assignment of stdev to mean
+	~~ stop/change changing of market price
 
 //fix cash out
 	//do negative check at server side as well – if the thing is becoming negative, don't do it.
@@ -11,12 +15,25 @@ back end:
 
 // cash out a resource only once per year
 
-verify repetition of location for trades and block
-
 // fix year length
 
 ---------------
 UI Refinements:
+
+remove autofilled zonecode in trade box
+
+sent request highlighting messed up
+
+Make a chart or some easy visualization for ranks of people
+
+slider;  || add dropdowns for values
+
+label the graph axes for price charts
+	make a rolling compacter history
+
+~~add column of amount cashed out column for bases
+	add fourth column of log(amount) price
+
 
 // close the pop up on submit trade
 // trade pop up should select corresponding item
@@ -24,23 +41,9 @@ UI Refinements:
 // cash out thingie
 
 // change yearlength on base page
-remove autofilled zonecode in trade box
-
-sent request highlighting messed up
-
-Make a chart or some easy visualization for ranks of people
-
-slider;
-
-~~ stop/change changing of market price
-
-label the graph axes for price charts
-	make a rolling compacter history
 
 // improve cash out form
 
-add column of amount cashed out column for bases
-	add fourth column of log(amount) price
 
 
 /////////////---------------\\\\\\\\\\\\\\\\\\\--------------//////////////---------------\\\\\\\\\\\\\\\\
