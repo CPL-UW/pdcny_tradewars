@@ -23,7 +23,7 @@ Meteor.startup(function () {
 					"elapsedTimeTotal": 0,
 					"elapsedTimeYear": 0,
 					"status": "running",
-					"yearLength": 600000,
+					"yearLength": 375000,
 				},
 				function (err, result) {
 					if (err){
@@ -86,10 +86,11 @@ Meteor.startup(function () {
 							"groupName": groupNames[groupIndices[g]],
 							"itemNo": resList[res],
 							"item": resNames[resList[res]],
-							"price": price,
+							"price": (price * 0.8) + (Math.random() * (price * 0.2)),
 							"amount": amount,
 							"mean": mean,
-							"stdev": Math.random() * stdev,
+							// "stdev": stdev + Math.random() * (stdev/5),
+							"stdev": stdev,
 							"yearmod": {"kind": "none"}
 						});
 					}

@@ -24,7 +24,7 @@ Template.centralView.helpers ({
 				{"role": "homebase"}
 			]}, 
 			{sort: 
-				{rank:1}
+				{"cash":-1, "marketValue": -1}
 			}
 			).fetch());
 		return RunningGames.find(

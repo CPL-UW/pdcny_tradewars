@@ -1,10 +1,13 @@
 ------------
 back end: 
 
+2 notifications for canceling and rejection of request - make one
+//~ change random assignment of stdev to mean
+
 //fix cash out
 	//do negative check at server side as well – if the thing is becoming negative, don't do it.
 
-point system
+// point system
 
 // cash out a resource only once per year
 
@@ -19,6 +22,11 @@ UI Refinements:
 // trade pop up should select corresponding item
 
 // cash out thingie
+
+// change yearlength on base page
+remove autofilled zonecode in trade box
+
+sent request highlighting messed up
 
 Make a chart or some easy visualization for ranks of people
 

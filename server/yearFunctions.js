@@ -28,7 +28,7 @@ Meteor.startup(function () {
 					"allGroups": allGroups
 				}
 				Meteor.call("logEvent", evLog);
-				i++;
+				i = i + 1;
 			}
 			// RunningGames.update( {$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0} }, {multi: true} );
 			Meteor.call("resetCashes", gameDoc.gameCode, gameDoc.currentYear);
