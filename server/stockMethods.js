@@ -2,7 +2,7 @@ Meteor.startup(function () {
 	Meteor.methods({
 		setGroupRanks: function (gameCode) {
 			r = 1;
-			RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"cash":-1}}).forEach(function (gameDoc) {
+			RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"points": -1, "cash": -1, "marketValue": -1}}).forEach(function (gameDoc) {
 				// console.log(r + " " + gameDoc.group);
 				if (gameDoc.hasOwnProperty("points")){
 					RunningGames.update({_id: gameDoc._id}, {$set: {"rank": r}});

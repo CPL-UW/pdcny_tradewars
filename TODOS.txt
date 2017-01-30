@@ -18,7 +18,7 @@ UI Refinements:
 // close the pop up on submit trade
 // trade pop up should select corresponding item
 
-cash out thingie
+// cash out thingie
 
 Make a chart or some easy visualization for ranks of people
 

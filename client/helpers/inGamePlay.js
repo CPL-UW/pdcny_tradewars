@@ -145,6 +145,18 @@ Template.cashOutForm.events({
 	}
 });
 
+Template.numberListOptions.helpers({
+	numberList: function () {
+		amountArray = [];
+		i = 0;
+		for (; i <= this; i++){
+			// amountArray["amt"] = i;
+			amountArray.push({"amt": i});
+		}
+		return amountArray;
+	}
+});
+
 Template.playerView.helpers({
 	thisIsBase: function () {
 		return baseUsers.indexOf(Meteor.user().username) != -1;
@@ -317,16 +329,16 @@ Template.cashOut.helpers({
 		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
 		// console.log(game);
 		if (game.cash != undefined){
-			// console.log("true");
+			console.log("gamecash found");
 			c = game.cash;
 		}
 		else {
-			// console.log("false");
+			console.log("gamecash not found");
 			c = 0;
 		}
 		// c = "0";
 		console.log(c);
-		return c;
+		return RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
 	}
 });
 

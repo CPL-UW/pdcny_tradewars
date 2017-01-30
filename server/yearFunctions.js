@@ -11,19 +11,27 @@ Meteor.startup(function () {
 
 		giveYearPoints: function (gameCode, year) {
 			// maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"marketValue":-1}}).fetch()[0];
-			maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"cash":-1}}).fetch()[0];
-			RunningGames.update({_id: maxScore._id}, {$inc: {"points": 1}});
-			evLog = {
-				"timestamp": (new Date()).getTime(),
-				"key": "AnnualPointAward",
-				"year": year,
-				"gameCode": gameCode,
-				"group": maxScore.group,
-				"allGroups": RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch()
-			}
-			Meteor.call("logEvent", evLog);
 
-			RunningGames.update( {$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0} }, {multi: true} );
+			games = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}, {"cash": {$gt: 0} } ]}, {sort : {"cash":-1, "marketValue": -1}}).fetch();
+			allGroups = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch();
+			i = 0;
+			// award = 0;
+			while (i < games.length && i < yearAwards.length){
+				RunningGames.update({_id: games[i]._id}, {$inc: {"points": yearAwards[i]}});
+				evLog = {
+					"timestamp": (new Date()).getTime(),
+					"key": "AnnualPointAward",
+					"year": year,
+					"gameCode": gameCode,
+					"group": games[i].group,
+					"pointsAwarded": yearAwards[i],
+					"allGroups": allGroups
+				}
+				Meteor.call("logEvent", evLog);
+				i++;
+			}
+			// RunningGames.update( {$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0} }, {multi: true} );
+			Meteor.call("resetCashes", gameDoc.gameCode, gameDoc.currentYear);
 		},
 
 		incrementGameYear: function (gameDocId, requestType, newEvents = "all"){
@@ -45,8 +53,8 @@ Meteor.startup(function () {
 					if (requestType != "NewGameSetup"){
 						
 						// Meteor.call("cashOutAllResources", gameDoc.gameCode, gameCode.currentYear);
-						Meteor.call("resetCashes", gameDoc.gameCode, gameDoc.currentYear);
 						Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
+						// Meteor.call("resetCashes", gameDoc.gameCode, gameDoc.currentYear);
 
 					}
 				}
@@ -73,8 +81,9 @@ Meteor.startup(function () {
 		// },
 
 		resetCashes: function (gameCode, year) {
-			Cashes.update({"gameCode": gameCode}, {$set: {"amount": 0, "year": year, "sold": false}}, {multi: true});
-			Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
+			Cashes.update({"gameCode": gameCode}, {$set: {"cash":0, "amount": 0, "year": year, "sold": false}}, {multi: true});
+			RunningGames.update({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0}}, {multi: true});
+			// Meteor.call("giveYearPoints", gameDoc.gameCode, gameDoc.currentYear);
 		},
 
 		newYearEvents: function (gameId, newEvents) {

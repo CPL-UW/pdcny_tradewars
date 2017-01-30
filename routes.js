@@ -26,7 +26,7 @@ Router.route('/games/:gameCode', function () {
 		if (game != undefined) {
 			group = game.group;
 			// console.log(group);  // **this is being called a lot of times, need to figure this out
-			console.log(game.role);
+			// console.log(game.role);
 			if (group == "admin"){
 				//is this user an admin
 				role = "adminDash";

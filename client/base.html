@@ -414,14 +414,18 @@
 <template name="cashOutForm">
     <form class = "cashOutResource form form-inline" role = "form">
         <select name = "cashOutAmount" class="form-control" id = "{{itemNo}}-cashingAmt" {{isTraded}}>
-            {{#each resourceAmounts}}
-                <option value="{{amt}}"> {{amt}} </option>
-            {{/each}}
+            {{> numberListOptions amount}}
         </select>
         <!-- <input type="submit" value = "{{cashOutValue itemNo}}"/> -->
         <input type="submit" value = "Sell" class="btn btn-default"  {{isTraded}}/>
 
     </form> 
+</template>
+
+<template name="numberListOptions">
+    {{#each numberList}}
+        <option value="{{amt}}"> {{amt}} </option>
+    {{/each}}
 </template>
 
 <template name="priceGraph">

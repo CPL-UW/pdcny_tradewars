@@ -94,8 +94,8 @@ Meteor.startup(function () {
 						});
 					}
 				};
-				populateStocks(expRes, thisGrpExpRes, 150, 15, 750, 7);
-				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 250, 5)
+				populateStocks(expRes, thisGrpExpRes, 150, 15, 750, 70);
+				populateStocks(cheapRes, thisGrpCheapRes, 50, 30, 250, 50)
 			}
 
 			Meteor.setTimeout(function() { Meteor.call('updateStocks', code) }, 2000);
