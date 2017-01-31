@@ -13,7 +13,7 @@ Meteor.startup(function () {
 			// maxScore = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {sort : {"marketValue":-1}}).fetch()[0];
 
 			games = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}, {"cash": {$gt: 0} } ]}, {sort : {"cash":-1, "marketValue": -1}}).fetch();
-			allGroups = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch();
+			// allGroups = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch();
 			i = 0;
 			// award = 0;
 			while (i < games.length && i < yearAwards.length){
@@ -24,13 +24,32 @@ Meteor.startup(function () {
 					"year": year,
 					"gameCode": gameCode,
 					"group": games[i].group,
+					"cash": games[i].cash,
 					"pointsAwarded": yearAwards[i],
-					"allGroups": allGroups
+					// "allGroups": allGroups
 				}
 				Meteor.call("logEvent", evLog);
 				i = i + 1;
 			}
 			// RunningGames.update( {$and: [{"gameCode": gameCode}, {"role": "homebase"}]}, {$set: {"cash": 0} }, {multi: true} );
+			
+			Meteor.call("setGroupRanks", gameCode, function (err, result) {
+				if (err) {
+					console.log("aaah group rank setting failed!!");
+				}
+				else {
+					allGroups = RunningGames.find({$and: [{"gameCode": gameCode}, {"role": "homebase"}]}).fetch();
+					evLog = {
+						"timestamp": (new Date()).getTime(),
+						"key": "EndYearRankStatus",
+						"year": year,
+						"gameCode": gameCode,
+						"allGroups": allGroups
+					}
+					Meteor.call("logEvent", evLog);
+				}
+			});
+
 			Meteor.call("resetCashes", gameDoc.gameCode, gameDoc.currentYear);
 		},
 

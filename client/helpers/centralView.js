@@ -18,22 +18,22 @@ Template.centralView.helpers ({
 		// 	c = (parseInt(c*100)) / 100;
 		// 	RunningGames.update({$and: [{"gameCode": Session.get("GameCode")}, {"role": "homebase"}]});
 		// 
-		console.log(RunningGames.find(
-			{$and: [
-				{"gameCode": Session.get("GameCode")}, 
-				{"role": "homebase"}
-			]}, 
-			{sort: 
-				{"cash":-1, "marketValue": -1}
-			}
-			).fetch());
+		// console.log(RunningGames.find(
+		// 	{$and: [
+		// 		{"gameCode": Session.get("GameCode")}, 
+		// 		{"role": "homebase"}
+		// 	]}, 
+		// 	{sort: 
+		// 		{"cash":-1, "marketValue": -1}
+		// 	}
+		// 	).fetch());
 		return RunningGames.find(
 			{$and: [
 				{"gameCode": Session.get("GameCode")}, 
 				{"role": "homebase"}
 			]}, 
 			{sort: 
-				{cash: -1, points: -1, rank: 1}
+				{"cash": -1, "marketValue": -1, "points": -1, "rank": 1}
 			}
 			);
 	}	
