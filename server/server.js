@@ -235,10 +235,10 @@ Meteor.startup(function () {
 				"player": req.user,
 				"response": state,
 				"reqLogContents": req,
-				"reqResRequester": AllStocks.findOne({_id: req.contents.reqResRequester}),
-				"reqResRecipient": AllStocks.findOne({_id: req.contents.reqResRecipient}),
-				"recvResRequester": AllStocks.findOne({_id: req.contents.recvResRequester}),
-				"recvResRecipient": AllStocks.findOne({_id: req.contents.recvResRecipient}),
+				"reqResRequester": AllStocks.findOne({_id: req.contents.reqResRequester._id}),
+				"reqResRecipient": AllStocks.findOne({_id: req.contents.reqResRecipient._id}),
+				"recvResRequester": AllStocks.findOne({_id: req.contents.recvResRequester._id}),
+				"recvResRecipient": AllStocks.findOne({_id: req.contents.recvResRecipient._id}),
 				"zone": zoneCode
 			};
 			Meteor.call("logEvent", evLog);
