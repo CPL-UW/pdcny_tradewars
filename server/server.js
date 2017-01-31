@@ -119,19 +119,21 @@ Meteor.startup(function () {
 			// console.log(giveResGiver + " " + takeResGiver);
 			// takeResName = takeRe
 			// if (giveResName != undefined && takeResName != undefined){
+				recipientName = Meteor.users.findOne({_id: recipient}).username;
+				requesterName = Meteor.users.findOne({_id:requester}).username;
 				reqLog = {
 					"gameCode": gCode, 
 					"timestamp": (new Date()).getTime(),
 					"year": gameYear,
 					"user": recipient,
-					"username": Meteor.users.findOne({_id: recipient}).username,
+					"username": recipientName,
 					"requestedGroup": requestedGroup,
 					"type": "request",
 					"zone": zoneCode,
 					"contents": {
 						"requester": {
 							"id": requester, 
-							"username": Meteor.users.findOne({_id:requester}).username, 
+							"username": requesterName, 
 							"group": requesterGroup
 						},
 						"reqRes": takeResGiver.item,
@@ -157,13 +159,24 @@ Meteor.startup(function () {
 					"reqId": insertId,
 					"description": "",
 					"gameCode": gCode,
-					"player": requester,
+					"requester": requester,
+					"requesterName": requesterName,
+					"requesterGroup": requesterGroup,
+					"recipient": recipient,
+					"recipientName": recipientName,
+					"recipientGroup": requestedGroup,
+					"reqResNo": takeRes,
+					"reqRes": takeResGiver.item,
+					"reqAmt": parseInt(takeAmt),
+					"recvResNo": giveRes,
+					"recvRes": giveResGiver.item,
+					"recvAmt": parseInt(giveAmt),
 					"year": gameYear,
 					"reqLogContents": postedReqLog,
 					"zone": postedReqLog.zone
 				}
 
-				Meteor.call("logEvent", evLog)
+				Meteor.call("logEvent", evLog);
 				// console.log("Making request");
 				// console.log(insertId);
 				return insertId;
@@ -213,9 +226,14 @@ Meteor.startup(function () {
 			Meteor.call('readRequest', reqId, 1, gameYear, zoneCode);
 			reqt["year"] = gameYear;
 			Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
+
+			//****TODO****//
+			/*
+				Only update the two individual stocks 
+			*/
 		},
 
-		readRequest: function (reqId, state = 1, gameYear, zoneCode = 0000) {
+		readRequest: function (reqId, state = 1, gameYear, zoneCode = 0000, context = {}) {
 			val = 1;
 			if (state == -1){
 				val = -1;
@@ -232,14 +250,26 @@ Meteor.startup(function () {
 				"description": "",
 				"gameCode": req.gameCode,
 				"year": gameYear,
-				"player": req.user,
-				"response": state,
+				"requester": req.contents.requester.id,
+				"requesterName": req.contents.requester.username,
+				"requesterGroup": req.contents.requester.group,
+				"recipient": req.user,
+				"recipientName": req.username,
+				"recipientGroup": req.requestedGroup,
+				"response": val,
+				"reqResNo": req.contents.reqResNo,
+				"reqRes": req.contents.reqRes,
+				"reqAmt": req.contents.reqAmt,
+				"recvResNo": req.contents.recvResNo,
+				"recvRes": req.contents.recvRes,
+				"recvAmt": req.contents.recvAmt,
 				"reqLogContents": req,
 				"reqResRequester": AllStocks.findOne({_id: req.contents.reqResRequester._id}),
 				"reqResRecipient": AllStocks.findOne({_id: req.contents.reqResRecipient._id}),
 				"recvResRequester": AllStocks.findOne({_id: req.contents.recvResRequester._id}),
 				"recvResRecipient": AllStocks.findOne({_id: req.contents.recvResRecipient._id}),
-				"zone": zoneCode
+				"zone": zoneCode,
+				"context": context
 			};
 			Meteor.call("logEvent", evLog);
 

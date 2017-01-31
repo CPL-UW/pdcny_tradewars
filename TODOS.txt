@@ -5,6 +5,8 @@ back end:
 
 verify repetition of location for trades and block
 
+adjust the resource mean more
+
 //~ change random assignment of stdev to mean
 	~~ stop/change changing of market price
 
