@@ -441,7 +441,7 @@ Meteor.startup(function () {
 	
 });
 
-Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 1000);
+Meteor.setTimeout(function() { Meteor.call('setupBaseUsers'); }, 6000);
 
 Meteor.setInterval(function () {
 	Meteor.call('checkLogins');
