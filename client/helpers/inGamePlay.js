@@ -376,7 +376,7 @@ Template.cashOut.events({
 		}
 		else {
 			// gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
-			gameYear = Session.set("Year");
+			gameYear = Session.get("Year");
 
 			if (checkAvailability(event.target.sellResource.value, event.target.sellAmount.value)) {
 				Meteor.call('cashOutResource', 

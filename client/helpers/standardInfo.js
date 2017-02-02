@@ -14,6 +14,7 @@ Template.gameInfo.helpers ({
 		else
 			year = "This game doesn't have a year, very strange.";
 		Session.set("Year", year);
+		return year;
 	}
 
 });
