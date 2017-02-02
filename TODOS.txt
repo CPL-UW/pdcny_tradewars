@@ -1,11 +1,13 @@
 ------------
 back end: 
 
-2 notifications for canceling and rejection of request - make one
+// 2 notifications for canceling and rejection of request - make one
 
-verify repetition of location for trades and block
+||| verify repetition of location for trades and block
 
-adjust the resource mean more
+// adjust the resource mean more
+
+// don't count selling zero things as a sale
 
 //~ change random assignment of stdev to mean
 	~~ stop/change changing of market price
@@ -22,7 +24,9 @@ adjust the resource mean more
 ---------------
 UI Refinements:
 
-remove autofilled zonecode in trade box
+year end:
+	floating colors to highlight changes
+	reset the cashing out dropdown
 
 sent request highlighting messed up
 
@@ -32,6 +36,8 @@ slider;  || add dropdowns for values
 
 label the graph axes for price charts
 	make a rolling compacter history
+
+// remove autofilled zonecode in trade box
 
 ~~add column of amount cashed out column for bases
 	add fourth column of log(amount) price

@@ -27,14 +27,21 @@ Template.centralView.helpers ({
 		// 		{"cash":-1, "marketValue": -1}
 		// 	}
 		// 	).fetch());
+		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"role": "admin"}]});
+		if (game.status == "running") { 
+			sortGrp = {"cash": -1, "marketValue": -1, "points": -1, "rank": 1}; 
+		}
+		else {
+			sortGrp = {"rank": 1};
+		}
 		return RunningGames.find(
 			{$and: [
 				{"gameCode": Session.get("GameCode")}, 
 				{"role": "homebase"}
 			]}, 
 			{sort: 
-				{"cash": -1, "marketValue": -1, "points": -1, "rank": 1}
+				sortGrp
 			}
-			);
+		);
 	}	
 });

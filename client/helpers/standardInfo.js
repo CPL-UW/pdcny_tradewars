@@ -142,7 +142,7 @@ Template.requestsTemp.events({
 					if (reqResStock == undefined){
 						alertFn("Your group doesn't have the item you're trying to give! Trade fail *sad trombone*", "danger", "requestFail");
 						acceptance = "false";
-						context = {"response": "Resource absence"};
+						context = {"response": "Resource absent"};
 
 					}
 					else if(reqResStock.amount < request["reqAmt"]){
@@ -156,15 +156,17 @@ Template.requestsTemp.events({
 								alertFn("The server's dying man. Sorry", "danger", "requestFail");
 								// Meteor.call('raiseAlert', Meteor.userId(), {"text": "The server's dying man. Sorry", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "danger");
 								context = {"response": "Server failed request"};
+								acceptance = "failed";
 							}
 							else {
 								alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess");
-								contenxt = {"response": "Successful request"};
+								context = {"response": "Successful request"};
+								acceptance = "true";
 								// Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request completed, you have the things you were offered!", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");
 							}
 						});
 						
-						acceptance = "true";
+						
 
 					}
 				}

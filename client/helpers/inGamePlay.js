@@ -149,7 +149,7 @@ Template.cashOutForm.events({
 Template.numberListOptions.helpers({
 	numberList: function () {
 		amountArray = [];
-		i = 0;
+		i = 1;
 		for (; i <= this; i++){
 			// amountArray["amt"] = i;
 			amountArray.push({"amt": i});

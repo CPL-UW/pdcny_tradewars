@@ -86,7 +86,7 @@ Meteor.startup(function () {
 							"groupName": groupNames[groupIndices[g]],
 							"itemNo": resList[res],
 							"item": resNames[resList[res]],
-							"price": (price * 0.8) + (Math.random() * (price * 0.2)),
+							"price": (price * 1.5) + (Math.random() * (price * 0.3)),
 							"amount": amount,
 							"mean": mean,
 							// "stdev": stdev + Math.random() * (stdev/5),
