@@ -44,7 +44,7 @@ Router.route('/games/:gameCode', function () {
 				Session.set("GroupNo", group);
 				Session.set("Role", role);
 				Session.set("GroupRole", game.role);
-				Session.set("Year", 0);
+				Session.set("Year", game.currentYear);
 			}
 		}
 		else {

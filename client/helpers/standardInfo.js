@@ -44,6 +44,8 @@ Template.yearProgress.helpers({
 	yearFraction: function() {
 		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
 		fr = (game.elapsedTimeYear * 100) / game.yearLength;
+		// console.log(game.currentYear);
+		Session.set("Year", game.currentYear);
 		return fr;
 	},
 
