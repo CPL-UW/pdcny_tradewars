@@ -225,11 +225,21 @@ Meteor.startup(function () {
 			
 			Meteor.call('readRequest', reqId, 1, gameYear, zoneCode);
 			reqt["year"] = gameYear;
-			Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
+			// Meteor.call('updateStocks', gCode, "TradeCausedUpdate", reqt);
+
+			// "reqResRequester": takeResGiver,
+			// "reqResRecipient": takeResTaker,
+			// "recvResRequester": giveResGiver,
+			// "recvResRecipient": giveResTaker,
+
+			Meteor.call("updateIndividualStock", AllStocks.findOne({"_id": request["reqResRequester"]._id}), "TradeCausedUpdate", reqt);
+			Meteor.call("updateIndividualStock", AllStocks.findOne({"_id": request["reqResRecipient"]._id}), "TradeCausedUpdate", reqt);
+			Meteor.call("updateIndividualStock", AllStocks.findOne({"_id": request["recvResRequester"]._id}), "TradeCausedUpdate", reqt);
+			Meteor.call("updateIndividualStock", AllStocks.findOne({"_id": request["recvResRecipient"]._id}), "TradeCausedUpdate", reqt);
 
 			//****TODO****//
 			/*
-				Only update the two individual stocks 
+				Only update the four individual stocks 
 			*/
 		},
 

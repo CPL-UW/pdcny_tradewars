@@ -322,86 +322,86 @@ Template.trade.events({
 });
 
 Template.cashOut.helpers({
-	availableResources: function () {
-		return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"amount": {$gt: 0}}] }, {"item": 1, "amount": 1, "itemNo": 1});
-	},
+	// availableResources: function () {
+	// 	return AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"amount": {$gt: 0}}] }, {"item": 1, "amount": 1, "itemNo": 1});
+	// },
 
-	teamCash: function () {
-		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
-		// console.log(game);
-		if (game.cash != undefined){
-			console.log("gamecash found");
-			c = game.cash;
-		}
-		else {
-			console.log("gamecash not found");
-			c = 0;
-		}
-		// c = "0";
-		console.log(c);
-		return RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
-	}
+	// teamCash: function () {
+	// 	game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]});
+	// 	// console.log(game);
+	// 	if (game.cash != undefined){
+	// 		console.log("gamecash found");
+	// 		c = game.cash;
+	// 	}
+	// 	else {
+	// 		console.log("gamecash not found");
+	// 		c = 0;
+	// 	}
+	// 	// c = "0";
+	// 	console.log(c);
+	// 	return RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": Session.get("GroupNo")}, {"role": "homebase"}]}).cash;
+	// }
 });
 
 Template.cashOut.events({
-	"submit .selling": function (event) {
-		event.preventDefault();
-		var checkAvailability = function(res, amt) {
-			// console.log(res);
-			resStocks = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch();
-			a = parseInt(resStocks.length);
-			// console.log(resStocks[0]);
-			if (a > 0 && parseInt(amt) >= 0){
-				// console.log("tru");
-				return true;
-			}
-			else {
-				// console.log("fal");
-				return false;
-			}
-		}
+	// "submit .selling": function (event) {
+	// 	event.preventDefault();
+	// 	var checkAvailability = function(res, amt) {
+	// 		// console.log(res);
+	// 		resStocks = AllStocks.find({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}, {"amount": {$gte: parseInt(amt)}}]}).fetch();
+	// 		a = parseInt(resStocks.length);
+	// 		// console.log(resStocks[0]);
+	// 		if (a > 0 && parseInt(amt) >= 0){
+	// 			// console.log("tru");
+	// 			return true;
+	// 		}
+	// 		else {
+	// 			// console.log("fal");
+	// 			return false;
+	// 		}
+	// 	}
 
-		var getResName = function (res) {
-			// console.log(res + " ");
-			resStock = AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}]});
-			// console.log(resStock)
-			return resStock.item;
-		}
+	// 	var getResName = function (res) {
+	// 		// console.log(res + " ");
+	// 		resStock = AllStocks.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"gID": Session.get("GroupNo")}, {"itemNo": res}]});
+	// 		// console.log(resStock)
+	// 		return resStock.item;
+	// 	}
 
-		if (event.target.sellResource.value == "") {
-			$("input[name=sellResource]").focus();
-		}
-		else if (event.target.sellAmount.value == ""){
-			$("input[name=sellAmount]").focus();
-		}
-		else {
-			// gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
-			gameYear = Session.get("Year");
+	// 	if (event.target.sellResource.value == "") {
+	// 		$("input[name=sellResource]").focus();
+	// 	}
+	// 	else if (event.target.sellAmount.value == ""){
+	// 		$("input[name=sellAmount]").focus();
+	// 	}
+	// 	else {
+	// 		// gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
+	// 		gameYear = Session.get("Year");
 
-			if (checkAvailability(event.target.sellResource.value, event.target.sellAmount.value)) {
-				Meteor.call('cashOutResource', 
-					event.target.sellResource.value, 
-					getResName(event.target.sellResource.value), 
-					parseInt(event.target.sellAmount.value), 
-					Session.get("GameCode"), 
-					Meteor.userId(), Session.get("GroupNo"), gameYear, 
-					function (err, res) {
-						if (err) {
-							console.log(err);
-							alert("Cash out failed at server end");
-						}
-						else {
-							event.target.sellAmount.value = "";
-						}
-					}
-				);
-			}
-			else {
-				alert("Are you trying to sell more than you have? That wouldn't work.")
-			}
+	// 		if (checkAvailability(event.target.sellResource.value, event.target.sellAmount.value)) {
+	// 			Meteor.call('cashOutResource', 
+	// 				event.target.sellResource.value, 
+	// 				getResName(event.target.sellResource.value), 
+	// 				parseInt(event.target.sellAmount.value), 
+	// 				Session.get("GameCode"), 
+	// 				Meteor.userId(), Session.get("GroupNo"), gameYear, 
+	// 				function (err, res) {
+	// 					if (err) {
+	// 						console.log(err);
+	// 						alert("Cash out failed at server end");
+	// 					}
+	// 					else {
+	// 						event.target.sellAmount.value = "";
+	// 					}
+	// 				}
+	// 			);
+	// 		}
+	// 		else {
+	// 			alert("Are you trying to sell more than you have? That wouldn't work.")
+	// 		}
 
-		}
-	}
+	// 	}
+	// }
 });
 
 
