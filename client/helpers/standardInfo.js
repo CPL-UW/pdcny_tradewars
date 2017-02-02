@@ -13,7 +13,9 @@ Template.gameInfo.helpers ({
 			year = gameDoc.currentYear;
 		else
 			year = "This game doesn't have a year, very strange.";
-		Session.set("Year", year);
+		if( Session.get("Year") != year ){
+			Session.set("Year", year);
+		}
 		return year;
 	}
 
@@ -45,7 +47,9 @@ Template.yearProgress.helpers({
 		game = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]});
 		fr = (game.elapsedTimeYear * 100) / game.yearLength;
 		// console.log(game.currentYear);
-		Session.set("Year", game.currentYear);
+		if( Session.get("Year") != game.currentYear ){
+			Session.set("Year", game.currentYear);
+		}
 		return fr;
 	},
 
@@ -120,11 +124,13 @@ Template.requestsTemp.events({
 		gameYear = RunningGames.findOne({$and: [{"gameCode": Session.get("GameCode")}, {"group": "admin"}]}).currentYear;
 		
 		context = {};
+		// console.log("first acceptance "  + acceptance);
 		if($(e.target).prop("id") == "rescind") {
 			// eee = e;
 			// console.log(eee);	
 			// console.log($(e.target)[0].form);
 			acceptance = "rescind";
+			console.log("rescind");
 		}
 		else {
 			// if (validZoneCodes.indexOf(parseInt(e.target.form.zoneCode.value)) == -1 ) {
@@ -133,10 +139,12 @@ Template.requestsTemp.events({
 			// else {
 
 			if($(e.target).prop("id") == "accept"){
+				console.log("pressing accept");
 				if (validZoneCodes.indexOf(parseInt(e.target.form.zoneCode.value)) == -1 ) {
 					alert(" Invalid Zone Code");
 					acceptance = "invalid";
 					e.preventDefault();
+					console.log("invalid zone");
 				}
 				else {
 					console.log("accept");
@@ -146,12 +154,14 @@ Template.requestsTemp.events({
 						alertFn("Your group doesn't have the item you're trying to give! Trade fail *sad trombone*", "danger", "requestFail");
 						acceptance = "false";
 						context = {"response": "Resource absent"};
+						console.log("absent resource");
 
 					}
 					else if(reqResStock.amount < request["reqAmt"]){
 						alertFn("Your group doesn't have enough of the item you're trying to give! Trade fail *sad trombone*", "warning", "requestFail");
 						acceptance = "false";
 						context = {"response": "Inadequate resource"};
+						console.log("Inadequate resource");
 					}
 					else{
 						Meteor.call('exchangeResources', reqId, Session.get("GameCode"), parseInt(e.target.form.zoneCode.value), gameYear, function(err, result){
@@ -165,12 +175,11 @@ Template.requestsTemp.events({
 								alertFn("Request completed, you have the things you were offered!", "success", "requestSuccess");
 								context = {"response": "Successful request"};
 								acceptance = "true";
+								console.log("acceptance set to true");
 								// Meteor.call('raiseAlert', Meteor.userId(), {"text": "Request completed, you have the things you were offered!", "contextKind": "request", "context": reqId}, Session.get("GameCode"), "success");
 							}
 						});
-						
-						
-
+						acceptance = "true";
 					}
 				}
 			}
@@ -182,6 +191,7 @@ Template.requestsTemp.events({
 				// console.log("reject", $(e.target).prop("fNo"));
 			}
 		}
+		console.log("processed acceptance "  + acceptance);
 
 		if(acceptance == "false"){
 			alertFn("Request rejected/failed! :(", "danger", "requestFail" ,request["requester"].id);
