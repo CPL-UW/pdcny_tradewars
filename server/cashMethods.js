@@ -18,6 +18,10 @@ Meteor.startup(function () {
 				}
 				else {
 					AllStocks.update( { "_id": stockDoc._id }, {$inc: {"amount": -1 * sellAmount} } );
+					if (AllStocks.findOne( { "_id": stockDoc._id }).amount < 0) {
+						AllStocks.update( { "_id": stockDoc._id }, {$set: {"amount" : 0}});
+					}
+					
 					worth = stockDoc.price * sellAmount;
 					Cashes.update({_id: cashDoc._id}, {$set: {"sold": true, "amount": sellAmount, "cash": worth, "itemPrice": stockDoc.price}});
 					

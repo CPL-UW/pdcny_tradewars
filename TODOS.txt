@@ -32,10 +32,10 @@ sent request highlighting messed up
 
 Make a chart or some easy visualization for ranks of people
 
-slider;  || add dropdowns for values
-
 label the graph axes for price charts
 	make a rolling compacter history
+
+slider;  || add dropdowns for values
 
 // remove autofilled zonecode in trade box
 
