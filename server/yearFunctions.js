@@ -169,6 +169,7 @@ Meteor.startup(function () {
 									{ _id: stockDoc._id},
 									{$inc: {"amount": f.production}}
 								);
+								//*** TODO: ADD YEAR INFO ***//
 								Meteor.call('updateIndividualStock', stockDoc, "NewYearUpdates");
 							}
 						});
